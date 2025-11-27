@@ -129,7 +129,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="asd.h" />
+    <ClInclude Include="gameobject.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="tilemanager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />

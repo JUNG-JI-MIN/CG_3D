@@ -24,7 +24,7 @@ GameObject
 #define GLM_ENABLE_EXPERIMENTAL
 #define STB_IMAGE_IMPLEMENTATION //--- 한 번만 선언
 #include <stdlib.h>
-#include <stdio.h>
+#include <stdio.h>  
 #include <iostream>
 #include <vector>
 #include <fstream>     // 파일 읽기 (ifstream)
@@ -286,10 +286,8 @@ public:
         glUniform3fv(u, 1, glm::value_ptr(position));
     }
 };
-Light light({ 0.0f,5.0f,5555555555.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 5.0f,5.0f,5.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-
-
+Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
+Camera camera({ 15.0f,15.0f,15.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
@@ -481,74 +479,7 @@ public:
 
 };
 
-// 플레이어가 조작하는 큐브
-class PlayerCube : public GameObject {
-public:
-    PlayerCube(glm::vec3 pos)
-        : GameObject(pos) {}
 
-	glm::vec3 dir = { 0.0f,0.0f,1.0f }; // 이동 방향 or 바라보는 방향이라고도 할 수 있음 키보드 조작을 통해 dir이 변경됨
-	bool Rolling = false; // 구르는 중인지 아닌지 여부 애니메이션에서 사용
-	float  t = 0.0f; // 구르는 애니메이션 진행 시간
-	float roll_speed = 3.0f; // 구르는 속도 매개변수 방정식
-
-    // 플레이어 큐브가 바랴보는 방향으로 구르는 함수
-    void Rolling_in_the_deep() {
-    }
-
-	// 매 프레임마다 호출되는 업데이트 함수
-    void Update(float dt) override {
-    }
-
-	// 충돌 처리 로직 일단 놔두긴 했는데 쓸거면 쓰고 아님 안 써도 됨 근데 없애진 마
-    void OnCollision(GameObject* other) {
-
-    }
-
-    
-
-};
-PlayerCube player({ 0.0f, 0.0f, 0.0f });
-
-// 타일의 기본 클래스
-class TileBase : public GameObject {
-public:
-    TileBase(glm::vec3 pos)
-        : GameObject( pos) {
-    }
-	// 플레이어 큐브가 타일에 들어갔을 때 호출되는 함수
-    virtual void OnCubeEnter(PlayerCube* cube) {}
-	// 플레이어 큐브가 타일위에 머무를 때 호출되는 함수    
-    virtual void OnCubeStay(PlayerCube* cube) {}
-	// 플레이어 큐브가 타일에서 나갔을 때 호출되는 함수
-    virtual void OnCubeExit(PlayerCube* cube) {}
-};
-
-// 기본 땅 타일
-class GroundTile : public TileBase {
-    GroundTile(glm::vec3 pos)
-        : TileBase(pos) {
-    }
-    void OnCubeEnter(PlayerCube* cube) override {
-	}
-    void OnCubeStay(PlayerCube* cube) override {
-    }
-    void OnCubeExit(PlayerCube* cube) override {
-	}
-};
-
-// 기본 땅 타일
-class MoveTile : public TileBase {
-    MoveTile(glm::vec3 pos)
-        : TileBase(pos) {
-	}
-    void OnCubeEnter(PlayerCube* cube) override {
-    }
-    void OnCubeStay(PlayerCube* cube) override {
-    }
-    void OnCubeExit(PlayerCube* cube) override {
-    }
-};
 
 // 얘네는 그냥 갈라파고스 느낌이라 생각해 굳이 필요한가 싶긴한데 일단 넣어놨어 나중에 원 필요하면 넣을 수 있음
 class Line {

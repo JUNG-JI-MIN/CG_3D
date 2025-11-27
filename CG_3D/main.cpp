@@ -1,4 +1,5 @@
-#include "asd.h"
+#include "player.h"
+#include "tilemanager.h"
 
 char* filetobuf(const char* file)
 {
@@ -81,6 +82,10 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
     player.InitializeRendering(&public_cube, &public_cube_texture);
 
+
+	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
+    tileManager.LoadFromJSON("json/stage.json");
+
     glutDisplayFunc(drawScene); //--- 출력 콜백 함수
     glutTimerFunc(16, TimerFunction, 1);  // 60 FPS
     glutKeyboardFunc(onKey); // 키보드
@@ -107,6 +112,8 @@ GLvoid drawScene() {
 
     player.result_matrix(camera);
     player.Draw();
+
+	tileManager.DrawAll(camera);
 
     glutSwapBuffers();
 }

@@ -1,0 +1,2407 @@
+{
+  "gridWidth": 20,
+  "gridHeight": 20,
+  "tileSize": 2,
+  "tiles": [
+    {
+      "x": -20,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -20,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 0,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 2,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 4,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 6,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 8,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 10,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 12,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 14,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 16,
+      "type": "GroundTile"
+    },
+    {
+      "x": -20,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -18,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -16,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -14,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 18,
+      "type": "GroundTile"
+    }
+  ]
+}
