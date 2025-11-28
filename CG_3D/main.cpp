@@ -20,11 +20,23 @@ char* filetobuf(const char* file)
 }
 // 타이머 함수 구현
 void TimerFunction(int value) {
-   
-    glutWarpPointer(width / 2, height / 2);
+    if (isWindowActive) {
+        glutWarpPointer(width / 2, height / 2); // 창이 활성화된 경우에만 마우스 위치 고정
+    }
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
     
+}
+// 창 활성화 상태를 감지하는 함수
+void onWindowEntry(int state) {
+    if (state == GLUT_ENTERED) {
+        isWindowActive = true;
+        glutSetCursor(GLUT_CURSOR_NONE); // 마우스 포인터 숨기기
+    }
+    else if (state == GLUT_LEFT) {
+        isWindowActive = false;
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW); // 마우스 포인터 표시
+    }
 }
 
 void onKey(unsigned char key, int x, int y) {
@@ -91,6 +103,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     light.Init();
 
     glutDisplayFunc(drawScene); //--- 출력 콜백 함수
+    glutEntryFunc(onWindowEntry); // 창 활성화 상태 감지 콜백 등록
     glutTimerFunc(16, TimerFunction, 1);  // 60 FPS
     glutKeyboardFunc(onKey); // 키보드
     glutSpecialFunc(onSpecialKey); // 특수키
