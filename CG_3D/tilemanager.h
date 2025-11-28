@@ -1,5 +1,10 @@
+#pragma once
 #include "gameobject.h"
-// 타일의 기본 클래스 근데 없어도 될거 같기도 하고
+
+// 전방 선언
+class PlayerCube;
+
+// 타일의 기본 클래스
 class TileBase : public GameObject {
 public:
     TileBase(glm::vec3 pos)

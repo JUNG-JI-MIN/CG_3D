@@ -21,27 +21,32 @@ char* filetobuf(const char* file)
 }
 // 타이머 함수 구현
 void TimerFunction(int value) {
-   
+    float dt = 1.0f / 60.0f; // 60 FPS 기준 deltaTime
+    
+    // 플레이어 업데이트
+    player.Update(dt);
 
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
-    
 }
 
 void onKey(unsigned char key, int x, int y) {
     switch (key)
     {
+    case 'q':
+        exit(1);
+        break;
     case 'a':
-        player.addRotation(0, 3.0f, 0);
+        player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	case 'd':
-        player.addRotation(0, -3.0f, 0);
+        player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
 		break;
 	case 'w':
-		player.addRotation(-3.0f, 0, 0);
+        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
 		break;
 	case 's':
-		player.addRotation(3.0f, 0, 0);
+        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
     }
     glutPostRedisplay();
 }
