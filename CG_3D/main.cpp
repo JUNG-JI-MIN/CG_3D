@@ -47,6 +47,13 @@ void onKey(unsigned char key, int x, int y) {
 		break;
 	case 's':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        break;
+    case 'z':
+		camera.position.z += 1.0f;
+        break;
+    case 'Z':
+        camera.position.z -= 1.0f;
+        break;
     }
     glutPostRedisplay();
 }
@@ -68,8 +75,8 @@ void onMouse(int button, int state, int x, int y) {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 800;
-    height = 600;
+    width = 1600;
+    height = 1200;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -88,6 +95,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
     player.InitializeRendering(&public_cube, &public_cube_texture);
 
+    camera.position = glm::vec3(0.0f, 10.0f, 15.0f);
 
 	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
     tileManager.LoadFromJSON("json/stage.json");

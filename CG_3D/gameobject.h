@@ -51,6 +51,9 @@ GLuint width, height;
 GLuint shaderProgramID; //--- 세이더 프로그램 이름
 GLuint vertexShader; //--- 버텍스 세이더 객체
 GLuint fragmentShader; //--- 프래그먼트 세이더 객체
+
+float cx, cy, cz; // 카메라 위치
+
 // 정점에 대한 정의들 위치 색상 법선 텍스쳐좌표
 struct Vertex {
     glm::vec3 position;
@@ -287,7 +290,7 @@ public:
     }
 };
 Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 15.0f,15.0f,15.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ cx,cy,cz }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
