@@ -51,6 +51,7 @@ GLuint width, height;
 GLuint shaderProgramID; //--- 세이더 프로그램 이름
 GLuint vertexShader; //--- 버텍스 세이더 객체
 GLuint fragmentShader; //--- 프래그먼트 세이더 객체
+bool isWindowActive = true; // 창이 활성화 되었는지 여부
 // 정점에 대한 정의들 위치 색상 법선 텍스쳐좌표
 struct Vertex {
     glm::vec3 position;
@@ -392,6 +393,8 @@ public:
 };
 Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 생성
 Texture public_cube_texture; // 전역 변수로 큐브 텍스처 생성
+Model BackGround_cube(create_cube(40,40,40), create_cube_index()); // 전역 변수로 큐브 모델 생성
+Texture BackGround_cube_texture; // 전역 변수로 큐브 텍스처 생성
 
 // 게임 오브젝트는 게임 로직을 포함하는 객체임 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 class GameObject{ // 게임 오브젝트는 게임 로직을 포함하는 객체임 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
@@ -478,7 +481,6 @@ public:
     }
 
 };
-
 
 
 // 얘네는 그냥 갈라파고스 느낌이라 생각해 굳이 필요한가 싶긴한데 일단 넣어놨어 나중에 원 필요하면 넣을 수 있음

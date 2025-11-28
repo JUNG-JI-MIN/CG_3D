@@ -41,10 +41,24 @@ public:
     }
 };
 
+class BackgroundTile : public TileBase {
+public:
+    BackgroundTile(glm::vec3 pos)
+        : TileBase(pos) {
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
 // TileManager 클래스 추가 이건 json 저장 및 불러오기 기능 포함
 class TileManager {
 public:
     vector<GroundTile*> tiles;
+	BackgroundTile* backgroundTile;
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
@@ -64,7 +78,11 @@ public:
             }
         }
     }
-
+    void GenerateBackground() {
+        glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+        backgroundTile = new BackgroundTile(pos);
+        backgroundTile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
+	}
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -118,6 +136,10 @@ public:
             tile->result_matrix(cam);
             tile->Draw();
         }
+        glFrontFace(GL_CW);
+		backgroundTile->result_matrix(cam);
+		backgroundTile->Draw();
+        glFrontFace(GL_CCW);
     }
 
     void Clear() {
