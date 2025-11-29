@@ -224,7 +224,7 @@ public:
     float fovy = 45.0f; // 시양각
     float aspect; // 종횡비 아직 w와 h가 없기 때문에 계산 불가
     float n = 0.1f; // near
-    float f = 150.0f; // far
+    float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
@@ -287,7 +287,7 @@ public:
     }
 };
 Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 0.0f,50.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 

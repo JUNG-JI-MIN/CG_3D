@@ -19,18 +19,6 @@ public:
     virtual void OnCubeExit(PlayerCube* cube) {}
 };
 
-// 빈(비어있는) 타일: 렌더링 하지 않음
-class EmptyTile : public TileBase {
-public:
-    EmptyTile(glm::vec3 pos) : TileBase(pos) {
-        type = "empty";
-        model = nullptr; // 렌더링 건너뜀
-    }
-    void OnCubeEnter(PlayerCube* cube) override {}
-    void OnCubeStay(PlayerCube* cube) override {}
-    void OnCubeExit(PlayerCube* cube) override {}
-};
-
 // 기본 땅 타일
 class GroundTile : public TileBase {
 public:
@@ -110,15 +98,90 @@ public:
     }
 };
 
+class MakeTile : public TileBase {
+public:
+    MakeTile()
+        : TileBase(glm::vec3(0.0f, 6.0f, 0.0f)) {}
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+    void switching_make_tile(int key) {
+        switch (key)
+        {
+        case GLUT_KEY_F1: type = "groundtile";  break;
+		case GLUT_KEY_F2: type = "springtile";  break;
+		case GLUT_KEY_F3: type = "switchtile";  break;
+		case GLUT_KEY_F4: type = "movetile";    break;
+        }
+        cout << "현재 선택된 타일: " << type << endl;
+    }
+};
+
 // TileManager 클래스 추가 이건 json 저장 및 불러오기 기능 포함
 class TileManager {
 public:
     vector<TileBase*> tiles;
-
+	MakeTile make_tile;
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
 
+    void tile_make() {
+        for (auto* tile : tiles) {
+            if (tile->type == "background") continue;
+            if (tile->position == make_tile.position) {
+                cout << "거기 못 둔다." << endl;
+                return;
+            }
+        }
+		glm::vec3 pos = make_tile.position;
+        if (make_tile.type == "groundtile") {
+            GroundTile* tile = new GroundTile(pos);
+            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "springtile") {
+            SpringTile* tile = new SpringTile(pos);
+            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "switchtile") {
+            SwitchTile* tile = new SwitchTile(pos);
+            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "movetile") {
+            MoveTile* tile = new MoveTile(pos);
+            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tiles.push_back(tile);
+		}
+    }
+    void delete_tile() {
+        for (auto it = tiles.begin(); it != tiles.end(); ) {
+            if ((*it)->type == "background") {
+                ++it;
+                continue;
+            }
+            if ((*it)->position == make_tile.position) {
+                delete* it;  // 메모리 해제
+                it = tiles.erase(it);  // 벡터에서 제거 후 iterator 갱신
+                cout << "타일 삭제됨: " << make_tile.position.x << ", "
+                    << make_tile.position.y << ", " << make_tile.position.z << endl;
+                return;  // 하나만 삭제하고 종료
+            }
+            else {
+                ++it;
+            }
+        }
+        cout << "해당 위치에 타일이 없습니다." << endl;
+    }
+    void make_init() {
+		make_tile.InitializeRendering(&public_cube, &ground_cube_texture);
+		make_tile.type = "groundtile";
+    }
     void GenerateGrid() {
         Clear();
         tiles.reserve(gridWidth * gridHeight + 1);
@@ -134,6 +197,7 @@ public:
                 tiles.push_back(tile);
             }
         }
+        make_init();
     }
     void GenerateGrid_harf() {
         Clear();
@@ -161,72 +225,6 @@ public:
     void GenerateMoveTile() {
     }
 
-	// 마우스 월드 좌표를 그리드 인덱스로 변환
-    bool WorldToGrid(const glm::vec3& world, int& outX, int& outZ) {
-        float originX = -(gridWidth * tileSize / 2.0f);
-        float originZ = -(gridHeight * tileSize / 2.0f);
-        float localX = (world.x - originX);
-        float localZ = (world.z - originZ);
-        int gx = (int)floor(localX / tileSize);
-        int gz = (int)floor(localZ / tileSize);
-        if (gx < 0 || gx >= gridWidth || gz < 0 || gz >= gridHeight) return false;
-        outX = gx;
-        outZ = gz;
-        return true;
-    }
-	// 그리드 인덱스를 월드 좌표로 변환
-    glm::vec3 GridToWorld(int gx, int gz) {
-        float originX = -(gridWidth * tileSize / 2.0f);
-        float originZ = -(gridHeight * tileSize / 2.0f);
-        float wx = originX + gx * tileSize + tileSize * 0.5f;
-        float wz = originZ + gz * tileSize + tileSize * 0.5f;
-        return glm::vec3(wx, 0.0f, wz);
-    }
-    bool IsValidGrid(int gx, int gz) {
-        return gx >= 0 && gx < gridWidth && gz >= 0 && gz < gridHeight;
-    }
-
-    // 타입 설정 함수
-    void SetTileTypeAt(int gx, int gz, const string& type) {
-        if (!IsValidGrid(gx, gz)) return;
-        int idx = gz * gridWidth + gx;
-        if (idx < 0 || idx >= (int)tiles.size()) return;
-
-        // remove existing tile at that grid index and replace with new one of requested type
-        TileBase* old = tiles[idx];
-        glm::vec3 pos = old->position;
-        // delete only grid tiles (avoid deleting background if out of expected range)
-        delete old;
-
-        TileBase* newTile = nullptr;
-        if (type == "groundtile") {
-            newTile = new GroundTile(pos);
-        }
-        else if (type == "springtile") {
-            newTile = new SpringTile(pos);
-        }
-        else if (type == "switchtile") {
-            newTile = new SwitchTile(pos);
-        }
-        else if (type == "movetile") {
-            newTile = new MoveTile(pos);
-        }
-        else {
-            // default to ground
-            newTile = new GroundTile(pos);
-        }
-
-		// empty 타일은 렌더링 하지 않음
-        if (newTile->type != "empty") {
-            newTile->InitializeRendering(&public_cube, &ground_cube_texture);
-        }
-        tiles[idx] = newTile;
-    }
-
-    void RemoveTileAt(int gx, int gz) {
-        SetTileTypeAt(gx, gz, "empty");
-    }
-
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -235,58 +233,122 @@ public:
         file << "  \"tileSize\": " << tileSize << ",\n";
         file << "  \"tiles\": [\n";
 
-        int count = gridWidth * gridHeight;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < tiles.size(); ++i) {
             file << "    {\n";
             file << "      \"x\": " << tiles[i]->position.x << ",\n";
             file << "      \"y\": " << tiles[i]->position.y << ",\n";
             file << "      \"z\": " << tiles[i]->position.z << ",\n";
             file << "      \"type\": \"" << tiles[i]->type << "\"\n";
-            file << "    }" << (i < count - 1 ? "," : "") << "\n";
         }
 
         file << "  ]\n";
         file << "}\n";
         file.close();
+		cout << "Stage saved to " << filepath << endl;
     }
     void LoadFromJSON(const char* filepath) {
-        Clear();
+        Clear();  // 기존 타일 모두 삭제
+
         ifstream file(filepath);
         if (!file.is_open()) {
-            cout << "Failed to open: " << filepath << endl;
+            cout << "파일 열기 실패: " << filepath << endl;
             return;
         }
-        GenerateGrid();
-        file.clear();
-        file.seekg(0, ios::beg);
+
         string line;
-        int tileIndex = 0;
+        float x = 0, y = 0, z = 0;
+        string tileType;
+        bool readingTiles = false;
+
         while (getline(file, line)) {
-            if (line.find("\"type\":") != string::npos) {
-                size_t first = line.find('"', line.find(':'));
-                size_t second = line.find('"', first + 1);
-                if (first != string::npos && second != string::npos && second > first) {
-                    string t = line.substr(first + 1, second - first - 1);
-                    if (tileIndex < gridWidth * gridHeight) {
-                        int gx = tileIndex % gridWidth;
-                        int gz = tileIndex / gridWidth;
-                        SetTileTypeAt(gx, gz, t);
-                    }
+            // gridWidth, gridHeight, tileSize 파싱 (필요시)
+            if (line.find("\"gridWidth\":") != string::npos) {
+                size_t pos = line.find(":");
+                gridWidth = stoi(line.substr(pos + 1));
+            }
+            else if (line.find("\"gridHeight\":") != string::npos) {
+                size_t pos = line.find(":");
+                gridHeight = stoi(line.substr(pos + 1));
+            }
+            else if (line.find("\"tileSize\":") != string::npos) {
+                size_t pos = line.find(":");
+                tileSize = stof(line.substr(pos + 1));
+            }
+
+            // 타일 배열 시작
+            if (line.find("\"tiles\":") != string::npos) {
+                readingTiles = true;
+                continue;
+            }
+
+            if (!readingTiles) continue;
+
+            // x, y, z, type 파싱
+            if (line.find("\"x\":") != string::npos) {
+                size_t pos = line.find(":");
+                x = stof(line.substr(pos + 1));
+            }
+            else if (line.find("\"y\":") != string::npos) {
+                size_t pos = line.find(":");
+                y = stof(line.substr(pos + 1));
+            }
+            else if (line.find("\"z\":") != string::npos) {
+                size_t pos = line.find(":");
+                z = stof(line.substr(pos + 1));
+            }
+            else if (line.find("\"type\":") != string::npos) {
+                // "type": "groundtile" 형태에서 타입 추출
+                size_t first = line.find("\"", line.find(":") + 1);
+                size_t second = line.find("\"", first + 1);
+                tileType = line.substr(first + 1, second - first - 1);
+
+                // 타일 생성 (type 읽은 직후)
+                glm::vec3 pos(x, y, z);
+                TileBase* tile = nullptr;
+
+                if (tileType == "groundtile") {
+                    tile = new GroundTile(pos);
                 }
-                ++tileIndex;
+                else if (tileType == "springtile") {
+                    tile = new SpringTile(pos);
+                }
+                else if (tileType == "switchtile") {
+                    tile = new SwitchTile(pos);
+                }
+                else if (tileType == "movetile") {
+                    tile = new MoveTile(pos);
+                }
+                else if (tileType == "background") {
+                    tile = new BackgroundTile(pos);
+                }
+
+                if (tile) {
+                    // 타일 타입에 따라 적절한 렌더링 설정
+                    if (tileType == "background") {
+                        tile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
+                    }
+                    else {
+                        tile->InitializeRendering(&public_cube, &ground_cube_texture);
+                    }
+                    tiles.push_back(tile);
+                }
             }
         }
+
         file.close();
+        make_init();  // make_tile 초기화
+        cout << "로드 완료: " << tiles.size() << "개 타일" << endl;
     }
 
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
-            if (tile->type == "empty") continue;
             if (tile -> type == "background") glFrontFace(GL_CW);
             tile->result_matrix(cam);
             tile->Draw();
             glFrontFace(GL_CCW);
         }
+		make_tile.result_matrix(cam);
+		make_tile.Draw();
     }
 
     void Clear() {
