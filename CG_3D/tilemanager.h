@@ -10,7 +10,7 @@ public:
     TileBase(glm::vec3 pos)
         : GameObject(pos) {
     }
-    int type;
+    string type;
     // 플레이어 큐브가 타일에 들어갔을 때 호출되는 함수
     virtual void OnCubeEnter(PlayerCube* cube) {}
     // 플레이어 큐브가 타일위에 머무를 때 호출되는 함수    
@@ -24,7 +24,37 @@ class GroundTile : public TileBase {
 public:
     GroundTile(glm::vec3 pos)
 		: TileBase(pos) {
-		type = 1;
+		type = "groundtile";
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
+// 스프링 땅 타일
+class SpringTile : public TileBase {
+public:
+    SpringTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "springtile";
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
+// 스프링 땅 타일
+class SwitchTile : public TileBase {
+public:
+    SwitchTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "switchtile";
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -39,13 +69,17 @@ class MoveTile : public TileBase {
 public:
     MoveTile(glm::vec3 pos)
         : TileBase(pos) {
-        type = 2;
+        type = "movetile";
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
     void OnCubeStay(PlayerCube* cube) override {
+        //player.position = position;
     }
     void OnCubeExit(PlayerCube* cube) override {
+    }
+    void movement() {
+		// 움직임 로직 구현
     }
 };
 
@@ -53,7 +87,7 @@ class BackgroundTile : public TileBase {
 public:
     BackgroundTile(glm::vec3 pos)
         : TileBase(pos) {
-		type = 0;
+		type = "background";
         addRotation(0, 45, 0);
     }
     void OnCubeEnter(PlayerCube* cube) override {
@@ -126,7 +160,7 @@ public:
             file << "      \"x\": " << tiles[i]->position.x << ",\n";
             file << "      \"y\": " << tiles[i]->position.y << ",\n";
             file << "      \"z\": " << tiles[i]->position.z << ",\n";
-            file << "      \"type\": \"GroundTile\"\n";
+            file << "      \"type\": " << tiles[i]->type << "\n";
             file << "    }" << (i < tiles.size() - 1 ? "," : "") << "\n";
         }
 
@@ -134,7 +168,6 @@ public:
         file << "}\n";
         file.close();
     }
-
     void LoadFromJSON(const char* filepath) {
         tiles.clear();
         ifstream file(filepath);
@@ -163,7 +196,7 @@ public:
 
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
-            if (tile -> type == 0) glFrontFace(GL_CW);
+            if (tile -> type == "background") glFrontFace(GL_CW);
             tile->result_matrix(cam);
             tile->Draw();
             glFrontFace(GL_CCW);

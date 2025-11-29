@@ -1,6 +1,8 @@
 //이민제 커밋확인용
 #include "player.h"
 #include "tilemanager.h"
+#include "imgui_manager.h"
+ImGuiManager imguiManager;
 
 char* filetobuf(const char* file)
 {
@@ -21,7 +23,7 @@ char* filetobuf(const char* file)
 }
 // 타이머 함수 구현
 void TimerFunction(int value) {
-    float dt = 1.0f / 60.0f; // 60 FPS 기준 deltaTime
+    float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
     // 플레이어 업데이트
     player.Update(dt);
@@ -31,6 +33,7 @@ void TimerFunction(int value) {
 }
 
 void onKey(unsigned char key, int x, int y) {
+    if (imguiManager.HandleKeyboard(key, x, y)) return;
     switch (key)
     {
     case 'q':
@@ -57,11 +60,12 @@ void onSpecialKey(int key, int x, int y) {
 void onSpecialKeyUp(int key, int x, int y) {
     
 }
-void onMouse(int button, int state, int x, int y) {
-    float mx = (x / (float)width) * 2.0f - 1.0f;
-    float my = 1.0f - (y / (float)height) * 2.0f;
 
+// 마우스 버튼 / 휠 처리 (FreeGLUT: 버튼 3 = wheel up, 4 = wheel down)
+void onMouse(int button, int state, int x, int y) {
+    if (imguiManager.HandleMouse(button, state, x, y)) return;
 }
+
 void RoadTexture() {
     player_cube_texture.Load("resource/player_of_space.png");
     player2_cube_texture.Load("resource/player/player1.png");
@@ -91,10 +95,11 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     make_fragmentShaders(); //--- 프래그먼트 세이더 만들기
     shaderProgramID = make_shaderProgram(); //--- 세이더 프로그램 만들기
 
+	imguiManager.Init(width, height, "#version 330"); // ImGui 매니저 초기화
+
 	RoadTexture(); // 텍스쳐 로드 함수
 	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
-    player.InitializeRendering(&public_cube, &player_cube_texture);
-
+    player.InitializeRendering(&public_cube, &player2_cube_texture);
 
 	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
     tileManager.GenerateGrid();
@@ -128,6 +133,11 @@ GLvoid drawScene() {
     player.Draw();
 
 	tileManager.DrawAll(camera);
+
+    // ImGui 매 프레임
+    imguiManager.NewFrame(1.0f / 60.0f);
+    imguiManager.DrawDebugPanel(player.position, player.texture->id);
+    imguiManager.Render();
 
     glutSwapBuffers();
 }
