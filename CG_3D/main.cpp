@@ -20,23 +20,9 @@ char* filetobuf(const char* file)
 }
 // 타이머 함수 구현
 void TimerFunction(int value) {
-    if (isWindowActive) {
-        glutWarpPointer(width / 2, height / 2); // 창이 활성화된 경우에만 마우스 위치 고정
-    }
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
     
-}
-// 창 활성화 상태를 감지하는 함수
-void onWindowEntry(int state) {
-    if (state == GLUT_ENTERED) {
-        isWindowActive = true;
-        glutSetCursor(GLUT_CURSOR_NONE); // 마우스 포인터 숨기기
-    }
-    else if (state == GLUT_LEFT) {
-        isWindowActive = false;
-        glutSetCursor(GLUT_CURSOR_LEFT_ARROW); // 마우스 포인터 표시
-    }
 }
 
 void onKey(unsigned char key, int x, int y) {
@@ -53,6 +39,13 @@ void onKey(unsigned char key, int x, int y) {
 		break;
 	case 's':
 		player.addRotation(3.0f, 0, 0);
+        break;
+    case '-':
+        camera.position.y -= 1;
+		break;
+    case '=':
+		camera.position.y += 1;
+        break;
     }
 }
 
@@ -68,8 +61,12 @@ void onMouse(int button, int state, int x, int y) {
 
 }
 void RoadTexture() {
-    public_cube_texture.Load("resource/player_of_space.png"); // 전역 변수로 선언된 큐브 텍스처 로드
-	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
+    player_cube_texture.Load("resource/player_of_space.png");
+    player2_cube_texture.Load("resource/player/player1.png");
+    player3_cube_texture.Load("resource/player/player2.png");
+    ground_cube_texture.Load("resource/tile.png");
+    public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
+	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
 	BackGround_cube.Init();
 }
@@ -94,7 +91,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 
 	RoadTexture();
 	
-    player.InitializeRendering(&public_cube, &public_cube_texture);
+    player.InitializeRendering(&public_cube, &player2_cube_texture);
 
 	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
     tileManager.GenerateGrid();
@@ -103,7 +100,6 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     light.Init();
 
     glutDisplayFunc(drawScene); //--- 출력 콜백 함수
-    glutEntryFunc(onWindowEntry); // 창 활성화 상태 감지 콜백 등록
     glutTimerFunc(16, TimerFunction, 1);  // 60 FPS
     glutKeyboardFunc(onKey); // 키보드
     glutSpecialFunc(onSpecialKey); // 특수키

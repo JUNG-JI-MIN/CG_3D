@@ -45,6 +45,7 @@ class BackgroundTile : public TileBase {
 public:
     BackgroundTile(glm::vec3 pos)
         : TileBase(pos) {
+        addRotation(0, 45, 0);
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -73,7 +74,23 @@ public:
                     z * tileSize - (gridHeight * tileSize / 2.0f)
                 );
                 GroundTile* tile = new GroundTile(pos);
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
+                tiles.push_back(tile);
+            }
+        }
+    }
+    void GenerateGrid_harf() {
+        tiles.clear();
+        for (int z = 0; z < gridHeight; ++z) {
+            for (int x = 0; x < gridWidth; ++x) {
+                glm::vec3 pos = glm::vec3(
+                    x * tileSize - (gridWidth * tileSize / 2.0f),
+                    0.0f,
+                    z * tileSize - (gridHeight * tileSize / 2.0f)
+                );
+                GroundTile* tile = new GroundTile(pos);
+                tile->InitializeRendering(&harf_cube, &ground_cube_texture);
+				tile->add_position(0.0f, 0.25f, 0.0f);
                 tiles.push_back(tile);
             }
         }
@@ -124,7 +141,7 @@ public:
                 z = stof(line.substr(line.find(":") + 1));
 
                 GroundTile* tile = new GroundTile(glm::vec3(x, y, z));
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
                 tiles.push_back(tile);
             }
         }

@@ -28,4 +28,4 @@ public:
 
 
 };
-PlayerCube player({ 0.0f, 0.0f, 0.0f });
+PlayerCube player({ 0.0f, 2.0f, 0.0f });

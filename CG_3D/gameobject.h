@@ -288,7 +288,7 @@ public:
     }
 };
 Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 15.0f,15.0f,15.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
@@ -392,8 +392,12 @@ public:
     }
 };
 Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 생성
-Texture public_cube_texture; // 전역 변수로 큐브 텍스처 생성
-Model BackGround_cube(create_cube(40,40,40), create_cube_index()); // 전역 변수로 큐브 모델 생성
+Texture player_cube_texture; // 플레이어 1
+Texture player2_cube_texture;
+Texture player3_cube_texture;
+Texture ground_cube_texture; // 땅   
+Model harf_cube(create_cube(1,0.5f,1), create_cube_index());
+Model BackGround_cube(create_cube(70,70,70), create_cube_index()); // 전역 변수로 큐브 모델 생성
 Texture BackGround_cube_texture; // 전역 변수로 큐브 텍스처 생성
 
 // 게임 오브젝트는 게임 로직을 포함하는 객체임 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
