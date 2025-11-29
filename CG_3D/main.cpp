@@ -51,9 +51,45 @@ void onKey(unsigned char key, int x, int y) {
 	case 's':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
+	case '\r': 
+        tileManager.tile_make();
+        break; // 엔터키
+    case 'r':
+		tileManager.delete_tile();
+        break;
+	case ' ':
+		tileManager.make_tile.position.y += 2.0f;
+        break; // 스페이스바
+	case 'c': 
+        tileManager.make_tile.position.y -= 2.0f;
+        break; // 'c' 키
     }
 }
-void onSpecialKey(int key, int x, int y) {}
+void onSpecialKey(int key, int x, int y) {
+    tileManager.make_tile.switching_make_tile(key);
+    switch (key)
+    {
+        case GLUT_KEY_UP:
+			tileManager.make_tile.position.z -= 2.0f;
+			break;
+		case GLUT_KEY_DOWN:
+            tileManager.make_tile.position.z += 2.0f;
+			break;
+		case GLUT_KEY_LEFT:
+            tileManager.make_tile.position.x -= 2.0f;
+            break;
+		case GLUT_KEY_RIGHT:
+            tileManager.make_tile.position.x += 2.0f;
+			break;
+		case GLUT_KEY_F5:
+			tileManager.SaveToJSON("stage.json");
+            break;
+        case GLUT_KEY_F6:
+            tileManager.LoadFromJSON("stage.json");
+			break;
+    }
+}
+
 void onSpecialKeyUp(int key, int x, int y) {}
 
 void onMouse(int button, int state, int x, int y) {}
