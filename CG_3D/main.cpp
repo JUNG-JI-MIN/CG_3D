@@ -98,12 +98,17 @@ void onMouseMotion(int x, int y) {
 }
 void onMousePassiveMotion(int x, int y) {
 }
-
 void RoadTexture() {
     player_cube_texture.Load("resource/player_of_space.png");
     player2_cube_texture.Load("resource/player/player1.png");
     player3_cube_texture.Load("resource/player/player2.png");
-    ground_cube_texture.Load("resource/tile.png");
+
+    ground_cube_texture.Load("resource/tile/silver.png");
+    spring_cube_texture.Load("resource/tile/slime.png");
+    moving_cube_texture.Load("resource/tile/scaffolding.png");
+    rotate_cube_texture.Load("resource/tile/silver.png");
+    switch_cube_texture.Load("resource/tile/silver.png");
+
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");

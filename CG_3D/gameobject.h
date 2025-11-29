@@ -287,7 +287,7 @@ public:
     }
 };
 Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 0.0f,50.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 20.0f,20.0f,20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
@@ -394,7 +394,12 @@ Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 
 Texture player_cube_texture; // 플레이어 1
 Texture player2_cube_texture;
 Texture player3_cube_texture;
-Texture ground_cube_texture; // 땅   
+Texture ground_cube_texture; // 땅
+Texture spring_cube_texture; // 스프링
+Texture moving_cube_texture; // 무빙
+Texture rotate_cube_texture; // 회전
+Texture switch_cube_texture; // 스위치
+
 Model harf_cube(create_cube(1,0.5f,1), create_cube_index());
 Model BackGround_cube(create_cube(70,70,70), create_cube_index()); // 전역 변수로 큐브 모델 생성
 Texture BackGround_cube_texture; // 전역 변수로 큐브 텍스처 생성
@@ -406,6 +411,7 @@ public:
 	glm::vec3 velocity = glm::vec3(0.0f); // 속도
 	glm::vec3 multy = glm::vec3(1.0f, 1.0f, 1.0f); // 크기 
 	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // 회전 (쿼터니언)
+	int color_type; // 텍스쳐를 사용할지 일반 색을 사용할지는 이걸로 구분
 	Model* model = nullptr; // 모델 포인터
 	Texture* texture = nullptr; // 텍스처 포인터
 

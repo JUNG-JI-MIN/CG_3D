@@ -83,6 +83,21 @@ public:
     }
 };
 
+// 회전하는 땅 타일
+class RotateTile : public TileBase {
+public:
+    RotateTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "movetile";
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
 class BackgroundTile : public TileBase {
 public:
     BackgroundTile(glm::vec3 pos)
@@ -111,10 +126,22 @@ public:
     void switching_make_tile(int key) {
         switch (key)
         {
-        case GLUT_KEY_F1: type = "groundtile";  break;
-		case GLUT_KEY_F2: type = "springtile";  break;
-		case GLUT_KEY_F3: type = "switchtile";  break;
-		case GLUT_KEY_F4: type = "movetile";    break;
+        case GLUT_KEY_F1: 
+            type = "groundtile";  
+			texture = &ground_cube_texture;
+            break;
+		case GLUT_KEY_F2: 
+            type = "springtile";  
+			texture = &spring_cube_texture;
+            break;
+		case GLUT_KEY_F3: 
+            type = "switchtile"; 
+			texture = &switch_cube_texture;
+            break;
+		case GLUT_KEY_F4: 
+            type = "movetile";    
+			texture = &moving_cube_texture;
+            break;
         }
         cout << "현재 선택된 타일: " << type << endl;
     }
@@ -145,19 +172,24 @@ public:
         }
         else if (make_tile.type == "springtile") {
             SpringTile* tile = new SpringTile(pos);
-            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tile->InitializeRendering(&public_cube, &spring_cube_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "switchtile") {
             SwitchTile* tile = new SwitchTile(pos);
-            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tile->InitializeRendering(&public_cube, &switch_cube_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "movetile") {
             MoveTile* tile = new MoveTile(pos);
-            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+            tile->InitializeRendering(&public_cube, &moving_cube_texture);
             tiles.push_back(tile);
 		}
+        else {
+            RotateTile* tile = new RotateTile(pos);
+            tile->InitializeRendering(&public_cube, &rotate_cube_texture);
+            tiles.push_back(tile);
+        }
     }
     void delete_tile() {
         for (auto it = tiles.begin(); it != tiles.end(); ) {
@@ -327,9 +359,21 @@ public:
                     if (tileType == "background") {
                         tile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
                     }
-                    else {
+                    else if (tileType == "groundtile"){
                         tile->InitializeRendering(&public_cube, &ground_cube_texture);
                     }
+                    else if (tileType == "springtile") {
+                        tile->InitializeRendering(&public_cube, &spring_cube_texture);
+                    }
+                    else if (tileType == "movetile") {
+                        tile->InitializeRendering(&public_cube, &moving_cube_texture);
+                    }
+                    else if (tileType == "rotatetile") {
+                        tile->InitializeRendering(&public_cube, &rotate_cube_texture);
+                    }
+                    else {
+                        tile->InitializeRendering(&public_cube, &switch_cube_texture);
+					}
                     tiles.push_back(tile);
                 }
             }
