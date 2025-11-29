@@ -19,6 +19,8 @@ public:
 	glm::vec3 rollAxis; // 회전축
 	glm::vec3 rollPivot; // 회전 중심점
 
+	// 정지민 : 이거 타일이 위에 있어도 못 지나가는 것만 수정해줘 그리고 충돌처리도 20x20에만 되는데 타일에 관해서 하는 쪽으로 바꿔야할듯??
+
     // 플레이어 큐브가 바라보는 방향으로 구르는 함수
     inline void Rolling_in_the_deep(glm::vec3 direction)
     {
