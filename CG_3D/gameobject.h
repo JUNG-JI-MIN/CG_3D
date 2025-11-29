@@ -38,12 +38,6 @@ GameObject
 #include <gl/glm/ext.hpp>
 #include <gl/glm/gtc/matrix_transform.hpp>
 #include <gl/glm/gtx/rotate_vector.hpp>
-// ImGui 포함 (경로 수정됨)
-#define IMGUI_IMPL_OPENGL_LOADER_GLEW
-#include <imgui.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_glut.h>
-// stb_image 포함
 #include <stb_image.h>
 using namespace std;
 //--- 아래 5개 함수는 사용자 정의 함수 임

@@ -1,9 +1,8 @@
 //이민제 커밋확인용
 #include "player.h"
 #include "tilemanager.h"
-#include "imgui_manager.h"
-ImGuiManager imguiManager;
 
+// 기존 filetobuf, TimerFunction 등은 그대로 사용
 char* filetobuf(const char* file)
 {
     FILE* fptr;
@@ -21,7 +20,7 @@ char* filetobuf(const char* file)
     buf[length] = 0; // Null terminator
     return buf; // Return the buffer
 }
-// 타이머 함수 구현
+
 void TimerFunction(int value) {
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
@@ -32,8 +31,9 @@ void TimerFunction(int value) {
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
 }
 
+// 입력 콜백들은 ImGuiManager의 Handle*를 우선 호출하도록 변경
 void onKey(unsigned char key, int x, int y) {
-    if (imguiManager.HandleKeyboard(key, x, y)) return;
+
     switch (key)
     {
     case 'q':
@@ -53,17 +53,14 @@ void onKey(unsigned char key, int x, int y) {
         break;
     }
 }
+void onSpecialKey(int key, int x, int y) {}
+void onSpecialKeyUp(int key, int x, int y) {}
 
-void onSpecialKey(int key, int x, int y) {
-    
-}
-void onSpecialKeyUp(int key, int x, int y) {
-    
-}
+void onMouse(int button, int state, int x, int y) {}
 
-// 마우스 버튼 / 휠 처리 (FreeGLUT: 버튼 3 = wheel up, 4 = wheel down)
-void onMouse(int button, int state, int x, int y) {
-    if (imguiManager.HandleMouse(button, state, x, y)) return;
+void onMouseMotion(int x, int y) {
+}
+void onMousePassiveMotion(int x, int y) {
 }
 
 void RoadTexture() {
@@ -76,6 +73,7 @@ void RoadTexture() {
 	BackGround_cube_texture.Load("resource/space.png");
 	BackGround_cube.Init();
 }
+
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
@@ -95,13 +93,11 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     make_fragmentShaders(); //--- 프래그먼트 세이더 만들기
     shaderProgramID = make_shaderProgram(); //--- 세이더 프로그램 만들기
 
-	imguiManager.Init(width, height, "#version 330"); // ImGui 매니저 초기화
-
 	RoadTexture(); // 텍스쳐 로드 함수
 	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
-    player.InitializeRendering(&public_cube, &player2_cube_texture);
+    player.InitializeRendering(&public_cube, &player_cube_texture);
 
-	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
+	// 타일 매니저 초기화
     tileManager.GenerateGrid();
     tileManager.GenerateBackground();
 
@@ -113,34 +109,30 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     glutSpecialFunc(onSpecialKey); // 특수키
     glutSpecialUpFunc(onSpecialKeyUp); // 떼기
     glutMouseFunc(onMouse); // 마우스 콜백 등록
+    glutMotionFunc(onMouseMotion);
+    glutPassiveMotionFunc(onMousePassiveMotion);
     glutReshapeFunc(Reshape);
     glutMainLoop();
 }
 
+// drawScene: ImGui 프레임/에디터 UI 추가
 GLvoid drawScene() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaderProgramID);
-    // 각 객체의 회전 행렬을 셰이더에 전달
-    // 
-    // 깊이 테스트와 뒷면 제거 활성화
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    // 뒷면 제거 설정
-    glCullFace(GL_BACK);        // 뒷면을 제거
+    glCullFace(GL_BACK);
 
     player.result_matrix(camera);
     player.Draw();
 
 	tileManager.DrawAll(camera);
 
-    // ImGui 매 프레임
-    imguiManager.NewFrame(1.0f / 60.0f);
-    imguiManager.DrawDebugPanel(player.position, player.texture->id);
-    imguiManager.Render();
-
     glutSwapBuffers();
 }
+
 //--- 다시그리기 콜백 함수
 GLvoid Reshape(int w, int h) //--- 콜백 함수: 다시 그리기 콜백 함수
 {

@@ -19,6 +19,18 @@ public:
     virtual void OnCubeExit(PlayerCube* cube) {}
 };
 
+// 빈(비어있는) 타일: 렌더링 하지 않음
+class EmptyTile : public TileBase {
+public:
+    EmptyTile(glm::vec3 pos) : TileBase(pos) {
+        type = "empty";
+        model = nullptr; // 렌더링 건너뜀
+    }
+    void OnCubeEnter(PlayerCube* cube) override {}
+    void OnCubeStay(PlayerCube* cube) override {}
+    void OnCubeExit(PlayerCube* cube) override {}
+};
+
 // 기본 땅 타일
 class GroundTile : public TileBase {
 public:
@@ -108,7 +120,8 @@ public:
     float tileSize = 2.0f; // 타일 하나의 크기
 
     void GenerateGrid() {
-        tiles.clear();
+        Clear();
+        tiles.reserve(gridWidth * gridHeight + 1);
         for (int z = 0; z < gridHeight; ++z) {
             for (int x = 0; x < gridWidth; ++x) {
                 glm::vec3 pos = glm::vec3(
@@ -123,7 +136,8 @@ public:
         }
     }
     void GenerateGrid_harf() {
-        tiles.clear();
+        Clear();
+        tiles.reserve(gridWidth * gridHeight + 1);
         for (int z = 0; z < gridHeight; ++z) {
             for (int x = 0; x < gridWidth; ++x) {
                 glm::vec3 pos = glm::vec3(
@@ -145,8 +159,74 @@ public:
         tiles.push_back(backgroundTile);
     }
     void GenerateMoveTile() {
-
     }
+
+	// 마우스 월드 좌표를 그리드 인덱스로 변환
+    bool WorldToGrid(const glm::vec3& world, int& outX, int& outZ) {
+        float originX = -(gridWidth * tileSize / 2.0f);
+        float originZ = -(gridHeight * tileSize / 2.0f);
+        float localX = (world.x - originX);
+        float localZ = (world.z - originZ);
+        int gx = (int)floor(localX / tileSize);
+        int gz = (int)floor(localZ / tileSize);
+        if (gx < 0 || gx >= gridWidth || gz < 0 || gz >= gridHeight) return false;
+        outX = gx;
+        outZ = gz;
+        return true;
+    }
+	// 그리드 인덱스를 월드 좌표로 변환
+    glm::vec3 GridToWorld(int gx, int gz) {
+        float originX = -(gridWidth * tileSize / 2.0f);
+        float originZ = -(gridHeight * tileSize / 2.0f);
+        float wx = originX + gx * tileSize + tileSize * 0.5f;
+        float wz = originZ + gz * tileSize + tileSize * 0.5f;
+        return glm::vec3(wx, 0.0f, wz);
+    }
+    bool IsValidGrid(int gx, int gz) {
+        return gx >= 0 && gx < gridWidth && gz >= 0 && gz < gridHeight;
+    }
+
+    // 타입 설정 함수
+    void SetTileTypeAt(int gx, int gz, const string& type) {
+        if (!IsValidGrid(gx, gz)) return;
+        int idx = gz * gridWidth + gx;
+        if (idx < 0 || idx >= (int)tiles.size()) return;
+
+        // remove existing tile at that grid index and replace with new one of requested type
+        TileBase* old = tiles[idx];
+        glm::vec3 pos = old->position;
+        // delete only grid tiles (avoid deleting background if out of expected range)
+        delete old;
+
+        TileBase* newTile = nullptr;
+        if (type == "groundtile") {
+            newTile = new GroundTile(pos);
+        }
+        else if (type == "springtile") {
+            newTile = new SpringTile(pos);
+        }
+        else if (type == "switchtile") {
+            newTile = new SwitchTile(pos);
+        }
+        else if (type == "movetile") {
+            newTile = new MoveTile(pos);
+        }
+        else {
+            // default to ground
+            newTile = new GroundTile(pos);
+        }
+
+		// empty 타일은 렌더링 하지 않음
+        if (newTile->type != "empty") {
+            newTile->InitializeRendering(&public_cube, &ground_cube_texture);
+        }
+        tiles[idx] = newTile;
+    }
+
+    void RemoveTileAt(int gx, int gz) {
+        SetTileTypeAt(gx, gz, "empty");
+    }
+
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -155,13 +235,14 @@ public:
         file << "  \"tileSize\": " << tileSize << ",\n";
         file << "  \"tiles\": [\n";
 
-        for (size_t i = 0; i < tiles.size(); ++i) {
+        int count = gridWidth * gridHeight;
+        for (int i = 0; i < count; ++i) {
             file << "    {\n";
             file << "      \"x\": " << tiles[i]->position.x << ",\n";
             file << "      \"y\": " << tiles[i]->position.y << ",\n";
             file << "      \"z\": " << tiles[i]->position.z << ",\n";
-            file << "      \"type\": " << tiles[i]->type << "\n";
-            file << "    }" << (i < tiles.size() - 1 ? "," : "") << "\n";
+            file << "      \"type\": \"" << tiles[i]->type << "\"\n";
+            file << "    }" << (i < count - 1 ? "," : "") << "\n";
         }
 
         file << "  ]\n";
@@ -169,26 +250,30 @@ public:
         file.close();
     }
     void LoadFromJSON(const char* filepath) {
-        tiles.clear();
+        Clear();
         ifstream file(filepath);
         if (!file.is_open()) {
             cout << "Failed to open: " << filepath << endl;
             return;
         }
-
+        GenerateGrid();
+        file.clear();
+        file.seekg(0, ios::beg);
         string line;
+        int tileIndex = 0;
         while (getline(file, line)) {
-            if (line.find("\"x\":") != string::npos) {
-                float x, y, z;
-                x = stof(line.substr(line.find(":") + 1));
-                getline(file, line); // y 값 읽기
-                y = stof(line.substr(line.find(":") + 1));
-                getline(file, line); // z 값 읽기
-                z = stof(line.substr(line.find(":") + 1));
-
-                GroundTile* tile = new GroundTile(glm::vec3(x, y, z));
-                tile->InitializeRendering(&public_cube, &ground_cube_texture);
-                tiles.push_back(tile);
+            if (line.find("\"type\":") != string::npos) {
+                size_t first = line.find('"', line.find(':'));
+                size_t second = line.find('"', first + 1);
+                if (first != string::npos && second != string::npos && second > first) {
+                    string t = line.substr(first + 1, second - first - 1);
+                    if (tileIndex < gridWidth * gridHeight) {
+                        int gx = tileIndex % gridWidth;
+                        int gz = tileIndex / gridWidth;
+                        SetTileTypeAt(gx, gz, t);
+                    }
+                }
+                ++tileIndex;
             }
         }
         file.close();
@@ -196,6 +281,7 @@ public:
 
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
+            if (tile->type == "empty") continue;
             if (tile -> type == "background") glFrontFace(GL_CW);
             tile->result_matrix(cam);
             tile->Draw();
