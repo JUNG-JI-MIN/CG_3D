@@ -287,7 +287,8 @@ public:
     }
 };
 Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 20.0f,20.0f,20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+//Camera camera({ 20.0f,20.0f,20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 00.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
@@ -450,9 +451,18 @@ public:
         // 텍스처가 있다면 바인딩
         if (texture) {
             texture->Bind();
-            // 텍스처 유니폼 위치 설정 (셰이더의 sampler2D 이름: "textureSampler" 가정)
-            GLuint uTex = glGetUniformLocation(shaderProgramID, "textureSampler");
-            glUniform1i(uTex, 0); // GL_TEXTURE0 유닛을 사용하도록 설정
+            if (color_type == 0) {
+                // 텍스처 유니폼 위치 설정 (셰이더의 sampler2D 이름: "textureSampler" 가정)
+                GLuint uTex = glGetUniformLocation(shaderProgramID, "textureSampler");
+                glUniform1i(uTex, 0); // GL_TEXTURE0 유닛을 사용하도록 설정
+                GLuint u = glGetUniformLocation(shaderProgramID, "whatColor");
+                glUniform1i(u, color_type);
+
+            }
+            else {
+                GLuint u = glGetUniformLocation(shaderProgramID, "whatColor");
+				glUniform1i(u, color_type);
+            }
         }
         // 모델 렌더링
         model->Draw();
@@ -502,13 +512,8 @@ public:
     glm::vec3 xyz = { 0.0f,0.0f ,0.0f };
     glm::vec3 multy = { 1.0f, 1.0f, 1.0f };
     glm::vec3 plus_xyz = { 0.0f,0.0f ,0.0f };
-    int dur;
-    float real_gong_angle = 0.0f;
-    Line(vector<Vertex> ver, float angle = 0.0f, int durgkf = 0) {
+    Line(vector<Vertex> ver) {
         vertices = ver;
-        rotate_angle = angle;
-        if (durgkf == 1) xyz = { 1.5f,0.0f ,0.0f };
-        dur = durgkf;
     }
     void set_XYZ(float dx, float dy, float dz)
     {
@@ -529,12 +534,8 @@ public:
     {
         float r = glm::radians(rotate_angle);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, plus_xyz);
-        if (dur == 1) {
-            model = glm::rotate(model, glm::radians(rotate_angle), { 0.0f,0.0f, 1.0f });
-        }
         model = glm::translate(model, xyz);
-        if (dur == 0) model = glm::rotate(model, r, { 0.0f,0.0f, 1.0f });
+        model = glm::rotate(model, r, { 0.0f,0.0f, 1.0f });
         model = glm::scale(model, multy);
         return model;
     }
@@ -562,9 +563,10 @@ public:
     }
     void Draw()
     {
+        glLineWidth(5.0f);
         glBindVertexArray(vao);
         glDrawArrays(GL_LINES, 0, vertices.size());
-        glDrawArrays(GL_LINES, 1, vertices.size());
+        glLineWidth(1.0f);
     }
     void Delete()
     {
@@ -574,13 +576,34 @@ public:
 
 };
 void result_line_matrix(Camera& camera, Line& line) {
-    glm::mat4 modelMatrix;
-    glm::mat4 uProj;
+    glm::mat4 uProj = camera.Projection_matrix_update();
     glm::mat4 uModel = line.getModelMatrix();
     glm::mat4 uView = camera.View_matrix_update();
-    uProj = camera.Projection_matrix_update();
-    modelMatrix = uProj * uView * uModel;
 
-    GLuint modelLoc = glGetUniformLocation(shaderProgramID, "u");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    GLuint u = glGetUniformLocation(shaderProgramID, "m");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uModel));
+
+    u = glGetUniformLocation(shaderProgramID, "v");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uView));
+
+    u = glGetUniformLocation(shaderProgramID, "p");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
+
+    u = glGetUniformLocation(shaderProgramID, "whatColor");
+    glUniform1i(u, 1);
 }
+vector<Vertex> line_list = {
+     // Y는 레드
+        { glm::vec3(0, 10, 0), glm::vec4(1, 0, 0, 1) },
+        { glm::vec3(0,-10, 0), glm::vec4(1, 0, 0, 1) },
+    
+     // X는 그린
+        { glm::vec3(10, 0, 0), glm::vec4(0, 1, 0, 1) },
+        { glm::vec3(-10, 0, 0), glm::vec4(0, 1, 0, 1) },
+    
+     //Z는 블루
+        { glm::vec3(0, 0, 10), glm::vec4(0, 0, 1, 1) },
+        { glm::vec3(0, 0,-10), glm::vec4(0, 0, 1, 1) }
+    
+};
+Line line(line_list);

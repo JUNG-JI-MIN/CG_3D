@@ -22,6 +22,7 @@ char* filetobuf(const char* file)
 }
 
 void TimerFunction(int value) {
+    line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
     // 플레이어 업데이트
@@ -52,21 +53,22 @@ void onKey(unsigned char key, int x, int y) {
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
-        tileManager.tile_make();
+        tileManager.tile_make(); // 타일 만들기
         break; // 엔터키
     case 'r':
-		tileManager.delete_tile();
+		tileManager.delete_tile(); // 타일 지우기
         break;
 	case ' ':
-		tileManager.make_tile.position.y += 2.0f;
+		tileManager.make_tile.position.y += 2.0f; // 높이 조절
         break; // 스페이스바
 	case 'c': 
-        tileManager.make_tile.position.y -= 2.0f;
+		tileManager.make_tile.position.y -= 2.0f; // 높이 조절
         break; // 'c' 키
     }
 }
 void onSpecialKey(int key, int x, int y) {
     tileManager.make_tile.switching_make_tile(key);
+	
     switch (key)
     {
         case GLUT_KEY_UP:
@@ -88,6 +90,7 @@ void onSpecialKey(int key, int x, int y) {
             tileManager.LoadFromJSON("stage.json");
 			break;
     }
+    
 }
 
 void onSpecialKeyUp(int key, int x, int y) {}
@@ -135,7 +138,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     shaderProgramID = make_shaderProgram(); //--- 세이더 프로그램 만들기
 
 	RoadTexture(); // 텍스쳐 로드 함수
-	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
+	line.Init();
     player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
@@ -168,6 +171,9 @@ GLvoid drawScene() {
 
     player.result_matrix(camera);
     player.Draw();
+
+	result_line_matrix(camera,line);
+	line.Draw();
 
 	tileManager.DrawAll(camera);
 

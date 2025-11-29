@@ -2009,59 +2009,29 @@
       "z": 0,
       "type": "background"
     {
-      "x": -14,
-      "y": 2,
-      "z": 10,
-      "type": "groundtile"
-    {
-      "x": -14,
-      "y": 4,
+      "x": 12,
+      "y": 12,
       "z": 8,
       "type": "groundtile"
     {
-      "x": -14,
-      "y": 6,
-      "z": 6,
-      "type": "groundtile"
+      "x": 8,
+      "y": 12,
+      "z": -4,
+      "type": "movetile"
     {
-      "x": -14,
-      "y": 8,
-      "z": 4,
-      "type": "groundtile"
+      "x": 2,
+      "y": 12,
+      "z": -2,
+      "type": "movetile"
     {
-      "x": -14,
-      "y": 10,
-      "z": 2,
-      "type": "groundtile"
-    {
-      "x": -14,
-      "y": 10,
-      "z": 0,
-      "type": "groundtile"
-    {
-      "x": -14,
+      "x": -4,
       "y": 12,
       "z": 0,
-      "type": "groundtile"
+      "type": "movetile"
     {
-      "x": -14,
-      "y": 14,
-      "z": -2,
-      "type": "groundtile"
-    {
-      "x": -14,
-      "y": 16,
-      "z": -4,
-      "type": "groundtile"
-    {
-      "x": -14,
-      "y": 18,
-      "z": -6,
-      "type": "groundtile"
-    {
-      "x": -14,
-      "y": 20,
-      "z": -8,
-      "type": "groundtile"
+      "x": -10,
+      "y": 12,
+      "z": 2,
+      "type": "movetile"
   ]
 }
