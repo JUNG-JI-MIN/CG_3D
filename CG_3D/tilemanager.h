@@ -10,6 +10,7 @@ public:
     TileBase(glm::vec3 pos)
         : GameObject(pos) {
     }
+    int type;
     // 플레이어 큐브가 타일에 들어갔을 때 호출되는 함수
     virtual void OnCubeEnter(PlayerCube* cube) {}
     // 플레이어 큐브가 타일위에 머무를 때 호출되는 함수    
@@ -22,7 +23,8 @@ public:
 class GroundTile : public TileBase {
 public:
     GroundTile(glm::vec3 pos)
-        : TileBase(pos) {
+		: TileBase(pos) {
+		type = 1;
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -37,6 +39,7 @@ class MoveTile : public TileBase {
 public:
     MoveTile(glm::vec3 pos)
         : TileBase(pos) {
+        type = 2;
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -50,6 +53,7 @@ class BackgroundTile : public TileBase {
 public:
     BackgroundTile(glm::vec3 pos)
         : TileBase(pos) {
+		type = 0;
         addRotation(0, 45, 0);
     }
     void OnCubeEnter(PlayerCube* cube) override {
@@ -63,8 +67,8 @@ public:
 // TileManager 클래스 추가 이건 json 저장 및 불러오기 기능 포함
 class TileManager {
 public:
-    vector<GroundTile*> tiles;
-	BackgroundTile* backgroundTile;
+    vector<TileBase*> tiles;
+
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
@@ -102,9 +106,13 @@ public:
     }
     void GenerateBackground() {
         glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-        backgroundTile = new BackgroundTile(pos);
+        BackgroundTile* backgroundTile = new BackgroundTile(pos);
         backgroundTile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
-	}
+        tiles.push_back(backgroundTile);
+    }
+    void GenerateMoveTile() {
+
+    }
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -155,13 +163,11 @@ public:
 
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
+            if (tile -> type == 0) glFrontFace(GL_CW);
             tile->result_matrix(cam);
             tile->Draw();
+            glFrontFace(GL_CCW);
         }
-        glFrontFace(GL_CW);
-		backgroundTile->result_matrix(cam);
-		backgroundTile->Draw();
-        glFrontFace(GL_CCW);
     }
 
     void Clear() {
