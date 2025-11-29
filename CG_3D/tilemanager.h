@@ -46,10 +46,25 @@ public:
     }
 };
 
+class BackgroundTile : public TileBase {
+public:
+    BackgroundTile(glm::vec3 pos)
+        : TileBase(pos) {
+        addRotation(0, 45, 0);
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
 // TileManager 클래스 추가 이건 json 저장 및 불러오기 기능 포함
 class TileManager {
 public:
     vector<GroundTile*> tiles;
+	BackgroundTile* backgroundTile;
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
@@ -64,12 +79,32 @@ public:
                     z * tileSize - (gridHeight * tileSize / 2.0f)
                 );
                 GroundTile* tile = new GroundTile(pos);
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
                 tiles.push_back(tile);
             }
         }
     }
-
+    void GenerateGrid_harf() {
+        tiles.clear();
+        for (int z = 0; z < gridHeight; ++z) {
+            for (int x = 0; x < gridWidth; ++x) {
+                glm::vec3 pos = glm::vec3(
+                    x * tileSize - (gridWidth * tileSize / 2.0f),
+                    0.0f,
+                    z * tileSize - (gridHeight * tileSize / 2.0f)
+                );
+                GroundTile* tile = new GroundTile(pos);
+                tile->InitializeRendering(&harf_cube, &ground_cube_texture);
+				tile->add_position(0.0f, 0.25f, 0.0f);
+                tiles.push_back(tile);
+            }
+        }
+    }
+    void GenerateBackground() {
+        glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+        backgroundTile = new BackgroundTile(pos);
+        backgroundTile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
+	}
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -111,7 +146,7 @@ public:
                 z = stof(line.substr(line.find(":") + 1));
 
                 GroundTile* tile = new GroundTile(glm::vec3(x, y, z));
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
                 tiles.push_back(tile);
             }
         }
@@ -123,6 +158,10 @@ public:
             tile->result_matrix(cam);
             tile->Draw();
         }
+        glFrontFace(GL_CW);
+		backgroundTile->result_matrix(cam);
+		backgroundTile->Draw();
+        glFrontFace(GL_CCW);
     }
 
     void Clear() {

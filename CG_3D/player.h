@@ -124,7 +124,4 @@ private:
 
 		return groundHeight;
 	}
-
-};
-// 플레이어를 타일 위에 올려놓기 위해 Y 좌표를 1.0으로 설정 
-PlayerCube player({ 0.0f, 2.0f, 0.0f });
+};PlayerCube player({ 0.0f, 0.0f, 0.0f });
