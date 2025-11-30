@@ -32,6 +32,8 @@ public:
     }
     void OnCubeExit(PlayerCube* cube) override {
     }
+    void Update(float dt) override {
+    }
 };
 
 // 스프링 땅 타일
@@ -46,6 +48,8 @@ public:
     void OnCubeStay(PlayerCube* cube) override {
     }
     void OnCubeExit(PlayerCube* cube) override {
+    }
+    void Update(float dt) override {
     }
 };
 
@@ -62,11 +66,17 @@ public:
     }
     void OnCubeExit(PlayerCube* cube) override {
     }
+    void Update(float dt) override {
+    }
 };
 
 // 움직이는 땅 타일
 class MoveTile : public TileBase {
 public:
+    vector<glm::vec3> moveCommend; // 움직임에 대한 명령어들을 모아놓은 벡터
+	int currentMoveIndex = 0; // 현재 수행 중인 명령어 인덱스
+	float speed = 1.0f; // 이동 속도
+	bool moving = true; // 현재 움직이고 있는지 여부
     MoveTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "movetile";
@@ -78,8 +88,21 @@ public:
     }
     void OnCubeExit(PlayerCube* cube) override {
     }
-    void movement() {
-		// 움직임 로직 구현
+    void add_movement(glm::vec3 moving) {
+		moveCommend.push_back(moving);
+    }
+	// 구조를 설명하자면 moveCommend 벡터에 이동할 위치들을 순서대로 넣어놓고 
+    // Update 함수에서 그 위치들로 순차적으로 이동하는 방식임
+    void Update(float dt) override{
+		if (moveCommend.empty()) return;
+
+		glm::vec3 targetPos = moveCommend[currentMoveIndex];
+		position += glm::normalize(targetPos - position) * speed;
+        
+		// 목표 위치에 도달했는지 확인
+        if (glm::length(position - targetPos) < 0.1f) {
+			currentMoveIndex = (currentMoveIndex + 1) % moveCommend.size();
+        }
     }
 };
 
@@ -96,6 +119,8 @@ public:
     }
     void OnCubeExit(PlayerCube* cube) override {
     }
+    void Update(float dt) override {
+    }
 };
 
 class BackgroundTile : public TileBase {
@@ -111,6 +136,8 @@ public:
     }
     void OnCubeExit(PlayerCube* cube) override {
     }
+    void Update(float dt) override {
+	}
 };
 
 class MakeTile : public TileBase {
@@ -155,7 +182,11 @@ public:
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
+	bool editing_mode = true;
+    bool making_move_tile = false;
+	TileBase* selected_move_tile = nullptr;
 
+	// 타일 만드는 함수
     void tile_make() {
         for (auto* tile : tiles) {
             if (tile->type == "background") continue;
@@ -191,6 +222,7 @@ public:
             tiles.push_back(tile);
         }
     }
+	// 타일 삭제 함수
     void delete_tile() {
         for (auto it = tiles.begin(); it != tiles.end(); ) {
             if ((*it)->type == "background") {
@@ -210,10 +242,46 @@ public:
         }
         cout << "해당 위치에 타일이 없습니다." << endl;
     }
+    // 타일 포인트박스 생성 함수
     void make_init() {
 		make_tile.InitializeRendering(&public_cube, &ground_cube_texture);
 		make_tile.type = "groundtile";
     }
+    // 움직이는 타일 동선 추가 함수
+    void move_tile_add_command() {
+        if (!making_move_tile) {
+            for (auto& t : tiles) {
+                if (t->type != "movetile") continue;
+
+                if (make_tile.position == t->position) {
+                    MoveTile* moveTile = dynamic_cast<MoveTile*>(t);
+                    if (!moveTile) continue;  // 캐스팅 실패 시 건너뜀
+                    selected_move_tile = moveTile;  // MoveTile*로 저장
+                    moveTile->moveCommend.clear();
+                    making_move_tile = true;
+
+                    
+					move_cube_line.vertices.clear();
+					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{0.0f, 0.0f, 0.0f, 1.0f} });
+					cout <<  move_cube_line.vbo << endl;
+                    move_cube_line.Update();
+                }
+            }
+        }
+        else {
+            MoveTile* moveTile = dynamic_cast<MoveTile*>(selected_move_tile);
+            if (!moveTile) {
+                cout << "ERROR: selected_move_tile이 MoveTile이 아닙니다!" << endl;
+                making_move_tile = false;
+                return;
+            }
+            moveTile->add_movement(make_tile.position);
+            move_cube_line.vertices.push_back({ make_tile.position, glm::vec4{0.0f, 0.0f, 0.0f, 1.0f} });
+            move_cube_line.Update();
+            cout << move_cube_line.vbo << endl;
+        }
+    }
+
     void GenerateGrid() {
         Clear();
         tiles.reserve(gridWidth * gridHeight + 1);
@@ -384,6 +452,11 @@ public:
         cout << "로드 완료: " << tiles.size() << "개 타일" << endl;
     }
 
+    void UpdateALl(float dt) {
+        for (auto* tile : tiles) {
+            tile->Update(dt);
+		}
+    }
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
             if (tile -> type == "background") glFrontFace(GL_CW);

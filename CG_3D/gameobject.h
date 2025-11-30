@@ -559,13 +559,23 @@ public:
     }
     void Update() {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW);
     }
     void Draw()
     {
         glLineWidth(5.0f);
         glBindVertexArray(vao);
         glDrawArrays(GL_LINES, 0, vertices.size());
+        glLineWidth(1.0f);
+    }
+    void DDraw()
+    {   
+        if (vertices.size() < 2) return;
+
+        if (vao == 0) return;
+        glLineWidth(5.0f);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
         glLineWidth(1.0f);
     }
     void Delete()
@@ -575,6 +585,7 @@ public:
     }
 
 };
+
 void result_line_matrix(Camera& camera, Line& line) {
     glm::mat4 uProj = camera.Projection_matrix_update();
     glm::mat4 uModel = line.getModelMatrix();
@@ -606,4 +617,6 @@ vector<Vertex> line_list = {
         { glm::vec3(0, 0,-10), glm::vec4(0, 0, 1, 1) }
     
 };
+vector<Vertex> blank = {};
 Line line(line_list);
+Line move_cube_line(blank);

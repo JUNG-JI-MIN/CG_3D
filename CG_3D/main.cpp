@@ -27,6 +27,10 @@ void TimerFunction(int value) {
 
     // 플레이어 업데이트
     player.Update(dt);
+	// 타일 매니저 업데이트
+    if (!tileManager.editing_mode) {
+        tileManager.UpdateALl(dt);
+    }
 
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
@@ -53,10 +57,15 @@ void onKey(unsigned char key, int x, int y) {
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
-        tileManager.tile_make(); // 타일 만들기
+        if (tileManager.making_move_tile) tileManager.making_move_tile = false;
+        else tileManager.tile_make(); // 타일 만들기
+
         break; // 엔터키
     case 'r':
 		tileManager.delete_tile(); // 타일 지우기
+        break;
+    case 'p':
+		tileManager.move_tile_add_command(); // 타일 이동 명령 추가
         break;
 	case ' ':
 		tileManager.make_tile.position.y += 2.0f; // 높이 조절
@@ -64,6 +73,8 @@ void onKey(unsigned char key, int x, int y) {
 	case 'c': 
 		tileManager.make_tile.position.y -= 2.0f; // 높이 조절
         break; // 'c' 키
+    case 'm':
+		tileManager.editing_mode = !tileManager.editing_mode;
     }
 }
 void onSpecialKey(int key, int x, int y) {
@@ -139,6 +150,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 
 	RoadTexture(); // 텍스쳐 로드 함수
 	line.Init();
+    move_cube_line.Init();
     player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
@@ -161,19 +173,31 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 
 // drawScene: ImGui 프레임/에디터 UI 추가
 GLvoid drawScene() {
+    // 기본 생성
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaderProgramID);
-
+    // 뒤면 처리
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+	// 블렌딩 처리
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     player.result_matrix(camera);
     player.Draw();
 
 	result_line_matrix(camera,line);
 	line.Draw();
+
+    // making_move_tile일 때만 그리기
+    if (tileManager.making_move_tile && move_cube_line.vertices.size() >= 2) {
+        move_cube_line.Update();
+        result_line_matrix(camera, move_cube_line);
+        move_cube_line.DDraw();
+    }
 
 	tileManager.DrawAll(camera);
 
