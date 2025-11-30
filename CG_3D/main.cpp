@@ -95,10 +95,10 @@ void onSpecialKey(int key, int x, int y) {
             tileManager.make_tile.position.x += 2.0f;
 			break;
 		case GLUT_KEY_F5:
-			tileManager.SaveToJSON("stage.json");
+			tileManager.SaveToJSON("json/stage.json");
             break;
         case GLUT_KEY_F6:
-            tileManager.LoadFromJSON("stage.json");
+            tileManager.LoadFromJSON("json/stage.json");
 			break;
     }
     

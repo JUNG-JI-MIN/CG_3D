@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #include "gameobject.h"
 
-// Àü¹æ ¼±¾ğ
+// ì „ë°© ì„ ì–¸
 class PlayerCube;
 
-// Å¸ÀÏÀÇ ±âº» Å¬·¡½º
+// íƒ€ì¼ì˜ ê¸°ë³¸ í´ë˜ìŠ¤
 class TileBase : public GameObject {
 public:
     TileBase(glm::vec3 pos)
         : GameObject(pos) {
     }
     string type;
-    // ÇÃ·¹ÀÌ¾î Å¥ºê°¡ Å¸ÀÏ¿¡ µé¾î°¬À» ¶§ È£ÃâµÇ´Â ÇÔ¼ö
+    // í”Œë ˆì´ì–´ íë¸Œê°€ íƒ€ì¼ì— ë“¤ì–´ê°”ì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
     virtual void OnCubeEnter(PlayerCube* cube) {}
-    // ÇÃ·¹ÀÌ¾î Å¥ºê°¡ Å¸ÀÏÀ§¿¡ ¸Ó¹«¸¦ ¶§ È£ÃâµÇ´Â ÇÔ¼ö    
+    // í”Œë ˆì´ì–´ íë¸Œê°€ íƒ€ì¼ìœ„ì— ë¨¸ë¬´ë¥¼ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜    
     virtual void OnCubeStay(PlayerCube* cube) {}
-    // ÇÃ·¹ÀÌ¾î Å¥ºê°¡ Å¸ÀÏ¿¡¼­ ³ª°¬À» ¶§ È£ÃâµÇ´Â ÇÔ¼ö
+    // í”Œë ˆì´ì–´ íë¸Œê°€ íƒ€ì¼ì—ì„œ ë‚˜ê°”ì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
     virtual void OnCubeExit(PlayerCube* cube) {}
 };
 
-// ±âº» ¶¥ Å¸ÀÏ
+// ê¸°ë³¸ ë•… íƒ€ì¼
 class GroundTile : public TileBase {
 public:
     GroundTile(glm::vec3 pos)
@@ -36,7 +36,7 @@ public:
     }
 };
 
-// ½ºÇÁ¸µ ¶¥ Å¸ÀÏ
+// ìŠ¤í”„ë§ ë•… íƒ€ì¼
 class SpringTile : public TileBase {
 public:
     SpringTile(glm::vec3 pos)
@@ -53,7 +53,7 @@ public:
     }
 };
 
-// ½ºÇÁ¸µ ¶¥ Å¸ÀÏ
+// ìŠ¤í”„ë§ ë•… íƒ€ì¼
 class SwitchTile : public TileBase {
 public:
     SwitchTile(glm::vec3 pos)
@@ -70,13 +70,13 @@ public:
     }
 };
 
-// ¿òÁ÷ÀÌ´Â ¶¥ Å¸ÀÏ
+// ì›€ì§ì´ëŠ” ë•… íƒ€ì¼
 class MoveTile : public TileBase {
 public:
-    vector<glm::vec3> moveCommend; // ¿òÁ÷ÀÓ¿¡ ´ëÇÑ ¸í·É¾îµéÀ» ¸ğ¾Æ³õÀº º¤ÅÍ
-	int currentMoveIndex = 0; // ÇöÀç ¼öÇà ÁßÀÎ ¸í·É¾î ÀÎµ¦½º
-	float speed = 1.0f; // ÀÌµ¿ ¼Óµµ
-	bool moving = true; // ÇöÀç ¿òÁ÷ÀÌ°í ÀÖ´ÂÁö ¿©ºÎ
+    vector<glm::vec3> moveCommend; // ì›€ì§ì„ì— ëŒ€í•œ ëª…ë ¹ì–´ë“¤ì„ ëª¨ì•„ë†“ì€ ë²¡í„°
+	int currentMoveIndex = 0; // í˜„ì¬ ìˆ˜í–‰ ì¤‘ì¸ ëª…ë ¹ì–´ ì¸ë±ìŠ¤
+	float speed = 0.5f; // ì´ë™ ì†ë„
+	bool moving = true; // í˜„ì¬ ì›€ì§ì´ê³  ìˆëŠ”ì§€ ì—¬ë¶€
     MoveTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "movetile";
@@ -91,27 +91,27 @@ public:
     void add_movement(glm::vec3 moving) {
 		moveCommend.push_back(moving);
     }
-	// ±¸Á¶¸¦ ¼³¸íÇÏÀÚ¸é moveCommend º¤ÅÍ¿¡ ÀÌµ¿ÇÒ À§Ä¡µéÀ» ¼ø¼­´ë·Î ³Ö¾î³õ°í 
-    // Update ÇÔ¼ö¿¡¼­ ±× À§Ä¡µé·Î ¼øÂ÷ÀûÀ¸·Î ÀÌµ¿ÇÏ´Â ¹æ½ÄÀÓ
+	// êµ¬ì¡°ë¥¼ ì„¤ëª…í•˜ìë©´ moveCommend ë²¡í„°ì— ì´ë™í•  ìœ„ì¹˜ë“¤ì„ ìˆœì„œëŒ€ë¡œ ë„£ì–´ë†“ê³  
+    // Update í•¨ìˆ˜ì—ì„œ ê·¸ ìœ„ì¹˜ë“¤ë¡œ ìˆœì°¨ì ìœ¼ë¡œ ì´ë™í•˜ëŠ” ë°©ì‹ì„
     void Update(float dt) override{
 		if (moveCommend.empty()) return;
 
 		glm::vec3 targetPos = moveCommend[currentMoveIndex];
 		position += glm::normalize(targetPos - position) * speed;
         
-		// ¸ñÇ¥ À§Ä¡¿¡ µµ´ŞÇß´ÂÁö È®ÀÎ
+		// ëª©í‘œ ìœ„ì¹˜ì— ë„ë‹¬í–ˆëŠ”ì§€ í™•ì¸
         if (glm::length(position - targetPos) < 0.1f) {
 			currentMoveIndex = (currentMoveIndex + 1) % moveCommend.size();
         }
     }
 };
 
-// È¸ÀüÇÏ´Â ¶¥ Å¸ÀÏ
+// íšŒì „í•˜ëŠ” ë•… íƒ€ì¼
 class RotateTile : public TileBase {
 public:
     RotateTile(glm::vec3 pos)
         : TileBase(pos) {
-        type = "movetile";
+        type = "rotatetile";
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -170,28 +170,28 @@ public:
 			texture = &moving_cube_texture;
             break;
         }
-        cout << "ÇöÀç ¼±ÅÃµÈ Å¸ÀÏ: " << type << endl;
+        cout << "í˜„ì¬ ì„ íƒëœ íƒ€ì¼: " << type << endl;
     }
 };
 
-// TileManager Å¬·¡½º Ãß°¡ ÀÌ°Ç json ÀúÀå ¹× ºÒ·¯¿À±â ±â´É Æ÷ÇÔ
+// TileManager í´ë˜ìŠ¤ ì¶”ê°€ ì´ê±´ json ì €ì¥ ë° ë¶ˆëŸ¬ì˜¤ê¸° ê¸°ëŠ¥ í¬í•¨
 class TileManager {
 public:
     vector<TileBase*> tiles;
 	MakeTile make_tile;
     int gridWidth = 20;
     int gridHeight = 20;
-    float tileSize = 2.0f; // Å¸ÀÏ ÇÏ³ªÀÇ Å©±â
+    float tileSize = 2.0f; // íƒ€ì¼ í•˜ë‚˜ì˜ í¬ê¸°
 	bool editing_mode = true;
     bool making_move_tile = false;
 	TileBase* selected_move_tile = nullptr;
 
-	// Å¸ÀÏ ¸¸µå´Â ÇÔ¼ö
+	// íƒ€ì¼ ë§Œë“œëŠ” í•¨ìˆ˜
     void tile_make() {
         for (auto* tile : tiles) {
             if (tile->type == "background") continue;
             if (tile->position == make_tile.position) {
-                cout << "°Å±â ¸ø µĞ´Ù." << endl;
+                cout << "ê±°ê¸° ëª» ë‘”ë‹¤." << endl;
                 return;
             }
         }
@@ -222,7 +222,7 @@ public:
             tiles.push_back(tile);
         }
     }
-	// Å¸ÀÏ »èÁ¦ ÇÔ¼ö
+	// íƒ€ì¼ ì‚­ì œ í•¨ìˆ˜
     void delete_tile() {
         for (auto it = tiles.begin(); it != tiles.end(); ) {
             if ((*it)->type == "background") {
@@ -230,24 +230,24 @@ public:
                 continue;
             }
             if ((*it)->position == make_tile.position) {
-                delete* it;  // ¸Ş¸ğ¸® ÇØÁ¦
-                it = tiles.erase(it);  // º¤ÅÍ¿¡¼­ Á¦°Å ÈÄ iterator °»½Å
-                cout << "Å¸ÀÏ »èÁ¦µÊ: " << make_tile.position.x << ", "
+                delete* it;  // ë©”ëª¨ë¦¬ í•´ì œ
+                it = tiles.erase(it);  // ë²¡í„°ì—ì„œ ì œê±° í›„ iterator ê°±ì‹ 
+                cout << "íƒ€ì¼ ì‚­ì œë¨: " << make_tile.position.x << ", "
                     << make_tile.position.y << ", " << make_tile.position.z << endl;
-                return;  // ÇÏ³ª¸¸ »èÁ¦ÇÏ°í Á¾·á
+                return;  // í•˜ë‚˜ë§Œ ì‚­ì œí•˜ê³  ì¢…ë£Œ
             }
             else {
                 ++it;
             }
         }
-        cout << "ÇØ´ç À§Ä¡¿¡ Å¸ÀÏÀÌ ¾ø½À´Ï´Ù." << endl;
+        cout << "í•´ë‹¹ ìœ„ì¹˜ì— íƒ€ì¼ì´ ì—†ìŠµë‹ˆë‹¤." << endl;
     }
-    // Å¸ÀÏ Æ÷ÀÎÆ®¹Ú½º »ı¼º ÇÔ¼ö
+    // íƒ€ì¼ í¬ì¸íŠ¸ë°•ìŠ¤ ìƒì„± í•¨ìˆ˜
     void make_init() {
 		make_tile.InitializeRendering(&public_cube, &ground_cube_texture);
 		make_tile.type = "groundtile";
     }
-    // ¿òÁ÷ÀÌ´Â Å¸ÀÏ µ¿¼± Ãß°¡ ÇÔ¼ö
+    // ì›€ì§ì´ëŠ” íƒ€ì¼ ë™ì„  ì¶”ê°€ í•¨ìˆ˜ 
     void move_tile_add_command() {
         if (!making_move_tile) {
             for (auto& t : tiles) {
@@ -255,8 +255,8 @@ public:
 
                 if (make_tile.position == t->position) {
                     MoveTile* moveTile = dynamic_cast<MoveTile*>(t);
-                    if (!moveTile) continue;  // Ä³½ºÆÃ ½ÇÆĞ ½Ã °Ç³Ê¶Ü
-                    selected_move_tile = moveTile;  // MoveTile*·Î ÀúÀå
+                    if (!moveTile) continue;  // ìºìŠ¤íŒ… ì‹¤íŒ¨ ì‹œ ê±´ë„ˆëœ€
+                    selected_move_tile = moveTile;  // MoveTile*ë¡œ ì €ì¥
                     moveTile->moveCommend.clear();
                     making_move_tile = true;
 
@@ -271,7 +271,7 @@ public:
         else {
             MoveTile* moveTile = dynamic_cast<MoveTile*>(selected_move_tile);
             if (!moveTile) {
-                cout << "ERROR: selected_move_tileÀÌ MoveTileÀÌ ¾Æ´Õ´Ï´Ù!" << endl;
+                cout << "ERROR: selected_move_tileì´ MoveTileì´ ì•„ë‹™ë‹ˆë‹¤!" << endl;
                 making_move_tile = false;
                 return;
             }
@@ -338,30 +338,56 @@ public:
             file << "      \"x\": " << tiles[i]->position.x << ",\n";
             file << "      \"y\": " << tiles[i]->position.y << ",\n";
             file << "      \"z\": " << tiles[i]->position.z << ",\n";
-            file << "      \"type\": \"" << tiles[i]->type << "\"\n";
+            file << "      \"type\": \"" << tiles[i]->type << "\"";
+
+            // MoveTileì¸ ê²½ìš° ì´ë™ ê²½ë¡œ ì €ì¥
+            if (tiles[i]->type == "movetile") {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(tiles[i]);
+                if (moveTile && !moveTile->moveCommend.empty()) {
+                    file << ",\n      \"moveCommands\": [\n";
+                    for (int j = 0; j < moveTile->moveCommend.size(); ++j) {
+                        file << "        { \"x\": " << moveTile->moveCommend[j].x
+                            << ", \"y\": " << moveTile->moveCommend[j].y
+                            << ", \"z\": " << moveTile->moveCommend[j].z << " }";
+                        if (j < moveTile->moveCommend.size() - 1) file << ",\n";
+                        else file << "\n";
+                    }
+                    file << "      ]";
+                }
+                file << ",\n      \"speed\": " << moveTile->speed;
+            }
+
+            file << "\n    }";
+            if (i < tiles.size() - 1) file << ",";
+            file << "\n";
         }
 
         file << "  ]\n";
         file << "}\n";
         file.close();
-		cout << "Stage saved to " << filepath << endl;
+        cout << "Stage saved to " << filepath << endl;
     }
     void LoadFromJSON(const char* filepath) {
-        Clear();  // ±âÁ¸ Å¸ÀÏ ¸ğµÎ »èÁ¦
+        Clear();
 
         ifstream file(filepath);
         if (!file.is_open()) {
-            cout << "ÆÄÀÏ ¿­±â ½ÇÆĞ: " << filepath << endl;
+            std::cout << "íŒŒì¼ ì—´ê¸° ì‹¤íŒ¨: " << filepath << std::endl;
             return;
         }
 
         string line;
         float x = 0, y = 0, z = 0;
+        float speed = 1.0f;
         string tileType;
+        vector<glm::vec3> moveCommands;
         bool readingTiles = false;
+        bool readingMoveCommands = false;
+        int braceDepth = 0;  // { } ê¹Šì´ ì¶”ì 
+        bool inTileObject = false;  // íƒ€ì¼ ê°ì²´ ë‚´ë¶€ ì—¬ë¶€
 
         while (getline(file, line)) {
-            // gridWidth, gridHeight, tileSize ÆÄ½Ì (ÇÊ¿ä½Ã)
+            // ê¸°ë³¸ ì„¤ì • íŒŒì‹±
             if (line.find("\"gridWidth\":") != string::npos) {
                 size_t pos = line.find(":");
                 gridWidth = stoi(line.substr(pos + 1));
@@ -375,7 +401,6 @@ public:
                 tileSize = stof(line.substr(pos + 1));
             }
 
-            // Å¸ÀÏ ¹è¿­ ½ÃÀÛ
             if (line.find("\"tiles\":") != string::npos) {
                 readingTiles = true;
                 continue;
@@ -383,73 +408,148 @@ public:
 
             if (!readingTiles) continue;
 
-            // x, y, z, type ÆÄ½Ì
-            if (line.find("\"x\":") != string::npos) {
+            // íƒ€ì¼ ë°°ì—´ ë ê°ì§€
+            if (line.find("]") != string::npos && !inTileObject) {
+                break;  // íƒ€ì¼ ë°°ì—´ íŒŒì‹± ì™„ë£Œ
+            }
+
+            // { ì¹´ìš´íŒ…
+            for (size_t i = 0; i < line.length(); ++i) {
+                if (line[i] == '{') {
+                    braceDepth++;
+                    if (braceDepth == 1) {
+                        // ìƒˆë¡œìš´ íƒ€ì¼ ê°ì²´ ì‹œì‘
+                        inTileObject = true;
+                        moveCommands.clear();
+                        x = 0;
+                        y = 0;
+                        z = 0;
+                        speed = 1.0f;
+                        tileType = "";
+                    }
+                }
+                else if (line[i] == '}') {
+                    braceDepth--;
+                    if (braceDepth == 0 && inTileObject) {
+                        //íƒ€ì¼ ê°ì²´ ë: íƒ€ì¼ ìƒì„±
+                        inTileObject = false;
+
+                        glm::vec3 pos(x, y, z);
+                        TileBase* tile = nullptr;
+
+                        if (tileType == "groundtile") {
+                            tile = new GroundTile(pos);
+                            tile->InitializeRendering(&public_cube, &ground_cube_texture);
+                        }
+                        else if (tileType == "springtile") {
+                            tile = new SpringTile(pos);
+                            tile->InitializeRendering(&public_cube, &spring_cube_texture);
+                        }
+                        else if (tileType == "switchtile") {
+                            tile = new SwitchTile(pos);
+                            tile->InitializeRendering(&public_cube, &switch_cube_texture);
+                        }
+                        else if (tileType == "movetile") {
+                            MoveTile* moveTile = new MoveTile(pos);
+                            moveTile->InitializeRendering(&public_cube, &moving_cube_texture);
+                            moveTile->speed = speed;
+
+                            // ì €ì¥ëœ ì´ë™ ê²½ë¡œ ë³µì›
+                            for (const auto& cmd : moveCommands) {
+                                moveTile->add_movement(cmd);
+                            }
+
+                            std::cout << "MoveTile ë¡œë“œ: ìœ„ì¹˜(" << pos.x << ", " << pos.y << ", " << pos.z
+                                << "), ê²½ë¡œ ê°œìˆ˜(" << moveTile->moveCommend.size() << ")" << std::endl;
+
+                            tile = moveTile;
+                        }
+                        else if (tileType == "background") {
+                            tile = new BackgroundTile(pos);
+                            tile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
+                        }
+
+                        if (tile) {
+                            tiles.push_back(tile);
+                        }
+
+                        moveCommands.clear();
+                    }
+                }
+            }
+
+            if (!inTileObject) continue;  // íƒ€ì¼ ê°ì²´ ì™¸ë¶€ì—ì„œëŠ” íŒŒì‹± ìŠ¤í‚µ
+
+            // ì´ë™ ëª…ë ¹ì–´ íŒŒì‹± ì‹œì‘
+            if (line.find("\"moveCommands\":") != string::npos) {
+                readingMoveCommands = true;
+                continue;
+            }
+
+            // ì´ë™ ëª…ë ¹ì–´ íŒŒì‹± ì¤‘
+            if (readingMoveCommands) {
+                if (line.find("]") != string::npos) {
+                    readingMoveCommands = false;
+                }
+                else if (line.find("{") != string::npos) {
+                    float cmdX = 0, cmdY = 0, cmdZ = 0;
+
+                    size_t posX = line.find("\"x\":");
+                    if (posX != string::npos) {
+                        cmdX = stof(line.substr(posX + 4));
+                    }
+
+                    size_t posY = line.find("\"y\":");
+                    if (posY != string::npos) {
+                        cmdY = stof(line.substr(posY + 4));
+                    }
+
+                    size_t posZ = line.find("\"z\":");
+                    if (posZ != string::npos) {
+                        cmdZ = stof(line.substr(posZ + 4));
+                    }
+
+                    moveCommands.push_back(glm::vec3(cmdX, cmdY, cmdZ));
+                    std::cout << "ì´ë™ ëª…ë ¹ì–´ ë¡œë“œ: (" << cmdX << ", " << cmdY << ", " << cmdZ << ")" << std::endl;
+                }
+                continue;
+            }
+
+            // íƒ€ì¼ ì •ë³´ íŒŒì‹±
+            if (line.find("\"x\":") != string::npos && !readingMoveCommands) {
                 size_t pos = line.find(":");
                 x = stof(line.substr(pos + 1));
             }
-            else if (line.find("\"y\":") != string::npos) {
+            else if (line.find("\"y\":") != string::npos && !readingMoveCommands) {
                 size_t pos = line.find(":");
                 y = stof(line.substr(pos + 1));
             }
-            else if (line.find("\"z\":") != string::npos) {
+            else if (line.find("\"z\":") != string::npos && !readingMoveCommands) {
                 size_t pos = line.find(":");
                 z = stof(line.substr(pos + 1));
             }
+            else if (line.find("\"speed\":") != string::npos) {
+                size_t pos = line.find(":");
+                speed = stof(line.substr(pos + 1));
+            }
             else if (line.find("\"type\":") != string::npos) {
-                // "type": "groundtile" ÇüÅÂ¿¡¼­ Å¸ÀÔ ÃßÃâ
                 size_t first = line.find("\"", line.find(":") + 1);
                 size_t second = line.find("\"", first + 1);
                 tileType = line.substr(first + 1, second - first - 1);
-
-                // Å¸ÀÏ »ı¼º (type ÀĞÀº Á÷ÈÄ)
-                glm::vec3 pos(x, y, z);
-                TileBase* tile = nullptr;
-
-                if (tileType == "groundtile") {
-                    tile = new GroundTile(pos);
-                }
-                else if (tileType == "springtile") {
-                    tile = new SpringTile(pos);
-                }
-                else if (tileType == "switchtile") {
-                    tile = new SwitchTile(pos);
-                }
-                else if (tileType == "movetile") {
-                    tile = new MoveTile(pos);
-                }
-                else if (tileType == "background") {
-                    tile = new BackgroundTile(pos);
-                }
-
-                if (tile) {
-                    // Å¸ÀÏ Å¸ÀÔ¿¡ µû¶ó ÀûÀıÇÑ ·»´õ¸µ ¼³Á¤
-                    if (tileType == "background") {
-                        tile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
-                    }
-                    else if (tileType == "groundtile"){
-                        tile->InitializeRendering(&public_cube, &ground_cube_texture);
-                    }
-                    else if (tileType == "springtile") {
-                        tile->InitializeRendering(&public_cube, &spring_cube_texture);
-                    }
-                    else if (tileType == "movetile") {
-                        tile->InitializeRendering(&public_cube, &moving_cube_texture);
-                    }
-                    else if (tileType == "rotatetile") {
-                        tile->InitializeRendering(&public_cube, &rotate_cube_texture);
-                    }
-                    else {
-                        tile->InitializeRendering(&public_cube, &switch_cube_texture);
-					}
-                    tiles.push_back(tile);
-                }
             }
         }
 
         file.close();
-        make_init();  // make_tile ÃÊ±âÈ­
-        cout << "·Îµå ¿Ï·á: " << tiles.size() << "°³ Å¸ÀÏ" << endl;
+
+        std::cout << "ë¡œë“œ ì™„ë£Œ: " << tiles.size() << "ê°œ íƒ€ì¼" << std::endl;
+        for (auto& t : tiles) {
+            if (t->type == "movetile") {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(t);
+                std::cout << "MoveTile í™•ì¸: ê²½ë¡œ ê°œìˆ˜ = " << moveTile->moveCommend.size() << std::endl;
+            }
+        }
+        
+        make_init();
     }
 
     void UpdateALl(float dt) {
