@@ -77,6 +77,7 @@ void onKey(unsigned char key, int x, int y) {
 		tileManager.editing_mode = !tileManager.editing_mode;
     }
 }
+
 void onSpecialKey(int key, int x, int y) {
     tileManager.make_tile.switching_make_tile(key);
 	
@@ -101,7 +102,6 @@ void onSpecialKey(int key, int x, int y) {
             tileManager.LoadFromJSON("json/stage.json");
 			break;
     }
-    
 }
 
 void onSpecialKeyUp(int key, int x, int y) {}

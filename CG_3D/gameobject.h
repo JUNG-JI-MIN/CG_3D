@@ -286,10 +286,10 @@ public:
         glUniform3fv(u, 1, glm::value_ptr(position));
     }
 };
-Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-//Camera camera({ 20.0f,20.0f,20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Camera camera({ 00.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 
+//Camera camera({ 20.0f,20.0f,20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Light light(camera.position, { 1.0f,1.0f,1.0f });
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
 public:
