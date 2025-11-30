@@ -22,7 +22,7 @@ char* filetobuf(const char* file)
 // 타이머 함수 구현
 void TimerFunction(int value) {
     float dt = 1.0f / 60.0f; // 60 FPS 기준 deltaTime
-    
+
     // 플레이어 업데이트
     player.Update(dt);
 
@@ -43,35 +43,35 @@ void onKey(unsigned char key, int x, int y) {
         player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
 		break;
 	case 'w':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
+        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
 		break;
 	case 's':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
-        break;
-    case 'z':
-		camera.position.z += 1.0f;
-        break;
-    case 'Z':
-        camera.position.z -= 1.0f;
+        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
     }
-    glutPostRedisplay();
 }
 
 void onSpecialKey(int key, int x, int y) {
     
-    glutPostRedisplay();
 }
 void onSpecialKeyUp(int key, int x, int y) {
     
-    glutPostRedisplay();
 }
 void onMouse(int button, int state, int x, int y) {
     float mx = (x / (float)width) * 2.0f - 1.0f;
     float my = 1.0f - (y / (float)height) * 2.0f;
 
 }
-
+void RoadTexture() {
+    player_cube_texture.Load("resource/player_of_space.png");
+    player2_cube_texture.Load("resource/player/player1.png");
+    player3_cube_texture.Load("resource/player/player2.png");
+    ground_cube_texture.Load("resource/tile.png");
+    public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
+	harf_cube.Init();
+	BackGround_cube_texture.Load("resource/space.png");
+	BackGround_cube.Init();
+}
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
@@ -91,14 +91,16 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     make_fragmentShaders(); //--- 프래그먼트 세이더 만들기
     shaderProgramID = make_shaderProgram(); //--- 세이더 프로그램 만들기
 
-	public_cube_texture.Load("resource/player_of_space.png"); // 전역 변수로 선언된 큐브 텍스처 로드
+	RoadTexture(); // 텍스쳐 로드 함수
 	public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
-    player.InitializeRendering(&public_cube, &public_cube_texture);
+    player.InitializeRendering(&public_cube, &player_cube_texture);
 
-    camera.position = glm::vec3(0.0f, 10.0f, 15.0f);
 
 	// 타일 매니저 초기화 이건 josn 파일로부터 로드한거니 확인 바람
-    tileManager.LoadFromJSON("json/stage.json");
+    tileManager.GenerateGrid();
+    tileManager.GenerateBackground();
+
+    light.Init();
 
     glutDisplayFunc(drawScene); //--- 출력 콜백 함수
     glutTimerFunc(16, TimerFunction, 1);  // 60 FPS
@@ -121,8 +123,6 @@ GLvoid drawScene() {
     glEnable(GL_CULL_FACE);
     // 뒷면 제거 설정
     glCullFace(GL_BACK);        // 뒷면을 제거
-
-    light.Init();
 
     player.result_matrix(camera);
     player.Draw();

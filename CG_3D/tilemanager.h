@@ -10,6 +10,7 @@ public:
     TileBase(glm::vec3 pos)
         : GameObject(pos) {
     }
+    int type;
     // 플레이어 큐브가 타일에 들어갔을 때 호출되는 함수
     virtual void OnCubeEnter(PlayerCube* cube) {}
     // 플레이어 큐브가 타일위에 머무를 때 호출되는 함수    
@@ -22,7 +23,8 @@ public:
 class GroundTile : public TileBase {
 public:
     GroundTile(glm::vec3 pos)
-        : TileBase(pos) {
+		: TileBase(pos) {
+		type = 1;
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -37,6 +39,22 @@ class MoveTile : public TileBase {
 public:
     MoveTile(glm::vec3 pos)
         : TileBase(pos) {
+        type = 2;
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+};
+
+class BackgroundTile : public TileBase {
+public:
+    BackgroundTile(glm::vec3 pos)
+        : TileBase(pos) {
+		type = 0;
+        addRotation(0, 45, 0);
     }
     void OnCubeEnter(PlayerCube* cube) override {
     }
@@ -49,7 +67,8 @@ public:
 // TileManager 클래스 추가 이건 json 저장 및 불러오기 기능 포함
 class TileManager {
 public:
-    vector<GroundTile*> tiles;
+    vector<TileBase*> tiles;
+
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
@@ -64,12 +83,36 @@ public:
                     z * tileSize - (gridHeight * tileSize / 2.0f)
                 );
                 GroundTile* tile = new GroundTile(pos);
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
                 tiles.push_back(tile);
             }
         }
     }
+    void GenerateGrid_harf() {
+        tiles.clear();
+        for (int z = 0; z < gridHeight; ++z) {
+            for (int x = 0; x < gridWidth; ++x) {
+                glm::vec3 pos = glm::vec3(
+                    x * tileSize - (gridWidth * tileSize / 2.0f),
+                    0.0f,
+                    z * tileSize - (gridHeight * tileSize / 2.0f)
+                );
+                GroundTile* tile = new GroundTile(pos);
+                tile->InitializeRendering(&harf_cube, &ground_cube_texture);
+				tile->add_position(0.0f, 0.25f, 0.0f);
+                tiles.push_back(tile);
+            }
+        }
+    }
+    void GenerateBackground() {
+        glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+        BackgroundTile* backgroundTile = new BackgroundTile(pos);
+        backgroundTile->InitializeRendering(&BackGround_cube, &BackGround_cube_texture);
+        tiles.push_back(backgroundTile);
+    }
+    void GenerateMoveTile() {
 
+    }
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
@@ -111,7 +154,7 @@ public:
                 z = stof(line.substr(line.find(":") + 1));
 
                 GroundTile* tile = new GroundTile(glm::vec3(x, y, z));
-                tile->InitializeRendering(&public_cube, &public_cube_texture);
+                tile->InitializeRendering(&public_cube, &ground_cube_texture);
                 tiles.push_back(tile);
             }
         }
@@ -120,8 +163,10 @@ public:
 
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
+            if (tile -> type == 0) glFrontFace(GL_CW);
             tile->result_matrix(cam);
             tile->Draw();
+            glFrontFace(GL_CCW);
         }
     }
 
