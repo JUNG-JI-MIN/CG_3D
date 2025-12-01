@@ -143,7 +143,9 @@ public:
 class MakeTile : public TileBase {
 public:
     MakeTile()
-        : TileBase(glm::vec3(0.0f, 6.0f, 0.0f)) {}
+        : TileBase(glm::vec3(0.0f, 6.0f, 0.0f)) {
+        color_type = 1;
+    }
     void OnCubeEnter(PlayerCube* cube) override {
     }
     void OnCubeStay(PlayerCube* cube) override {
@@ -199,6 +201,7 @@ public:
         if (make_tile.type == "groundtile") {
             GroundTile* tile = new GroundTile(pos);
             tile->InitializeRendering(&public_cube, &ground_cube_texture);
+			tile->color_type = 1;
             tiles.push_back(tile);
         }
         else if (make_tile.type == "springtile") {
@@ -440,18 +443,22 @@ public:
                         if (tileType == "groundtile") {
                             tile = new GroundTile(pos);
                             tile->InitializeRendering(&public_cube, &ground_cube_texture);
+							tile->color_type = 1;
                         }
                         else if (tileType == "springtile") {
                             tile = new SpringTile(pos);
                             tile->InitializeRendering(&public_cube, &spring_cube_texture);
+                            tile->color_type = 0;
                         }
                         else if (tileType == "switchtile") {
                             tile = new SwitchTile(pos);
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);
+                            tile->color_type = 0;
                         }
                         else if (tileType == "movetile") {
                             MoveTile* moveTile = new MoveTile(pos);
                             moveTile->InitializeRendering(&public_cube, &moving_cube_texture);
+							moveTile->color_type = 0;
                             moveTile->speed = speed;
 
                             // 저장된 이동 경로 복원
@@ -559,10 +566,17 @@ public:
     }
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
-            if (tile -> type == "background") glFrontFace(GL_CW);
+            GLuint u;
+            if (tile->type == "background") {
+                glFrontFace(GL_CW);
+                u = glGetUniformLocation(shaderProgramID, "turn_off");
+                glUniform1i(u, 1);
+            }
             tile->result_matrix(cam);
             tile->Draw();
             glFrontFace(GL_CCW);
+            u = glGetUniformLocation(shaderProgramID, "turn_off");
+            glUniform1i(u, 0);
         }
 		make_tile.result_matrix(cam);
 		make_tile.Draw();

@@ -14,7 +14,7 @@ uniform int whatColor; // 색상 선택 변수
 void main()
 {
     vec4 selectColor = out_Color;
-
+    /*
     if (turn_off == 1) {
         if (whatColor == 0){        
             FragColor = texture(texture1, out_TexCoord);
@@ -24,7 +24,7 @@ void main()
         }
         return;
     }
-
+    */
     if (whatColor == 0){
         // 텍스처 색상 가져오기
         selectColor = texture(texture1, out_TexCoord);
@@ -33,13 +33,21 @@ void main()
         selectColor = out_Color;
     }
 
+    
+
     // 1. Ambient
-    float ambientStrength = 0.4;
+    float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * lightColor;
 
     // 2. Diffuse (확산광)
     vec3 norm = normalize(out_Normal);
-    vec3 lightDir = normalize(lightPos - out_FragPos);
+    vec3 lightDir;
+    if (turn_off == 0){    
+        lightDir = normalize(vec3(1.0, 1.0, 1.0));
+    }
+    else{
+        lightDir = normalize(lightPos - out_FragPos);
+    }
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
 
