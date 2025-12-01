@@ -31,7 +31,7 @@ void TimerFunction(int value) {
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
     }
-
+    
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
 }
