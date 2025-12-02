@@ -30,7 +30,7 @@ public:
 		glm::vec3 nextPos = position + direction * 2.0f;
 
 		// ¸Ê °æ°è Ã¼Å©
-		if (abs(nextPos.x) > 20.0f || abs(nextPos.z) > 20.0f) return;
+		if (abs(nextPos.x) > 200.0f || abs(nextPos.z) > 200.0f) return;
 
 		float targetGroundHeight = FindGroundHeight(nextPos);
 		float currentGroundHeight = FindGroundHeight(position);
