@@ -41,6 +41,14 @@ void onKey(unsigned char key, int x, int y) {
 
     switch (key)
     {
+    case 'e': {
+        // 조명 활성화 여부를 셰이더에 전달
+        light_off = !light_off;
+        GLuint lightEnabledLoc = glGetUniformLocation(shaderProgramID, "turn_off");
+        glUniform1i(lightEnabledLoc, light_off ? 0 : 1);
+        cout << light_off << endl;
+        break;
+    }
     case 'q':
         exit(1);
         break;
