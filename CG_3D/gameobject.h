@@ -1,6 +1,6 @@
 /*
 GameObject
-├── TileBase
+├── TileBase <- vector<TileBase> tiles 로 타일 관리 
 │     ├── GroundTile
 │     ├── SpringTile
 │     ├── MovingPlatformTile
@@ -40,6 +40,7 @@ GameObject
 #include <gl/glm/gtx/rotate_vector.hpp>
 #include <stb_image.h>
 using namespace std;
+bool light_off = false;
 //--- 아래 5개 함수는 사용자 정의 함수 임
 void make_vertexShaders();
 void make_fragmentShaders();
@@ -289,7 +290,7 @@ public:
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Light light({ 0,50,0 }, { 1.0f,1.0f,1.0f });
+Light light({ 0,-50,50 }, { 1.0f,1.0f,1.0f });
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
 public:
