@@ -108,6 +108,7 @@ void onSpecialKey(int key, int x, int y) {
             break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
+            player.position = tileManager.playerPos;
 			break;
     }
 }
