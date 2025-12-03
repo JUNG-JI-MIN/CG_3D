@@ -319,6 +319,7 @@ public:
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera mini_camera({ 0.0f,50.0f,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,-1.0f });
 LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
 LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
 Light light(bang_light,point_light);
@@ -527,6 +528,26 @@ public:
         glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
 
         
+        u = glGetUniformLocation(shaderProgramID, "n");
+        glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    }
+    void result_O_matrix(Camera& camera) {
+        glm::mat4 modelMatrix;
+		glm::mat4 uProj = camera.Orthographic_matrix_update();
+        glm::mat4 uModel = getModelMatrix();
+        glm::mat4 uView = camera.View_matrix_update();
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(uModel)));
+
+        GLuint u = glGetUniformLocation(shaderProgramID, "m");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uModel));
+
+        u = glGetUniformLocation(shaderProgramID, "v");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uView));
+
+        u = glGetUniformLocation(shaderProgramID, "p");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
+
+
         u = glGetUniformLocation(shaderProgramID, "n");
         glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
     }

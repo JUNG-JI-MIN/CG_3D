@@ -25,6 +25,9 @@ void trace_player() {
     camera.target.z = player.position.z;
     camera.position.x = player.position.x + camera.between_player_or_camera;
     camera.position.z = player.position.z + camera.between_player_or_camera;
+	mini_camera.target = player.position;
+	mini_camera.position.x = player.position.x;
+    mini_camera.position.z = player.position.z;
 }
 void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
@@ -153,6 +156,8 @@ void RoadTexture() {
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
 	BackGround_cube.Init();
+
+	mini_camera.between_player_or_camera = 50.0f;
 }
 
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
@@ -211,7 +216,7 @@ GLvoid drawScene() {
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
+    glViewport(0, 0, width, height);
     player.result_matrix(camera);
     player.Draw();
 
@@ -227,6 +232,14 @@ GLvoid drawScene() {
 
 	tileManager.DrawAll(camera);
 
+    
+    glViewport(width * 4/5, height- width * 1 / 5, width * 1 / 5, width * 1 / 5);
+    
+    player.result_O_matrix(mini_camera);
+    player.Draw();
+    
+    tileManager.DrawAll_O(mini_camera);
+    
     glutSwapBuffers();
 }
 

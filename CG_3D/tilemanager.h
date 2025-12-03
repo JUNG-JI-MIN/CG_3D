@@ -597,6 +597,12 @@ public:
 		make_tile.result_matrix(cam);
 		make_tile.Draw();
     }
+    void DrawAll_O(Camera& cam) {
+        for (auto* tile : tiles) {
+            tile->result_O_matrix(cam);
+            tile->Draw();
+        }
+    }
 
     void Clear() {
         for (auto* tile : tiles) {
