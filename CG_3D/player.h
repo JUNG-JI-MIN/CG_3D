@@ -151,6 +151,7 @@ public:
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
 				CheckAndStartFalling();
 			}
+
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -166,6 +167,8 @@ public:
 			glm::quat deltaRotation = glm::angleAxis(angle, glm::normalize(rollAxis));
 			rotation = glm::normalize(deltaRotation * rollStartRotation);
 		}
+		light.light[1].position = position;
+		light.player_position_update();
 	}
 
 	// 충돌 처리 로직
