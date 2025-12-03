@@ -58,7 +58,7 @@ void onKey(unsigned char key, int x, int y) {
         break;
     }
     case 'l':
-        camera.position.x *= -1.0f;
+        camera.between_player_or_camera *= -1.0f;
         break;
     case 'q':
         exit(1);
