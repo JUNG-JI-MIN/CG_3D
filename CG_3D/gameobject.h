@@ -1,7 +1,14 @@
 /*
+Camera
+└── 원근 투영, 직각 투영, 경사 투영
+Light
+└── LIGHT구조체를 통해 방향광과 점광원 두개 생성
 Model 필요한 모델은 한번만 선언
+└── VAO, VBO, EBO, 바인딩
 Texture 필요한 텍스쳐는 한번만 선언
+└── 텍스쳐 ID, 바인딩
 GameObject
+│└── Draw, Update
 │
 ├── Model* 선언된 모델중 원하는 거 선택
 ├── Texture* 선언된 텍스쳐 중 원하는 거 선택
@@ -227,6 +234,8 @@ public:
     float n = 0.1f; // near
     float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
+    float between_player_or_camera = 30.0f;
+
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
 
@@ -309,7 +318,7 @@ public:
 };
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
 LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
 Light light(bang_light,point_light);

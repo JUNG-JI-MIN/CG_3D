@@ -20,13 +20,21 @@ char* filetobuf(const char* file)
     buf[length] = 0; // Null terminator
     return buf; // Return the buffer
 }
-
+void trace_player() {
+    camera.target.x = player.position.x;
+    camera.target.z = player.position.z;
+    camera.position.x = player.position.x + camera.between_player_or_camera;
+    camera.position.z = player.position.z + camera.between_player_or_camera;
+}
 void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
     // 플레이어 업데이트
     player.Update(dt);
+    // 카메라 업데이트
+    trace_player();
+
 	// 타일 매니저 업데이트
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
