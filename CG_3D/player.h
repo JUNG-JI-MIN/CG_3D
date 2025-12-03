@@ -240,7 +240,9 @@ private:
 			float currentLevelHeight = FindGroundHeight(checkPos);
 
 			if (currentLevelHeight > -99.0f && currentLevelHeight > belowHeight + 0.1f) {
+				checkPos.y += 2.0f;
 				for (const auto& t : tileManager.tiles) {
+					if (t->position == checkPos) return -1; // 앞 타일 위에 타일이 있음 - 이동 불가
 					if (t->position == player_y) return -1; // 위에 타일이 있음 - 이동 불가
 				}
 				// 3단계: 위에 타일이 있는지 확인
