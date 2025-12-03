@@ -64,15 +64,19 @@ void onKey(unsigned char key, int x, int y) {
         exit(1);
         break;
     case 'a':
+    case 'A':
         player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	case 'd':
+	case 'D':
         player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
 		break;
 	case 'w':
+    case 'W':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
 		break;
 	case 's':
+    case 'S':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
