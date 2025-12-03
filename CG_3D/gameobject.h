@@ -1,20 +1,20 @@
 /*
+Model 필요한 모델은 한번만 선언
+Texture 필요한 텍스쳐는 한번만 선언
 GameObject
+│
+├── Model* 선언된 모델중 원하는 거 선택
+├── Texture* 선언된 텍스쳐 중 원하는 거 선택
+│
 ├── TileBase <- vector<TileBase> tiles 로 타일 관리 
+│     ├── 시작점
 │     ├── GroundTile
-│     ├── SpringTile
 │     ├── MovingPlatformTile
-│     ├── RotatingTile
-│     └── SwitchTile
+│     ├── RotatingTile // 카메라 회전 
+│     ├── SwitchTile // 포탈 
+│     └── 도착점 
 │
-├── PlayerCube
-│
-├── Item(시점 전환 등) 이건 추가해도 되고 안 해도 되는 부분
-│     ├── CameraSwitchItem 
-│     ├── SpeedUpItem
-│     └── KeyItem 
-│
-└── CheckPoint / GoalFlag
+└── PlayerCube
 
 이런 구조로 설계하긴 했어 Object는 기본적인 렌더링을 하고 있고, GameObject는 게임 로직을 포함하는 객체임, 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 */
@@ -116,8 +116,8 @@ vector<unsigned int> create_cube_index() {
         12, 15, 14,
         12, 14, 13,
         // 위면
-        19, 18, 15,
-        19, 15, 16,
+        16, 19, 18,
+        16, 18, 17,
         // 아래면
         20, 23, 22,
         20, 22, 21
@@ -310,8 +310,8 @@ public:
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.0f,0.0f,0.0f}, 0 };
-LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,1}, 1 };
+LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
+LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
 Light light(bang_light,point_light);
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 

@@ -49,6 +49,9 @@ void onKey(unsigned char key, int x, int y) {
         cout << light_off << endl;
         break;
     }
+    case 'l':
+        camera.position.x *= -1.0f;
+        break;
     case 'q':
         exit(1);
         break;
@@ -109,6 +112,8 @@ void onSpecialKey(int key, int x, int y) {
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
             player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
 			break;
     }
 }
