@@ -270,7 +270,7 @@ public:
 
                     
 					move_cube_line.vertices.clear();
-					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{0.0f, 0.0f, 0.0f, 1.0f} });
+					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f} });
 					cout <<  move_cube_line.vbo << endl;
                     move_cube_line.Update();
                 }
