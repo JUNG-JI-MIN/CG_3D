@@ -336,7 +336,7 @@ public:
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
-        file << "  \"playerPos\": [" << make_tile.position.x << ", " << make_tile.position.y << ", " << make_tile.position.z << "],\n";
+        file << "  \"playerPos\": [" << (int)make_tile.position.x << ", " << (int)make_tile.position.y << ", " << (int)make_tile.position.z << "],\n";
         file << "  \"gridWidth\": " << gridWidth << ",\n";
         file << "  \"gridHeight\": " << gridHeight << ",\n";
         file << "  \"tileSize\": " << tileSize << ",\n";
@@ -344,9 +344,9 @@ public:
 
         for (int i = 0; i < tiles.size(); ++i) {
             file << "    {\n";
-            file << "      \"x\": " << tiles[i]->position.x << ",\n";
-            file << "      \"y\": " << tiles[i]->position.y << ",\n";
-            file << "      \"z\": " << tiles[i]->position.z << ",\n";
+            file << "      \"x\": " << (int)tiles[i]->position.x << ",\n";
+            file << "      \"y\": " << (int)tiles[i]->position.y << ",\n";
+            file << "      \"z\": " << (int)tiles[i]->position.z << ",\n";
             file << "      \"type\": \"" << tiles[i]->type << "\"";
 
             // MoveTile인 경우 이동 경로 저장
@@ -355,9 +355,9 @@ public:
                 if (moveTile && !moveTile->moveCommend.empty()) {
                     file << ",\n      \"moveCommands\": [\n";
                     for (int j = 0; j < moveTile->moveCommend.size(); ++j) {
-                        file << "        { \"x\": " << moveTile->moveCommend[j].x
-                            << ", \"y\": " << moveTile->moveCommend[j].y
-                            << ", \"z\": " << moveTile->moveCommend[j].z << " }";
+                        file << "        { \"x\": " << (int)moveTile->moveCommend[j].x
+                            << ", \"y\": " << (int)moveTile->moveCommend[j].y
+                            << ", \"z\": " << (int)moveTile->moveCommend[j].z << " }";
                         if (j < moveTile->moveCommend.size() - 1) file << ",\n";
                         else file << "\n";
                     }
