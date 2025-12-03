@@ -94,6 +94,8 @@ public:
 			glm::quat deltaRotation = glm::angleAxis(angle, glm::normalize(rollAxis));
 			rotation = glm::normalize(deltaRotation * rollStartRotation);
 		}
+		light.light[1].position = position;
+		light.player_position_update();
 	}
 
 	// 충돌 처리 로직 일단 놔두긴 했는데 쓸거면 쓰고 아님 안 써도 됨 근데 없애진 마

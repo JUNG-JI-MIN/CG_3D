@@ -266,31 +266,53 @@ public:
 };
 
 // 조명 클래스
+typedef struct LIGHT {
+    glm::vec3 position;
+    glm::vec3 dir;
+    glm::vec3 color;
+    int type;
+}LIGHT;
 class Light {
 public:
-    glm::vec3 position;
-    glm::vec3 light_color;
-    glm::vec3 viewpos;
-    Light(glm::vec3 pos, glm::vec3 lc)
-        : position(pos), light_color(lc) {
-    }
+    LIGHT light[2];
+    Light(LIGHT bang, LIGHT point) {
+        light[0] = bang;
+        light[1] = point;
+    };
     void Init() {
-        aplly_position();
-        apply_color();
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
+        u = glGetUniformLocation(shaderProgramID, "light[0].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[0].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].color));
+        u = glGetUniformLocation(shaderProgramID, "light[0].type");
+        glUniform1i(u, light[0].type);
+
+        u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
+        u = glGetUniformLocation(shaderProgramID, "light[1].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[1].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].color));
+        u = glGetUniformLocation(shaderProgramID, "light[1].type");
+        glUniform1i(u, light[1].type);
     }
-    void apply_color() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightColor");
-        glUniform3fv(u, 1, glm::value_ptr(light_color));
+    void player_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
     }
-    void aplly_position() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightPos");
-        glUniform3fv(u, 1, glm::value_ptr(position));
+    void back_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
     }
 };
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Light light({ 0,-50,50 }, { 1.0f,1.0f,1.0f });
+LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.0f,0.0f,0.0f}, 0 };
+LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,1}, 1 };
+Light light(bang_light,point_light);
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
 public:
