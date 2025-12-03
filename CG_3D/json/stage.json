@@ -1,4 +1,5 @@
 {
+  "playerPos": [24, 22, -18],
   "gridWidth": 20,
   "gridHeight": 20,
   "tileSize": 2,
@@ -234,13 +235,13 @@
     {
       "x": 30,
       "y": 0,
-      "z": 0,
+      "z": 9.5,
       "type": "movetile",
       "moveCommands": [
         { "x": 30, "y": 0, "z": 12 },
         { "x": 30, "y": 0, "z": 0 }
       ],
-      "speed": 0.5
+      "speed": 0.2
     },
     {
       "x": 30,
@@ -391,32 +392,6 @@
       "y": 0,
       "z": 10,
       "type": "groundtile"
-    },
-    {
-      "x": 14,
-      "y": 2,
-      "z": -6,
-      "type": "movetile",
-      "moveCommands": [
-        { "x": 28, "y": 2, "z": -6 },
-        { "x": 28, "y": -4, "z": -6 },
-        { "x": 14, "y": -4, "z": -6 },
-        { "x": 14, "y": 2, "z": -6 }
-      ],
-      "speed": 0.5
-    },
-    {
-      "x": 14,
-      "y": 2,
-      "z": 2,
-      "type": "movetile",
-      "moveCommands": [
-        { "x": 26, "y": 2, "z": 2 },
-        { "x": 26, "y": -4, "z": 2 },
-        { "x": 14, "y": -4, "z": 2 },
-        { "x": 14, "y": 2, "z": 2 }
-      ],
-      "speed": 0.5
     },
     {
       "x": 24,
@@ -707,48 +682,6 @@
       "type": "groundtile"
     },
     {
-      "x": 6,
-      "y": 6,
-      "z": 16,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 14,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 12,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 10,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 8,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 6,
-      "type": "springtile"
-    },
-    {
-      "x": 6,
-      "y": 6,
-      "z": 4,
-      "type": "springtile"
-    },
-    {
       "x": 4,
       "y": 14,
       "z": 18,
@@ -993,6 +926,29 @@
       "y": 14,
       "z": 16,
       "type": "groundtile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 14,
+      "type": "groundtile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": 8,
+      "type": "groundtile"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "z": 16,
+      "type": "movetile",
+      "moveCommands": [
+        { "x": 6, "y": 6, "z": 4 },
+        { "x": 6, "y": 6, "z": 16 }
+      ],
+      "speed": 0.5
     }
   ]
 }

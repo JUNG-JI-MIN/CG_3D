@@ -20,13 +20,21 @@ char* filetobuf(const char* file)
     buf[length] = 0; // Null terminator
     return buf; // Return the buffer
 }
-
+void trace_player() {
+    camera.target.x = player.position.x;
+    camera.target.z = player.position.z;
+    camera.position.x = player.position.x + camera.between_player_or_camera;
+    camera.position.z = player.position.z + camera.between_player_or_camera;
+}
 void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
     // 플레이어 업데이트
     player.Update(dt);
+    // 카메라 업데이트
+    trace_player();
+
 	// 타일 매니저 업데이트
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
@@ -41,19 +49,34 @@ void onKey(unsigned char key, int x, int y) {
 
     switch (key)
     {
+    case 'e': {
+        // 조명 활성화 여부를 셰이더에 전달
+        light_off = !light_off;
+        GLuint lightEnabledLoc = glGetUniformLocation(shaderProgramID, "turn_off");
+        glUniform1i(lightEnabledLoc, light_off ? 0 : 1);
+        cout << light_off << endl;
+        break;
+    }
+    case 'l':
+        camera.position.x *= -1.0f;
+        break;
     case 'q':
         exit(1);
         break;
     case 'a':
+    case 'A':
         player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	case 'd':
+	case 'D':
         player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
 		break;
 	case 'w':
+    case 'W':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
 		break;
 	case 's':
+    case 'S':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
@@ -100,6 +123,9 @@ void onSpecialKey(int key, int x, int y) {
             break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
+            player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
 			break;
     }
 }

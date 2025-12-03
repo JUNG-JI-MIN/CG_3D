@@ -158,18 +158,22 @@ public:
         case GLUT_KEY_F1: 
             type = "groundtile";  
 			texture = &ground_cube_texture;
+            color_type = 1;
             break;
 		case GLUT_KEY_F2: 
             type = "springtile";  
 			texture = &spring_cube_texture;
+            color_type = 0;
             break;
 		case GLUT_KEY_F3: 
             type = "switchtile"; 
 			texture = &switch_cube_texture;
+            color_type = 0;
             break;
 		case GLUT_KEY_F4: 
             type = "movetile";    
 			texture = &moving_cube_texture;
+            color_type = 0;
             break;
         }
         cout << "현재 선택된 타일: " << type << endl;
@@ -181,6 +185,7 @@ class TileManager {
 public:
     vector<TileBase*> tiles;
 	MakeTile make_tile;
+    glm::vec3 playerPos = glm::vec3{ 0,0,0 };
     int gridWidth = 20;
     int gridHeight = 20;
     float tileSize = 2.0f; // 타일 하나의 크기
@@ -265,7 +270,7 @@ public:
 
                     
 					move_cube_line.vertices.clear();
-					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{0.0f, 0.0f, 0.0f, 1.0f} });
+					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f} });
 					cout <<  move_cube_line.vbo << endl;
                     move_cube_line.Update();
                 }
@@ -331,6 +336,7 @@ public:
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
+        file << "  \"playerPos\": [" << make_tile.position.x << ", " << make_tile.position.y << ", " << make_tile.position.z << "],\n";
         file << "  \"gridWidth\": " << gridWidth << ",\n";
         file << "  \"gridHeight\": " << gridHeight << ",\n";
         file << "  \"tileSize\": " << tileSize << ",\n";
@@ -391,7 +397,17 @@ public:
 
         while (getline(file, line)) {
             // 기본 설정 파싱
-            if (line.find("\"gridWidth\":") != string::npos) {
+            if (line.find("\"playerPos\":") != string::npos) {
+                size_t start = line.find("[");
+                size_t end = line.find("]");
+                if (start != string::npos && end != string::npos) {
+                    string arr = line.substr(start + 1, end - start - 1);
+                    float px = 0, py = 0, pz = 0;
+                    sscanf(arr.c_str(), "%f, %f, %f", &px, &py, &pz);
+                    playerPos = glm::vec3(px, py, pz);
+                }
+            }
+            else if (line.find("\"gridWidth\":") != string::npos) {
                 size_t pos = line.find(":");
                 gridWidth = stoi(line.substr(pos + 1));
             }
@@ -569,14 +585,14 @@ public:
             GLuint u;
             if (tile->type == "background") {
                 glFrontFace(GL_CW);
-                u = glGetUniformLocation(shaderProgramID, "turn_off");
-                glUniform1i(u, 1);
+                //u = glGetUniformLocation(shaderProgramID, "turn_off");
+                //glUniform1i(u, 1);
             }
             tile->result_matrix(cam);
             tile->Draw();
             glFrontFace(GL_CCW);
-            u = glGetUniformLocation(shaderProgramID, "turn_off");
-            glUniform1i(u, 0);
+            //u = glGetUniformLocation(shaderProgramID, "turn_off");
+            //glUniform1i(u, 0);
         }
 		make_tile.result_matrix(cam);
 		make_tile.Draw();

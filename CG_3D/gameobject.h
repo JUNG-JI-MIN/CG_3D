@@ -1,20 +1,27 @@
 /*
+Camera
+└── 원근 투영, 직각 투영, 경사 투영
+Light
+└── LIGHT구조체를 통해 방향광과 점광원 두개 생성
+Model 필요한 모델은 한번만 선언
+└── VAO, VBO, EBO, 바인딩
+Texture 필요한 텍스쳐는 한번만 선언
+└── 텍스쳐 ID, 바인딩
 GameObject
-├── TileBase
+│└── Draw, Update
+│
+├── Model* 선언된 모델중 원하는 거 선택
+├── Texture* 선언된 텍스쳐 중 원하는 거 선택
+│
+├── TileBase <- vector<TileBase> tiles 로 타일 관리 
+│     ├── 시작점
 │     ├── GroundTile
-│     ├── SpringTile
 │     ├── MovingPlatformTile
-│     ├── RotatingTile
-│     └── SwitchTile
+│     ├── RotatingTile // 카메라 회전 
+│     ├── SwitchTile // 포탈 
+│     └── 도착점 
 │
-├── PlayerCube
-│
-├── Item(시점 전환 등) 이건 추가해도 되고 안 해도 되는 부분
-│     ├── CameraSwitchItem 
-│     ├── SpeedUpItem
-│     └── KeyItem 
-│
-└── CheckPoint / GoalFlag
+└── PlayerCube
 
 이런 구조로 설계하긴 했어 Object는 기본적인 렌더링을 하고 있고, GameObject는 게임 로직을 포함하는 객체임, 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 */
@@ -40,6 +47,7 @@ GameObject
 #include <gl/glm/gtx/rotate_vector.hpp>
 #include <stb_image.h>
 using namespace std;
+bool light_off = false;
 //--- 아래 5개 함수는 사용자 정의 함수 임
 void make_vertexShaders();
 void make_fragmentShaders();
@@ -115,8 +123,8 @@ vector<unsigned int> create_cube_index() {
         12, 15, 14,
         12, 14, 13,
         // 위면
-        19, 18, 15,
-        19, 15, 16,
+        16, 19, 18,
+        16, 18, 17,
         // 아래면
         20, 23, 22,
         20, 22, 21
@@ -226,6 +234,8 @@ public:
     float n = 0.1f; // near
     float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
+    float between_player_or_camera = 30.0f;
+
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
 
@@ -265,31 +275,53 @@ public:
 };
 
 // 조명 클래스
+typedef struct LIGHT {
+    glm::vec3 position;
+    glm::vec3 dir;
+    glm::vec3 color;
+    int type;
+}LIGHT;
 class Light {
 public:
-    glm::vec3 position;
-    glm::vec3 light_color;
-    glm::vec3 viewpos;
-    Light(glm::vec3 pos, glm::vec3 lc)
-        : position(pos), light_color(lc) {
-    }
+    LIGHT light[2];
+    Light(LIGHT bang, LIGHT point) {
+        light[0] = bang;
+        light[1] = point;
+    };
     void Init() {
-        aplly_position();
-        apply_color();
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
+        u = glGetUniformLocation(shaderProgramID, "light[0].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[0].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].color));
+        u = glGetUniformLocation(shaderProgramID, "light[0].type");
+        glUniform1i(u, light[0].type);
+
+        u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
+        u = glGetUniformLocation(shaderProgramID, "light[1].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[1].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].color));
+        u = glGetUniformLocation(shaderProgramID, "light[1].type");
+        glUniform1i(u, light[1].type);
     }
-    void apply_color() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightColor");
-        glUniform3fv(u, 1, glm::value_ptr(light_color));
+    void player_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
     }
-    void aplly_position() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightPos");
-        glUniform3fv(u, 1, glm::value_ptr(position));
+    void back_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
     }
 };
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Camera camera({ 70.0f,70.0f,70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-Light light({ 0,50,0 }, { 1.0f,1.0f,1.0f });
+Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
+LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
+Light light(bang_light,point_light);
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
 public:
