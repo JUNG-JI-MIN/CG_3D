@@ -209,11 +209,6 @@ public:
 		light.player_position_update();
 	}
 
-	// 面倒 贸府 肺流
-    void OnCollision(GameObject* other) {
-
-    }
-
 private:
 	inline int CheckTileAtDirection(glm::vec3 direction, float& outTargetHeight)
 	{
@@ -453,6 +448,11 @@ private:
 			position.x = fallTargetPos.x;
 			position.z = fallTargetPos.z;
 		}
+	}
+
+	// 面倒 贸府 肺流
+	void OnCollision(GameObject* other) {
+
 	}
 };
 PlayerCube player({ 0.0f, 2.0f, 0.0f });

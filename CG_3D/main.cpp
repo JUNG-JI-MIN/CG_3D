@@ -49,7 +49,7 @@ void TimerFunction(int value) {
 
 // 입력 콜백들은 ImGuiManager의 Handle*를 우선 호출하도록 변경
 void onKey(unsigned char key, int x, int y) {
-
+    tileManager.make_tile.switching_make_tile(key);
     switch (key)
     {
     case 'e': {
@@ -130,6 +130,15 @@ void onSpecialKey(int key, int x, int y) {
             light.light[1].position = player.position;
             light.player_position_update();
 			break;
+        case GLUT_KEY_F7:
+            tileManager.SaveToJSON("json/stage2.json");
+			break;
+        case GLUT_KEY_F8:
+            tileManager.LoadFromJSON("json/stage2.json");
+            player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
     }
 }
 

@@ -139,6 +139,22 @@ public:
     void Update(float dt) override {
 	}
 };
+class EndTile : public TileBase {
+public:
+    EndTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "endtile";
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+        cout << "스테이지 클리어!" << endl;
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+    void Update(float dt) override {
+    }
+};
 
 class MakeTile : public TileBase {
 public:
@@ -175,6 +191,11 @@ public:
 			texture = &moving_cube_texture;
             color_type = 0;
             break;
+		case '1':
+            type = "endtile";
+            texture = &BackGround_cube_texture;
+            color_type = 0;
+            break;
         }
         cout << "현재 선택된 타일: " << type << endl;
     }
@@ -186,8 +207,8 @@ public:
     vector<TileBase*> tiles;
 	MakeTile make_tile;
     glm::vec3 playerPos = glm::vec3{ 0,0,0 };
-    int gridWidth = 20;
-    int gridHeight = 20;
+    int gridWidth = 10;
+    int gridHeight = 10;
     float tileSize = 2.0f; // 타일 하나의 크기
 	bool editing_mode = true;
     bool making_move_tile = false;
@@ -224,6 +245,11 @@ public:
             tile->InitializeRendering(&public_cube, &moving_cube_texture);
             tiles.push_back(tile);
 		}
+        else if (make_tile.type == "endtile") {
+            EndTile* tile = new EndTile(pos);
+            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
+            tiles.push_back(tile);
+        }
         else {
             RotateTile* tile = new RotateTile(pos);
             tile->InitializeRendering(&public_cube, &rotate_cube_texture);
@@ -469,6 +495,11 @@ public:
                         else if (tileType == "switchtile") {
                             tile = new SwitchTile(pos);
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "endtile") {
+                            tile = new EndTile(pos);
+                            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "movetile") {
