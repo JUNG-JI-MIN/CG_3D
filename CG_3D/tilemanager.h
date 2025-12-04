@@ -2,9 +2,6 @@
 #include "gameobject.h"
 #include "firework.h"
 
-// 전방 선언
-class PlayerCube;
-
 // 타일의 기본 클래스
 class TileBase : public GameObject {
 public:
@@ -99,15 +96,18 @@ public:
     }
 };
 
-// 스프링 땅 타일
+// 스위치 땅 타일
 class SwitchTile : public TileBase {
 public:
+    bool switched_map = false;
     SwitchTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "switchtile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
+        if (switched_map == true) return;
+        switched_map = true;
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
@@ -116,6 +116,7 @@ public:
         cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
+        if (!switched_map)
     }
 };
 
@@ -277,7 +278,7 @@ public:
 		case GLUT_KEY_F2: 
             type = "GoToOneTile";  
 			texture = &One_cube_texture;
-            model = &public_cube;
+            model = &stage_cube;
             color_type = 0;
             break;
 		case GLUT_KEY_F3: 
@@ -382,7 +383,7 @@ public:
         }
         else if (make_tile.type == "QuitTile") {
             QuitTile* tile = new QuitTile(pos);
-            tile->InitializeRendering(&public_cube, &quit_texture);
+            tile->InitializeRendering(&stage_cube, &quit_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "switchtile") {
@@ -789,6 +790,7 @@ public:
 		make_tile.result_matrix(cam);
 		make_tile.Draw();
     }
+
     // 미니맵에 쓰는 함수
     void DrawAll_O(Camera& cam) {
         for (auto* tile : tiles) {
@@ -804,6 +806,7 @@ public:
             }
         }
     }
+
     void CubeStay(glm::vec3 pos) {
         for (TileBase* t : tiles) {
             if (t->position == pos) {
@@ -811,6 +814,7 @@ public:
             }
         }
     }
+
     void CubeExit(glm::vec3 pos) {
         for (TileBase* t : tiles) {
             if (t->position == pos) {
@@ -818,6 +822,7 @@ public:
             }
         }
     }
+
     void Clear() {
         for (auto* tile : tiles) {
             delete tile;
