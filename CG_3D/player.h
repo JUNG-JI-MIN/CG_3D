@@ -29,6 +29,7 @@ public:
 	inline void Rolling_in_the_deep(glm::vec3 direction)
 	{
 		if (Rolling || Falling) return;
+		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
 
 		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
 

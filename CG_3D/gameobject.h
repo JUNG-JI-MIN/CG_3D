@@ -110,6 +110,48 @@ vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 colo
     };
     return cube_vertices;
 }
+vector<Vertex> cube_2x1_Image(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 1,1,1,1 })
+{
+    vector<Vertex> v = {
+
+        // ===== 왼쪽 텍스처(0~0.5) : 앞면 =====
+        { {-x,-y, z}, color, {0,0, 1}, {0.0f, 0.0f} },
+        { { x,-y, z}, color, {0,0, 1}, {0.5f, 0.0f} },
+        { { x, y, z}, color, {0,0, 1}, {0.5f, 1.0f} },
+        { {-x, y, z}, color, {0,0, 1}, {0.0f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 뒷면 =====
+        { {-x,-y,-z}, color, {0,0,-1}, {0.0f, 0.0f} },
+        { { x,-y,-z}, color, {0,0,-1}, {0.5f, 0.0f} },
+        { { x, y,-z}, color, {0,0,-1}, {0.5f, 1.0f} },
+        { {-x, y,-z}, color, {0,0,-1}, {0.0f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 왼쪽면 =====
+        { {-x,-y,-z}, color, {-1,0,0}, {0.5f, 0.0f} },
+        { {-x,-y, z}, color, {-1,0,0}, {0.0f, 0.0f} },
+        { {-x, y, z}, color, {-1,0,0}, {0.0f, 1.0f} },
+        { {-x, y,-z}, color, {-1,0,0}, {0.5f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 오른쪽면 =====
+        { { x,-y,-z}, color, {1,0,0}, {0.0f, 0.0f} },
+        { { x,-y, z}, color, {1,0,0}, {0.5f, 0.0f} },
+        { { x, y, z}, color, {1,0,0}, {0.5f, 1.0f} },
+        { { x, y,-z}, color, {1,0,0}, {0.0f, 1.0f} },
+
+        // ===== 오른쪽 텍스처(0.5~1.0) : 윗면 =====
+        { {-x, y,-z}, color, {0,1,0}, {0.5f, 0.0f} },
+        { { x, y,-z}, color, {0,1,0}, {1.0f, 0.0f} },
+        { { x, y, z}, color, {0,1,0}, {1.0f, 1.0f} },
+        { {-x, y, z}, color, {0,1,0}, {0.5f, 1.0f} },
+
+        // ===== 오른쪽 텍스처(0.5~1.0) : 아랫면 =====
+        { {-x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {0.5f, 0.0f} },
+        { {-x, -y,  z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f} },
+        { { x, -y,  z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f} },
+        { { x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {0.5f, 1.0f} }
+    };
+    return v;
+}
 vector<unsigned int> create_cube_index() {
     vector<unsigned int> cube_indices = {
         // 앞면
@@ -430,12 +472,15 @@ public:
         glBindTexture(GL_TEXTURE_2D, id);
     }
 };
+Model stage_cube(cube_2x1_Image(), create_cube_index());
 Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 생성
 Texture player_cube_texture; // 플레이어 1
 Texture player2_cube_texture;
 Texture player3_cube_texture;
 Texture ground_cube_texture; // 땅
-Texture spring_cube_texture; // 스프링
+Texture One_cube_texture;
+Texture Two_cube_texture;
+Texture quit_texture;
 Texture moving_cube_texture; // 무빙
 Texture rotate_cube_texture; // 회전
 Texture switch_cube_texture; // 스위치

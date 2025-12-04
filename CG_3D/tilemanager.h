@@ -40,12 +40,51 @@ public:
     }
 };
 
-// 스프링 땅 타일
-class SpringTile : public TileBase {
+
+class GoToOneTile : public TileBase {
 public:
-    SpringTile(glm::vec3 pos)
+    GoToOneTile(glm::vec3 pos)
         : TileBase(pos) {
-        type = "springtile";
+        type = "GoToOneTile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
+};
+
+
+class GoToTwoTile : public TileBase {
+public:
+    GoToTwoTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "GoToTwoTile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
+};
+
+class QuitTile : public TileBase {
+public:
+    QuitTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "QuitTile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
@@ -87,8 +126,14 @@ public:
 	int currentMoveIndex = 0; // 현재 수행 중인 명령어 인덱스
 	float speed = 0.5f; // 이동 속도
 	bool moving = true; // 현재 움직이고 있는지 여부
+    glm::vec3 previousPosition; // 이전 프레임의 위치
+    glm::vec3 movementDelta; // 이번 프레임의 이동량
+    float waitTime = 1.0f; // 각 목표 지점에서 대기할 시간 (초)
+    float currentWaitTime = 0.0f; // 현재 대기한 시간
+    bool isWaiting = false; // 현재 대기 중인지 여부
+    
     MoveTile(glm::vec3 pos)
-        : TileBase(pos) {
+        : TileBase(pos), previousPosition(pos), movementDelta(0.0f) {
         type = "movetile";
     }
     void OnCubeEnter() override {
@@ -106,14 +151,45 @@ public:
 	// 구조를 설명하자면 moveCommend 벡터에 이동할 위치들을 순서대로 넣어놓고 
     // Update 함수에서 그 위치들로 순차적으로 이동하는 방식임
     void Update(float dt) override{
-		if (moveCommend.empty()) return;
+		if (moveCommend.empty()) {
+            movementDelta = glm::vec3(0.0f);
+            return;
+        }
 
-		glm::vec3 targetPos = moveCommend[currentMoveIndex];
-		position += glm::normalize(targetPos - position) * speed;
+        previousPosition = position;
         
-		// 목표 위치에 도달했는지 확인
-        if (glm::length(position - targetPos) < 0.1f) {
-			currentMoveIndex = (currentMoveIndex + 1) % moveCommend.size();
+        // 대기 중이면 대기 시간 증가
+        if (isWaiting) {
+            currentWaitTime += dt;
+            movementDelta = glm::vec3(0.0f); // 대기 중에는 움직이지 않음
+            
+            // 대기 시간이 끝나면 다음 목표로 이동
+            if (currentWaitTime >= waitTime) {
+                isWaiting = false;
+                currentWaitTime = 0.0f;
+                currentMoveIndex = (currentMoveIndex + 1) % moveCommend.size();
+            }
+            return;
+        }
+
+        // 이동 중
+		glm::vec3 targetPos = moveCommend[currentMoveIndex];
+        glm::vec3 direction = targetPos - position;
+        float distanceToTarget = glm::length(direction);
+        
+        // 목표 위치에 도달했는지 확인
+        if (distanceToTarget < 0.1f) {
+            // 목표 지점에 정확히 위치시키기
+            position = targetPos;
+            movementDelta = position - previousPosition;
+            
+            // 대기 상태로 전환
+            isWaiting = true;
+            currentWaitTime = 0.0f;
+        } else {
+            // 계속 이동
+            position += glm::normalize(direction) * speed;
+            movementDelta = position - previousPosition;
         }
     }
 };
@@ -198,8 +274,8 @@ public:
             color_type = 1;
             break;
 		case GLUT_KEY_F2: 
-            type = "springtile";  
-			texture = &spring_cube_texture;
+            type = "GoToOneTile";  
+			texture = &One_cube_texture;
             color_type = 0;
             break;
 		case GLUT_KEY_F3: 
@@ -215,6 +291,16 @@ public:
 		case '1':
             type = "endtile";
             texture = &BackGround_cube_texture;
+            color_type = 0;
+            break;
+        case '2':
+            type = "GoToTwoTile";
+            texture = &Two_cube_texture;
+            color_type = 0;
+            break;
+        case '3':
+            type = "QuitTile";
+            texture = &quit_texture;
             color_type = 0;
             break;
         }
@@ -234,6 +320,33 @@ public:
     bool making_move_tile = false;
 	TileBase* selected_move_tile = nullptr;
 
+    // 플레이어가 현재 서있는 타일을 찾는 함수
+    TileBase* GetTileUnderPlayer(glm::vec3 playerPos) {
+        float tileHalfSize = 1.0f;
+        
+        // 플레이어의 바닥 위치 (플레이어는 중심이 position이고, 크기가 2x2x2 큐브)
+        float playerBottomY = playerPos.y - 1.0f;
+
+        for (auto* tile : tiles) {
+            if (tile->type == "background") continue;
+            
+            float dx = abs(playerPos.x - tile->position.x);
+            float dz = abs(playerPos.z - tile->position.z);
+            
+            // XZ 평면에서 플레이어가 타일 위에 있는지 확인
+            if (dx < tileHalfSize && dz < tileHalfSize) {
+                float tileTop = tile->position.y + tileHalfSize;
+                
+                // 플레이어 바닥이 타일 표면 바로 위에 있는지 확인
+                float heightDiff = abs(playerBottomY - tileTop);
+                if (heightDiff < 0.5f) {
+                    return tile;
+                }
+            }
+        }
+        return nullptr;
+    }
+
 	// 타일 만드는 함수
     void tile_make() {
         for (auto* tile : tiles) {
@@ -250,9 +363,19 @@ public:
 			tile->color_type = 1;
             tiles.push_back(tile);
         }
-        else if (make_tile.type == "springtile") {
-            SpringTile* tile = new SpringTile(pos);
-            tile->InitializeRendering(&public_cube, &spring_cube_texture);
+        else if (make_tile.type == "GoToOneTile") {
+            GoToOneTile* tile = new GoToOneTile(pos);
+            tile->InitializeRendering(&public_cube, &One_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "GoToTwoTile") {
+            GoToTwoTile* tile = new GoToTwoTile(pos);
+            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "QuitTile") {
+            QuitTile* tile = new QuitTile(pos);
+            tile->InitializeRendering(&public_cube, &quit_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "switchtile") {
@@ -507,9 +630,19 @@ public:
                             tile->InitializeRendering(&public_cube, &ground_cube_texture);
 							tile->color_type = 1;
                         }
-                        else if (tileType == "springtile") {
-                            tile = new SpringTile(pos);
-                            tile->InitializeRendering(&public_cube, &spring_cube_texture);
+                        else if (tileType == "GoToOneTile") {
+                            tile = new GoToOneTile(pos);
+                            tile->InitializeRendering(&public_cube, &One_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "GoToTwoTile") {
+                            tile = new GoToTwoTile(pos);
+                            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "QuitTile") {
+                            tile = new QuitTile(pos);
+                            tile->InitializeRendering(&public_cube, &quit_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "switchtile") {

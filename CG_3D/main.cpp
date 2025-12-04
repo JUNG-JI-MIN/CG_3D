@@ -33,16 +33,37 @@ void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
-    // 플레이어 업데이트
+    // 플레이어 업데이트 먼저
     player.Update(dt);
-    fireworkmanager.update(dt);
-    // 카메라 업데이트
-    trace_player();
-
-	// 타일 매니저 업데이트
+    
+    // 타일 매니저 업데이트 (한 번만 호출)
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
+        
+        // 플레이어가 움직이지 않을 때만 MoveTile과 함께 이동
+        if (!player.Rolling && !player.Falling) {
+            TileBase* currentTile = tileManager.GetTileUnderPlayer(player.position);
+            if (currentTile && currentTile->type == "movetile") {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
+                if (moveTile) {
+                    // 플레이어를 타일 중심의 정확한 위치로 스냅
+                    player.position.x = moveTile->position.x;
+                    player.position.z = moveTile->position.z;
+                    player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
+                    
+                    // MoveTile의 이동량도 적용
+                    if (glm::length(moveTile->movementDelta) > 0.0001f) {
+                        player.position += moveTile->movementDelta;
+                    }
+                }
+            }
+        }
     }
+    
+    fireworkmanager.update(dt);
+    
+    // 카메라 업데이트
+    trace_player();
     
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
@@ -123,7 +144,7 @@ void onSpecialKey(int key, int x, int y) {
             tileManager.make_tile.position.x += 2.0f;
 			break;
 		case GLUT_KEY_F5:
-			tileManager.SaveToJSON("json/stage.json");
+			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
@@ -136,6 +157,12 @@ void onSpecialKey(int key, int x, int y) {
 			break;
         case GLUT_KEY_F8:
             tileManager.LoadFromJSON("json/stage2.json");
+            player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
+        case GLUT_KEY_F9:
+            tileManager.LoadFromJSON("json/Mainmenu.json");
             player.position = tileManager.playerPos;
             light.light[1].position = player.position;
             light.player_position_update();
@@ -155,12 +182,13 @@ void RoadTexture() {
     player_cube_texture.Load("resource/player_of_space.png");
     player2_cube_texture.Load("resource/player/player1.png");
     player3_cube_texture.Load("resource/player/player2.png");
-
     ground_cube_texture.Load("resource/tile/silver.png");
-    spring_cube_texture.Load("resource/tile/slime.png");
+    One_cube_texture.Load("resource/tile/slime.png");
+	Two_cube_texture.Load("resource/tile/slime.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
+	quit_texture.Load("resource/tile/slime.png");
 
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
@@ -173,8 +201,8 @@ void RoadTexture() {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 800; 
-    height = 600;
+    width = 1200; 
+    height = 900;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
