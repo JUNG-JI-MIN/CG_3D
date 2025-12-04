@@ -25,6 +25,9 @@ void trace_player() {
     camera.target.z = player.position.z;
     camera.position.x = player.position.x + camera.between_player_or_camera;
     camera.position.z = player.position.z + camera.between_player_or_camera;
+	mini_camera.target = player.position;
+	mini_camera.position.x = player.position.x;
+    mini_camera.position.z = player.position.z;
 }
 void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
@@ -39,14 +42,14 @@ void TimerFunction(int value) {
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
     }
-
+    
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
 }
 
 // 입력 콜백들은 ImGuiManager의 Handle*를 우선 호출하도록 변경
 void onKey(unsigned char key, int x, int y) {
-
+    tileManager.make_tile.switching_make_tile(key);
     switch (key)
     {
     case 'e': {
@@ -64,15 +67,19 @@ void onKey(unsigned char key, int x, int y) {
         exit(1);
         break;
     case 'a':
+    case 'A':
         player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
 		break;
 	case 'd':
+	case 'D':
         player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
 		break;
 	case 'w':
+    case 'W':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
 		break;
 	case 's':
+    case 'S':
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
@@ -123,6 +130,15 @@ void onSpecialKey(int key, int x, int y) {
             light.light[1].position = player.position;
             light.player_position_update();
 			break;
+        case GLUT_KEY_F7:
+            tileManager.SaveToJSON("json/stage2.json");
+			break;
+        case GLUT_KEY_F8:
+            tileManager.LoadFromJSON("json/stage2.json");
+            player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
     }
 }
 
@@ -149,6 +165,8 @@ void RoadTexture() {
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
 	BackGround_cube.Init();
+
+	mini_camera.between_player_or_camera = 50.0f;
 }
 
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
@@ -207,7 +225,7 @@ GLvoid drawScene() {
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
+    glViewport(0, 0, width, height);
     player.result_matrix(camera);
     player.Draw();
 
@@ -223,6 +241,14 @@ GLvoid drawScene() {
 
 	tileManager.DrawAll(camera);
 
+    
+    glViewport(width * 4/5, height- width * 1 / 5, width * 1 / 5, width * 1 / 5);
+    
+    player.result_O_matrix(mini_camera);
+    player.Draw();
+    
+    tileManager.DrawAll_O(mini_camera);
+    
     glutSwapBuffers();
 }
 

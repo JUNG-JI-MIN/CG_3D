@@ -11,59 +11,144 @@ public:
 
     glm::vec3 dir = { 0.0f,0.0f,1.0f }; // 이동 방향 or 바라보는 방향이라고도 할 수 있음 키보드 조작을 통해 dir이 변경됨
     bool Rolling = false; // 구르는 중인지 아닌지 여부 애니메이션에서 사용
+    bool Falling = false; // 떨어지는 중인지 여부
     float rollProgress = 0.0f; // 구르는 애니메이션 진행도 (0.0 ~ 1.0)
     float roll_speed = 4.0f; // 구르는 속도 (초당 진행도)
+    float fall_speed = 5.0f; // 낙하 속도 (초당 진행도)
 	glm::vec3 rollDirection = glm::vec3(0.0f);
 	glm::vec3 rollStartPos; // 굴림 시작 위치
+	glm::vec3 fallStartPos; // 낙하 시작 위치
+	glm::vec3 fallTargetPos; // 낙하 목표 위치
 	glm::quat rollStartRotation; // 굴림 시작 회전 (쿼터니언)
 	glm::vec3 rollAxis; // 회전축
 	glm::vec3 rollPivot; // 회전 중심점
 
-	// 정지민 : 이거 타일이 위에 있어도 못 지나가는 것만 수정해줘 그리고 충돌처리도 20x20에만 되는데 타일에 관해서 하는 쪽으로 바꿔야할듯??
+	// 플레이어 큐브가 바라보는 방향으로 구르는 함수
+	inline void Rolling_in_the_deep(glm::vec3 direction)
+	{
+		if (Rolling || Falling) return;
 
-    // 플레이어 큐브가 바라보는 방향으로 구르는 함수
-    inline void Rolling_in_the_deep(glm::vec3 direction)
-    {
-		if (Rolling) return; // 이미 구르는 중이면 무시
+		dir = direction;
 
-		dir = direction; // 방향 업데이트
-		glm::vec3 nextPos = position + direction * 2.0f;
+		float targetGroundHeight = 0.0f;
+		int tileState = CheckTileAtDirection(direction, targetGroundHeight);
 
-		// 맵 경계 체크
-		if (abs(nextPos.x) > 200.0f || abs(nextPos.z) > 200.0f) return;
+		if (tileState == -1) {
+			// 위에 타일이 있음 - 이동 불가
+			return;
+		}
+		else if (tileState == 2) {
+			// 올라가기 (1칸 높이 차이)
+			float currentGroundHeight = FindGroundHeight(position);
+			float heightDifference = targetGroundHeight - currentGroundHeight;
 
-		float targetGroundHeight = FindGroundHeight(nextPos);
-		float currentGroundHeight = FindGroundHeight(position);
+			// 천장 체크
+			glm::vec3 nextPos = position + direction * 2.0f;
+			if (HasCeilingObstacle(position, nextPos)) return;
 
-		// 타일이 없거나 너무 높으면 이동 불가
-		if (targetGroundHeight < -99.0f) return;
-		if (targetGroundHeight > currentGroundHeight + 0.1f) return;
+			// 회전 경로 체크
+			if (HasRollPathObstacle(position, nextPos, heightDifference)) return;
 
-		// 구르기 시작
-		Rolling = true;
-		rollProgress = 0.0f;
-		rollDirection = direction;
-		rollStartPos = position;
-		rollStartRotation = rotation;
+			// 구르기 시작
+			Rolling = true;
+			rollProgress = 0.0f;
+			rollDirection = direction;
+			rollStartPos = position;
+			rollStartRotation = rotation;
 
-		float cubeBottomY = position.y - 1.0f; // 큐브 크기가 2.0이므로 반지름은 1.0
+			// 올라갈 때: 목표 타일의 모서리를 기준으로 회전
+			float targetTileBottom = targetGroundHeight - 1.0f;
 
-		if (abs(direction.x) > 0.5f) {
-			// 좌우 이동: Z축 회전
-			rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
-			rollPivot = glm::vec3(position.x + direction.x * 1.0f, cubeBottomY, position.z);
+			if (abs(direction.x) > 0.5f) {
+				rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
+				rollPivot = glm::vec3(
+					position.x + direction.x * 1.0f,
+					targetTileBottom,
+					position.z
+				);
+			}
+			else {
+				rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
+				rollPivot = glm::vec3(
+					position.x,
+					targetTileBottom,
+					position.z + direction.z * 1.0f
+				);
+			}
+		}
+		else if (tileState == 1) {
+			// 같은 높이 이동
+			float currentGroundHeight = FindGroundHeight(position);
+
+			// 천장 체크
+			glm::vec3 nextPos = position + direction * 2.0f;
+			if (HasCeilingObstacle(position, nextPos)) return;
+
+			// 구르기 시작
+			Rolling = true;
+			rollProgress = 0.0f;
+			rollDirection = direction;
+			rollStartPos = position;
+			rollStartRotation = rotation;
+
+			// 같은 높이: 큐브 하단 기준으로 회전
+			float cubeBottomY = position.y - 1.0f;
+
+			if (abs(direction.x) > 0.5f) {
+				rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
+				rollPivot = glm::vec3(position.x + direction.x * 1.0f, cubeBottomY, position.z);
+			}
+			else {
+				rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
+				rollPivot = glm::vec3(position.x, cubeBottomY, position.z + direction.z * 1.0f);
+			}
 		}
 		else {
-			// 전후 이동: X축 회전
-			rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
-			rollPivot = glm::vec3(position.x, cubeBottomY, position.z + direction.z * 1.0f);
+			// tileState == 0: 앞에 타일 없음 → 낙하할 타일 찾기
+			float fallTargetHeight = FindFallTargetHeight(direction);
+
+			if (fallTargetHeight < -99.0f) {
+				// 낙하할 타일도 없음 - 이동 불가
+				return;
+			}
+
+			// 낙하 시작
+			glm::vec3 nextPos = position + direction * 2.0f;
+			Rolling = true;
+			rollProgress = 0.0f;
+			rollDirection = direction;
+			rollStartPos = position;
+			rollStartRotation = rotation;
+
+			// 이동은 수평으로 진행
+			float cubeBottomY = position.y - 1.0f;
+
+			if (abs(direction.x) > 0.5f) {
+				rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
+				rollPivot = glm::vec3(position.x + direction.x * 1.0f, cubeBottomY, position.z);
+			}
+			else {
+				rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
+				rollPivot = glm::vec3(position.x, cubeBottomY, position.z + direction.z * 1.0f);
+			}
 		}
-    }
+	}
 
     // 매 프레임마다 호출되는 업데이트 함수
     inline void Update(float dt) override
 	{
-		if (!Rolling) return;
+		// 떨어지는 애니메이션 처리
+		if (Falling) {
+			UpdateFalling(dt);
+			return;
+		}
+
+		// 구르는 애니메이션 처리
+		if (!Rolling) {
+			// 구르고 있지 않을 때도 낙하 체크
+			CheckAndStartFalling();
+			return;
+		}
 
 		// 진행도 업데이트
 		rollProgress += dt * roll_speed;
@@ -73,12 +158,38 @@ public:
 			rollProgress = 1.0f;
 			Rolling = false;
 
-			// 최종 위치와 회전 설정
-			position = rollStartPos + rollDirection * 2.0f;
+			// 최종 위치 (수평 좌표)
+			glm::vec3 finalPos = rollStartPos + rollDirection * 2.0f;
+			float groundHeight = FindGroundHeight(finalPos);
+			float startGroundHeight = FindGroundHeight(rollStartPos);
+			float dropAmount = (startGroundHeight + 1.0f) - (groundHeight + 1.0f); // 내려가는 양 (>0 이면 내려감)
 
-			// 90도 회전 추가
+			// 90도 회전 적용
 			glm::quat deltaRotation = glm::angleAxis(glm::radians(90.0f), glm::normalize(rollAxis));
 			rotation = glm::normalize(deltaRotation * rollStartRotation);
+
+			if (groundHeight > -99.0f && dropAmount > 0.1f) {
+				// 큰 높이 차이로 내려갈 때: 바로 아래 높이에 맞춰 스냅하지 않고 낙하 애니메이션 시작
+				position = glm::vec3(finalPos.x, rollStartPos.y, finalPos.z); // 수평 이동만 완료, 높이는 기존 유지
+				Falling = true;
+				rollProgress = 0.0f; // 낙하 진행도로 재사용
+				fallStartPos = position;
+				fallTargetPos = glm::vec3(finalPos.x, groundHeight + 1.0f, finalPos.z);
+				return; // 낙하 시작했으므로 종료
+			}
+			else {
+				// 같은 높이거나 아주 작은 높이 차이면 즉시 위치 스냅
+				if (groundHeight > -99.0f) {
+					finalPos.y = groundHeight + 1.0f; // 타일 위 표면 + 큐브 반지름
+				} else {
+					// 타일이 없으면 현재 높이 유지 (맵 밖 방지)
+					finalPos.y = rollStartPos.y;
+				}
+				position = finalPos;
+				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
+				CheckAndStartFalling();
+			}
+
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -98,12 +209,83 @@ public:
 		light.player_position_update();
 	}
 
-	// 충돌 처리 로직 일단 놔두긴 했는데 쓸거면 쓰고 아님 안 써도 됨 근데 없애진 마
-    void OnCollision(GameObject* other) {
-
-    }
-
 private:
+	inline int CheckTileAtDirection(glm::vec3 direction, float& outTargetHeight)
+	{
+
+		float tileHalfSize = 1.0f;
+		glm::vec3 player_y = position;
+		player_y.y += 2.0f;
+
+		// 1단계: 방향 기준 아래 높이 체크 (position.y - 2)
+		glm::vec3 checkPos = position + direction * 2.0f;
+		glm::vec3 checkPos2 = position + direction * 2.0f;
+		checkPos.y -= 2.0f;
+
+		float belowHeight = FindGroundHeight(checkPos);
+		float belowHeight2 = FindGroundHeight(checkPos2);
+
+		// 타일이 있으면: 1단계 통과
+		if (belowHeight > -99.0f || belowHeight2 > -99.0f) {
+			outTargetHeight = belowHeight;
+
+			// 2단계: 현재 높이 (position.y)에서 타일 확인
+			checkPos = position + direction * 2.0f;
+			checkPos.y = position.y;
+			float currentLevelHeight = FindGroundHeight(checkPos);
+
+			if (currentLevelHeight > -99.0f && currentLevelHeight > belowHeight + 0.1f) {
+				checkPos.y += 2.0f;
+				for (const auto& t : tileManager.tiles) {
+					if (t->position == checkPos) return -1; // 앞 타일 위에 타일이 있음 - 이동 불가
+					if (t->position == player_y) return -1; // 위에 타일이 있음 - 이동 불가
+				}
+				// 3단계: 위에 타일이 있는지 확인
+				checkPos = position + direction * 2.0f;
+				checkPos.y += 2.0f;
+				float aboveHeight = FindGroundHeight(checkPos);
+				// 올라가기 (1칸 높이)
+				outTargetHeight = currentLevelHeight;
+				return 2;
+			}
+			else {
+				// 같은 높이 이동
+				return 1;
+			}
+		}
+
+		// 타일이 없으면: 1단계 실패 → 낙하할 타일 찾기
+		return 0;
+	}
+
+	// 입력 벡터 방향에서 낙하할 가장 높은 타일 찾기
+	// 반환값: 낙하 목표 높이 (타일이 없으면 -100.0f)
+	inline float FindFallTargetHeight(glm::vec3 direction)
+	{
+		float targetX = position.x + direction.x * 2.0f;
+		float targetZ = position.z + direction.z * 2.0f;
+		float tileHalfSize = 1.0f;
+		float minHeight = -10.0f; // 기준값
+
+		for (const auto* tile : tileManager.tiles) {
+			// X, Z 좌표가 일치하는 타일만 검사
+			float dx = abs(targetX - tile->position.x);
+			float dz = abs(targetZ - tile->position.z);
+
+			if (dx < tileHalfSize && dz < tileHalfSize) {
+				float tileTop = tile->position.y + tileHalfSize;
+
+				// 현재 위치보다 아래에 있고, 가장 높은 타일 찾기
+				if (tileTop < position.y && tileTop > minHeight) {
+					minHeight = tileTop;
+				}
+			}
+		}
+
+		// 타일을 찾았으면 타일 위의 위치, 아니면 -100.0f 반환
+		return (minHeight > -10.0f) ? minHeight : -100.0f;
+	}
+	// 지면 높이를 찾는 함수 (큐브 바로 아래 타일만 검색)
 	inline float FindGroundHeight(glm::vec3 pos)
 	{
 		float groundHeight = -100.0f; // 기본값: 매우 낮은 위치
@@ -116,17 +298,161 @@ private:
 			float dz = abs(pos.z - tile->position.z);
 
 			// 큐브가 타일 범위 안에 있는지 확인
-			if (dx <= tileHalfSize && dz <= tileHalfSize) {
+			if (dx < tileHalfSize && dz < tileHalfSize) {
 				// 타일의 위 표면 높이 계산
 				float tileTopHeight = tile->position.y + tileHalfSize;
-
-				if (tileTopHeight > groundHeight) {
+				
+				// 큐브 바로 아래에 있는 타일만 선택
+				// pos.y는 큐브의 중심이므로, 큐브 하단(pos.y - 1.0f)보다 약간 아래에 있는 타일만 선택
+				if (tileTopHeight <= pos.y + 1.0f && tileTopHeight > groundHeight) {
 					groundHeight = tileTopHeight;
 				}
 			}
 		}
 
 		return groundHeight;
+	}
+
+	// 천장 장애물이 있는지 체크하는 함수
+	inline bool HasCeilingObstacle(glm::vec3 currentPos, glm::vec3 nextPos)
+	{
+		float tileHalfSize = 1.0f; // 타일 크기의 절반
+		float cubeHalfSize = 1.0f; // 큐브 크기의 절반
+		
+		// 현재 큐브의 상단 높이
+		float cubeTop = currentPos.y + cubeHalfSize;
+		
+		// 현재 위치와 다음 위치 사이의 모든 타일 검사
+		for (const auto* tile : tileManager.tiles) {
+			// 타일이 이동 경로 상에 있는지 확인
+			float dx_current = abs(currentPos.x - tile->position.x);
+			float dz_current = abs(currentPos.z - tile->position.z);
+			float dx_next = abs(nextPos.x - tile->position.x);
+			float dz_next = abs(nextPos.z - tile->position.z);
+
+			bool onCurrentPath = (dx_current < tileHalfSize && dz_current < tileHalfSize);
+			bool onNextPath = (dx_next < tileHalfSize && dz_next < tileHalfSize);
+
+			if (onCurrentPath || onNextPath) {
+				// 타일의 하단 높이
+				float tileBottom = tile->position.y - tileHalfSize;
+				
+				// 타일이 큐브 머리 위에 있는지 확인
+				// 큐브 상단이 타일 하단보다 아래에 있고, 
+				// 타일이 큐브보다 위에 있으면 천장 장애물
+				if (tileBottom > cubeTop - 0.5f && tileBottom < cubeTop) {
+					// 이 타일이 서있는 타일이 아닌지 확인
+					float currentGround = FindGroundHeight(currentPos);
+					float tileTop = tile->position.y + tileHalfSize;
+					
+					// 현재 서있는 타일이 아니면 천장 장애물
+					if (abs(tileTop - currentGround) > 0.1f) {
+						return true; // 천장에 장애물 있음
+					}
+				}
+			}
+		}
+
+		return false; // 천장 안전
+	}
+
+	// **새로 추가: 회전 경로에 장애물(벽)이 있는지 체크하는 함수**
+	inline bool HasRollPathObstacle(glm::vec3 currentPos, glm::vec3 nextPos, float heightDiff)
+	{
+		float tileHalfSize = 1.0f;
+		float cubeHalfSize = 1.0f;
+		
+		// 위로 올라갈 때만 중간 장애물 체크 (벽 감지)
+		if (heightDiff <= 0.1f) return false; // 같은 높이나 내려갈 때는 체크 안함
+
+		float currentGround = FindGroundHeight(currentPos);
+		float targetGround = FindGroundHeight(nextPos);
+		
+		// 현재 위치와 목표 위치 사이의 중간 높이 범위
+		float minCheckHeight = currentGround;
+		float maxCheckHeight = targetGround;
+
+		for (const auto* tile : tileManager.tiles) {
+			// 타일이 이동 경로 상에 있는지 확인
+			float dx_current = abs(currentPos.x - tile->position.x);
+			float dz_current = abs(currentPos.z - tile->position.z);
+			float dx_next = abs(nextPos.x - tile->position.x);
+			float dz_next = abs(nextPos.z - tile->position.z);
+
+			bool onCurrentPath = (dx_current < tileHalfSize && dz_current < tileHalfSize);
+			bool onNextPath = (dx_next < tileHalfSize && dz_next < tileHalfSize);
+
+			// 현재 위치나 목표 위치 중 하나에 겹치는 타일만 검사
+			if (onCurrentPath || onNextPath) {
+				float tileTop = tile->position.y + tileHalfSize;
+				float tileBottom = tile->position.y - tileHalfSize;
+
+				// 중간 높이에 있는 타일인지 확인
+				// 현재 서있는 타일보다 위에 있고, 목표 타일보다 아래에 있으면 중간 장애물
+				if (tileBottom > minCheckHeight + 0.1f && tileTop < maxCheckHeight - 0.1f) {
+					// 회전 경로를 막는 벽 발견
+					return true;
+				}
+
+				// 목표 위치의 바로 아래층(목표-1칸)에 타일이 있는지 체크
+				// 이 경우도 올라갈 수 없음 (벽에 막힘)
+				if (onNextPath && tileTop < targetGround - 0.1f && tileTop > currentGround + 0.1f) {
+					return true;
+				}
+			}
+		}
+
+		return false; // 경로 안전
+	}
+
+	// 낙하 체크 및 시작
+	inline void CheckAndStartFalling()
+	{
+		if (Falling || Rolling) return; // 이미 떨어지고 있거나 구르고 있으면 체크 안함
+
+		float currentGround = FindGroundHeight(position);
+		
+		// 타일이 없으면 낙하하지 않음 (맵 밖으로 나가는 것 방지)
+		if (currentGround < -99.0f) return;
+		
+		float expectedY = currentGround + 1.0f; // 타일 위에 있어야 할 Y 위치
+
+		// 현재 위치가 타일 위보다 높으면 떨어져야 함
+		if (position.y > expectedY + 0.1f) {
+			Falling = true;
+			rollProgress = 0.0f;
+			fallStartPos = position;
+			fallTargetPos = position;
+			fallTargetPos.y = expectedY;
+		}
+	}
+
+	// 떨어지는 애니메이션 업데이트
+	inline void UpdateFalling(float dt)
+	{
+		rollProgress += dt * fall_speed;
+
+		if (rollProgress >= 1.0f) {
+			// 낙하 완료
+			rollProgress = 1.0f;
+			Falling = false;
+			position = fallTargetPos;
+			
+			// 낙하 완료 후에도 추가 낙하가 필요한지 체크
+			CheckAndStartFalling();
+		}
+		else {
+			// 부드러운 낙하 (ease-in 가속)
+			
+			position.y = glm::mix(fallStartPos.y, fallTargetPos.y, rollProgress);
+			position.x = fallTargetPos.x;
+			position.z = fallTargetPos.z;
+		}
+	}
+
+	// 충돌 처리 로직
+	void OnCollision(GameObject* other) {
+
 	}
 };
 PlayerCube player({ 0.0f, 2.0f, 0.0f });

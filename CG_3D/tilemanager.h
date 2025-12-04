@@ -139,6 +139,22 @@ public:
     void Update(float dt) override {
 	}
 };
+class EndTile : public TileBase {
+public:
+    EndTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "endtile";
+    }
+    void OnCubeEnter(PlayerCube* cube) override {
+        cout << "스테이지 클리어!" << endl;
+    }
+    void OnCubeStay(PlayerCube* cube) override {
+    }
+    void OnCubeExit(PlayerCube* cube) override {
+    }
+    void Update(float dt) override {
+    }
+};
 
 class MakeTile : public TileBase {
 public:
@@ -175,6 +191,11 @@ public:
 			texture = &moving_cube_texture;
             color_type = 0;
             break;
+		case '1':
+            type = "endtile";
+            texture = &BackGround_cube_texture;
+            color_type = 0;
+            break;
         }
         cout << "현재 선택된 타일: " << type << endl;
     }
@@ -186,8 +207,8 @@ public:
     vector<TileBase*> tiles;
 	MakeTile make_tile;
     glm::vec3 playerPos = glm::vec3{ 0,0,0 };
-    int gridWidth = 20;
-    int gridHeight = 20;
+    int gridWidth = 10;
+    int gridHeight = 10;
     float tileSize = 2.0f; // 타일 하나의 크기
 	bool editing_mode = true;
     bool making_move_tile = false;
@@ -224,6 +245,11 @@ public:
             tile->InitializeRendering(&public_cube, &moving_cube_texture);
             tiles.push_back(tile);
 		}
+        else if (make_tile.type == "endtile") {
+            EndTile* tile = new EndTile(pos);
+            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
+            tiles.push_back(tile);
+        }
         else {
             RotateTile* tile = new RotateTile(pos);
             tile->InitializeRendering(&public_cube, &rotate_cube_texture);
@@ -270,7 +296,7 @@ public:
 
                     
 					move_cube_line.vertices.clear();
-					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{0.0f, 0.0f, 0.0f, 1.0f} });
+					move_cube_line.vertices.push_back({ moveTile->position, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f} });
 					cout <<  move_cube_line.vbo << endl;
                     move_cube_line.Update();
                 }
@@ -336,7 +362,7 @@ public:
     void SaveToJSON(const char* filepath) {
         ofstream file(filepath);
         file << "{\n";
-        file << "  \"playerPos\": [" << make_tile.position.x << ", " << make_tile.position.y << ", " << make_tile.position.z << "],\n";
+        file << "  \"playerPos\": [" << (int)make_tile.position.x << ", " << (int)make_tile.position.y << ", " << (int)make_tile.position.z << "],\n";
         file << "  \"gridWidth\": " << gridWidth << ",\n";
         file << "  \"gridHeight\": " << gridHeight << ",\n";
         file << "  \"tileSize\": " << tileSize << ",\n";
@@ -344,9 +370,9 @@ public:
 
         for (int i = 0; i < tiles.size(); ++i) {
             file << "    {\n";
-            file << "      \"x\": " << tiles[i]->position.x << ",\n";
-            file << "      \"y\": " << tiles[i]->position.y << ",\n";
-            file << "      \"z\": " << tiles[i]->position.z << ",\n";
+            file << "      \"x\": " << (int)tiles[i]->position.x << ",\n";
+            file << "      \"y\": " << (int)tiles[i]->position.y << ",\n";
+            file << "      \"z\": " << (int)tiles[i]->position.z << ",\n";
             file << "      \"type\": \"" << tiles[i]->type << "\"";
 
             // MoveTile인 경우 이동 경로 저장
@@ -355,9 +381,9 @@ public:
                 if (moveTile && !moveTile->moveCommend.empty()) {
                     file << ",\n      \"moveCommands\": [\n";
                     for (int j = 0; j < moveTile->moveCommend.size(); ++j) {
-                        file << "        { \"x\": " << moveTile->moveCommend[j].x
-                            << ", \"y\": " << moveTile->moveCommend[j].y
-                            << ", \"z\": " << moveTile->moveCommend[j].z << " }";
+                        file << "        { \"x\": " << (int)moveTile->moveCommend[j].x
+                            << ", \"y\": " << (int)moveTile->moveCommend[j].y
+                            << ", \"z\": " << (int)moveTile->moveCommend[j].z << " }";
                         if (j < moveTile->moveCommend.size() - 1) file << ",\n";
                         else file << "\n";
                     }
@@ -469,6 +495,11 @@ public:
                         else if (tileType == "switchtile") {
                             tile = new SwitchTile(pos);
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "endtile") {
+                            tile = new EndTile(pos);
+                            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "movetile") {
@@ -596,6 +627,12 @@ public:
         }
 		make_tile.result_matrix(cam);
 		make_tile.Draw();
+    }
+    void DrawAll_O(Camera& cam) {
+        for (auto* tile : tiles) {
+            tile->result_O_matrix(cam);
+            tile->Draw();
+        }
     }
 
     void Clear() {
