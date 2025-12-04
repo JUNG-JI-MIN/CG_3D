@@ -116,7 +116,9 @@ public:
         cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
-        if (!switched_map)
+        if (!switched_map) return;
+
+
     }
 };
 
