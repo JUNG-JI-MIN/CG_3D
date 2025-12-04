@@ -292,8 +292,7 @@ GLvoid drawScene() {
 
     fireworkmanager.Draw(camera);
 
-    
-    glViewport(width * 4/5, height- width * 1 / 5, width * 1 / 5, width * 1 / 5);
+    glViewport(width * 4/5, height- width * 1 / 5,width * 1 / 5, width * 1 / 5);
     
     player.result_O_matrix(mini_camera);
     player.Draw();
