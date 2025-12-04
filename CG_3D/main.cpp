@@ -146,6 +146,9 @@ void onSpecialKey(int key, int x, int y) {
 		case GLUT_KEY_F5:
 			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
+        case GLUT_KEY_F10:
+            tileManager.SaveToJSON("json/stage.json");
+            break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
             player.position = tileManager.playerPos;

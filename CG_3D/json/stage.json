@@ -658,30 +658,6 @@
       "type": "groundtile"
     },
     {
-      "x": -2,
-      "y": 8,
-      "z": 10,
-      "type": "groundtile"
-    },
-    {
-      "x": -2,
-      "y": 10,
-      "z": 12,
-      "type": "groundtile"
-    },
-    {
-      "x": -2,
-      "y": 12,
-      "z": 14,
-      "type": "groundtile"
-    },
-    {
-      "x": -2,
-      "y": 14,
-      "z": 16,
-      "type": "groundtile"
-    },
-    {
       "x": 18,
       "y": 0,
       "z": 14,
@@ -835,6 +811,18 @@
       "y": 2,
       "z": -20,
       "type": "groundtile"
+    },
+    {
+      "x": -2,
+      "y": 6,
+      "z": 10,
+      "type": "endtile"
+    },
+    {
+      "x": -2,
+      "y": 6,
+      "z": 12,
+      "type": "GoToTwoTile"
     }
   ]
 }
