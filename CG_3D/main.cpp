@@ -172,8 +172,8 @@ void RoadTexture() {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 1600;
-    height = 1200;
+    width = 800; 
+    height = 600;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);

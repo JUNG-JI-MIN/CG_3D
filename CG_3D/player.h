@@ -55,6 +55,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 올라갈 때: 목표 타일의 모서리를 기준으로 회전
 			float targetTileBottom = targetGroundHeight - 1.0f;
@@ -90,6 +91,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 같은 높이: 큐브 하단 기준으로 회전
 			float cubeBottomY = position.y - 1.0f;
@@ -119,6 +121,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({position.x,position.y-2,position.z});
 
 			// 이동은 수평으로 진행
 			float cubeBottomY = position.y - 1.0f;
@@ -149,7 +152,7 @@ public:
 			CheckAndStartFalling();
 			return;
 		}
-
+		
 		// 진행도 업데이트
 		rollProgress += dt * roll_speed;
 
@@ -189,7 +192,7 @@ public:
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
 				CheckAndStartFalling();
 			}
-
+			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -437,6 +440,7 @@ private:
 			rollProgress = 1.0f;
 			Falling = false;
 			position = fallTargetPos;
+			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
 			
 			// 낙하 완료 후에도 추가 낙하가 필요한지 체크
 			CheckAndStartFalling();
