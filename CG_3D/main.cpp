@@ -33,16 +33,37 @@ void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
-    // 플레이어 업데이트
+    // 플레이어 업데이트 먼저
     player.Update(dt);
-    fireworkmanager.update(dt);
-    // 카메라 업데이트
-    trace_player();
-
-	// 타일 매니저 업데이트
+    
+    // 타일 매니저 업데이트 (한 번만 호출)
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
+        
+        // 플레이어가 움직이지 않을 때만 MoveTile과 함께 이동
+        if (!player.Rolling && !player.Falling) {
+            TileBase* currentTile = tileManager.GetTileUnderPlayer(player.position);
+            if (currentTile && currentTile->type == "movetile") {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
+                if (moveTile) {
+                    // 플레이어를 타일 중심의 정확한 위치로 스냅
+                    player.position.x = moveTile->position.x;
+                    player.position.z = moveTile->position.z;
+                    player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
+                    
+                    // MoveTile의 이동량도 적용
+                    if (glm::length(moveTile->movementDelta) > 0.0001f) {
+                        player.position += moveTile->movementDelta;
+                    }
+                }
+            }
+        }
     }
+    
+    fireworkmanager.update(dt);
+    
+    // 카메라 업데이트
+    trace_player();
     
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
