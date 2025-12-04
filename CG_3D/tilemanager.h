@@ -49,6 +49,7 @@ public:
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
+
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
@@ -277,7 +278,7 @@ public:
 		case GLUT_KEY_F2: 
             type = "GoToOneTile";  
 			texture = &One_cube_texture;
-            model = &public_cube;
+            model = &stage_cube;
             color_type = 0;
             break;
 		case GLUT_KEY_F3: 
@@ -382,7 +383,7 @@ public:
         }
         else if (make_tile.type == "QuitTile") {
             QuitTile* tile = new QuitTile(pos);
-            tile->InitializeRendering(&public_cube, &quit_texture);
+            tile->InitializeRendering(&stage_cube, &quit_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "switchtile") {
@@ -639,17 +640,17 @@ public:
                         }
                         else if (tileType == "GoToOneTile") {
                             tile = new GoToOneTile(pos);
-                            tile->InitializeRendering(&public_cube, &One_cube_texture);
+                            tile->InitializeRendering(&stage_cube, &One_cube_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "GoToTwoTile") {
                             tile = new GoToTwoTile(pos);
-                            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+                            tile->InitializeRendering(&stage_cube, &Two_cube_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "QuitTile") {
                             tile = new QuitTile(pos);
-                            tile->InitializeRendering(&public_cube, &quit_texture);
+                            tile->InitializeRendering(&stage_cube, &quit_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "switchtile") {
@@ -801,6 +802,7 @@ public:
         for (TileBase* t : tiles) {
             if (t->position == pos) {
                 t->OnCubeEnter();
+                
             }
         }
     }

@@ -224,8 +224,10 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
-    tileManager.GenerateGrid();
-    tileManager.GenerateBackground();
+    //tileManager.GenerateGrid();
+    //tileManager.GenerateBackground();
+
+	tileManager.LoadFromJSON("json/Mainmenu.json");
 
     light.Init();
 

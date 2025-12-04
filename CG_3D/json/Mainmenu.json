@@ -1,5 +1,5 @@
 {
-  "playerPos": [0, 2, 0],
+  "playerPos": [-2, 2, -2],
   "gridWidth": 10,
   "gridHeight": 10,
   "tileSize": 2,
@@ -1877,18 +1877,6 @@
       "type": "groundtile"
     },
     {
-      "x": 20,
-      "y": 0,
-      "z": 20,
-      "type": "endtile"
-    },
-    {
-      "x": 0,
-      "y": 0,
-      "z": 22,
-      "type": "GoToOneTile"
-    },
-    {
       "x": 0,
       "y": 0,
       "z": 20,
@@ -1907,16 +1895,16 @@
       "type": "GoToOneTile"
     },
     {
-      "x": 20,
+      "x": 0,
       "y": 0,
-      "z": 0,
-      "type": "GoToTwoTile"
+      "z": 22,
+      "type": "GoToOneTile"
     },
     {
-      "x": 22,
+      "x": 20,
       "y": 0,
-      "z": 0,
-      "type": "GoToTwoTile"
+      "z": 20,
+      "type": "QuitTile"
     },
     {
       "x": 22,
@@ -1928,6 +1916,18 @@
       "x": 20,
       "y": 0,
       "z": 2,
+      "type": "GoToTwoTile"
+    },
+    {
+      "x": 20,
+      "y": 0,
+      "z": 0,
+      "type": "GoToTwoTile"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "z": 0,
       "type": "GoToTwoTile"
     }
   ]

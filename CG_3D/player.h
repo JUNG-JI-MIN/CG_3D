@@ -197,7 +197,7 @@ public:
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
 				CheckAndStartFalling();
 			}
-			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
+			CubeEnter({ position.x,position.y - 2,position.z });
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -445,7 +445,7 @@ private:
 			rollProgress = 1.0f;
 			Falling = false;
 			position = fallTargetPos;
-			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
+			CubeEnter({ position.x,position.y - 2,position.z });
 			
 			// 낙하 완료 후에도 추가 낙하가 필요한지 체크
 			CheckAndStartFalling();
@@ -456,6 +456,29 @@ private:
 			position.y = glm::mix(fallStartPos.y, fallTargetPos.y, rollProgress);
 			position.x = fallTargetPos.x;
 			position.z = fallTargetPos.z;
+		}
+	}
+
+	inline void CubeEnter(glm::vec3 pos) {
+		for (TileBase* t : tileManager.tiles) {
+			if (t->position == pos) {
+				t->OnCubeEnter();
+				if (t->type == "QuitTile") {
+					exit(0);
+				}
+				else if (t->type == "GoToOneTile") {
+					tileManager.LoadFromJSON("json/stage.json");
+					position = tileManager.playerPos;
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "GoToTwoTile") {
+					tileManager.LoadFromJSON("json/stage2.json");
+					position = tileManager.playerPos;
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+			}
 		}
 	}
 
