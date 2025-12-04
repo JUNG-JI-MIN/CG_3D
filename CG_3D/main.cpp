@@ -178,12 +178,11 @@ void RoadTexture() {
     player3_cube_texture.Load("resource/player/player2.png");
 
     ground_cube_texture.Load("resource/tile/silver.png");
-    spring_cube_texture.Load("resource/tile/stage_tile.png");
+    spring_cube_texture.Load("resource/tile/slime.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
 
-	stage_cube.Init();
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
@@ -214,7 +213,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	RoadTexture(); // 텍스쳐 로드 함수
 	line.Init();
     move_cube_line.Init();
-    player.InitializeRendering(&stage_cube, &spring_cube_texture);
+    player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
     tileManager.GenerateGrid();
