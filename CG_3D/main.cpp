@@ -146,6 +146,9 @@ void onSpecialKey(int key, int x, int y) {
 		case GLUT_KEY_F5:
 			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
+        case GLUT_KEY_F10:
+            tileManager.SaveToJSON("json/stage.json");
+            break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
             player.position = tileManager.playerPos;
@@ -224,8 +227,10 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
-    tileManager.GenerateGrid();
-    tileManager.GenerateBackground();
+    //tileManager.GenerateGrid();
+    //tileManager.GenerateBackground();
+
+	tileManager.LoadFromJSON("json/Mainmenu.json");
 
     light.Init();
 
