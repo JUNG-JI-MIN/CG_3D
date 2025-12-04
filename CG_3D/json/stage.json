@@ -823,6 +823,15 @@
       "y": 6,
       "z": 12,
       "type": "GoToTwoTile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -8,
+      "type": "switchtile",
+      "switchPosition": [
+        { "x": 24, "y": 2, "z": -16 }
+      ]
     }
   ]
 }

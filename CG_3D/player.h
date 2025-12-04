@@ -478,6 +478,11 @@ private:
 					light.light[1].position = position;
 					light.player_position_update();
 				}
+				else if (t->type == "switchtile") {
+					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
+					tileManager.switching = true;
+					cout << "스위치 타일 접촉 감지" << endl;
+				}
 			}
 		}
 	}

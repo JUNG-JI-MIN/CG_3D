@@ -100,15 +100,16 @@ public:
 // 스위치 땅 타일
 class SwitchTile : public TileBase {
 public:
-    bool switched_map = false;
+    glm::vec3 switch_position = glm::vec3(-100.0f);
+
     SwitchTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "switchtile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
-        if (switched_map == true) return;
-        switched_map = true;
+        fireworkmanager.createRisingCubesEffect(position);
+        fireworkmanager.createRisingCubesEffect(switch_position);
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
@@ -117,9 +118,7 @@ public:
         cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
-        if (!switched_map) return;
-
-
+        
     }
 };
 
@@ -201,12 +200,15 @@ public:
 // 회전하는 땅 타일
 class RotateTile : public TileBase {
 public:
+    bool switched_map = false;
     RotateTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "rotatetile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
+        if (switched_map == true) return;
+        switched_map = true;
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
@@ -215,6 +217,7 @@ public:
         cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
+        if (!switched_map) return;
     }
 };
 
@@ -329,7 +332,10 @@ public:
     float tileSize = 2.0f; // 타일 하나의 크기
 	bool editing_mode = true;
     bool making_move_tile = false;
-	TileBase* selected_move_tile = nullptr;
+	bool setting_switch_tile = false;
+	bool switching = false;
+	TileBase* selected_tile = nullptr;
+	SwitchTile* current_switch_tile = nullptr;
 
     // 플레이어가 현재 서있는 타일을 찾는 함수
     TileBase* GetTileUnderPlayer(glm::vec3 playerPos) {
@@ -444,7 +450,7 @@ public:
                 if (make_tile.position == t->position) {
                     MoveTile* moveTile = dynamic_cast<MoveTile*>(t);
                     if (!moveTile) continue;  // 캐스팅 실패 시 건너뜀
-                    selected_move_tile = moveTile;  // MoveTile*로 저장
+                    selected_tile = moveTile;  // MoveTile*로 저장
                     moveTile->moveCommend.clear();
                     making_move_tile = true;
 
@@ -457,7 +463,7 @@ public:
             }
         }
         else {
-            MoveTile* moveTile = dynamic_cast<MoveTile*>(selected_move_tile);
+            MoveTile* moveTile = dynamic_cast<MoveTile*>(selected_tile);
             if (!moveTile) {
                 cout << "ERROR: selected_move_tile이 MoveTile이 아닙니다!" << endl;
                 making_move_tile = false;
@@ -469,6 +475,32 @@ public:
             cout << move_cube_line.vbo << endl;
         }
     }
+    void setting_switch_position() {
+        if (!setting_switch_tile) {
+            for (auto& t : tiles) {
+                if (t->type != "switchtile") continue;
+                if (make_tile.position == t->position) {
+                    SwitchTile* switchTile = dynamic_cast<SwitchTile*>(t);
+                    if (!switchTile) continue;  // 캐스팅 실패 시 건너뜀
+                    selected_tile = switchTile;  // SwitchTile*로 저장
+                    setting_switch_tile = true;
+                    cout << "스위치 타일 위치 설정 모드 진입" << endl;
+                }
+            }
+        }
+        else {
+            SwitchTile* switchTile = dynamic_cast<SwitchTile*>(selected_tile);
+            if (!switchTile) {
+                cout << "ERROR: current_switch_tile이 SwitchTile이 아닙니다!" << endl;
+                setting_switch_tile = false;
+                return;
+            }
+            switchTile->switch_position = make_tile.position;
+            setting_switch_tile = false;
+            cout << "스위치 타일 위치 설정 완료" << endl;
+        }
+    }
+
 
     void GenerateGrid() {
         Clear();
@@ -545,6 +577,16 @@ public:
                 }
                 file << ",\n      \"speed\": " << moveTile->speed;
             }
+            else if (tiles[i]->type == "switchtile") {
+                SwitchTile* switchTile = dynamic_cast<SwitchTile*>(tiles[i]);
+                if (switchTile) {
+                    file << ",\n      \"switchPosition\": [\n        { \"x\": " 
+                        << (int)switchTile->switch_position.x
+                         << ", \"y\": " << (int)switchTile->switch_position.y
+                         << ", \"z\": " << (int)switchTile->switch_position.z << " }\n"
+                        << "      ]";
+				}
+            }
 
             file << "\n    }";
             if (i < tiles.size() - 1) file << ",";
@@ -570,8 +612,10 @@ public:
         float speed = 1.0f;
         string tileType;
         vector<glm::vec3> moveCommands;
+		glm::vec3 switchPosition = glm::vec3(-100.0f);
         bool readingTiles = false;
         bool readingMoveCommands = false;
+		bool readingSwitchPosition = false;
         int braceDepth = 0;  // { } 깊이 추적
         bool inTileObject = false;  // 타일 객체 내부 여부
 
@@ -620,6 +664,7 @@ public:
                         // 새로운 타일 객체 시작
                         inTileObject = true;
                         moveCommands.clear();
+                        switchPosition = glm::vec3(-100.0f);
                         x = 0;
                         y = 0;
                         z = 0;
@@ -660,6 +705,13 @@ public:
                             tile = new SwitchTile(pos);
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);
                             tile->color_type = 0;
+                            SwitchTile* switchTile = dynamic_cast<SwitchTile*>(tile);
+                            if (switchTile) {
+                                switchTile->switch_position = switchPosition;
+                                cout << "SwitchTile 로드: 위치(" << pos.x << ", " << pos.y << ", " << pos.z
+                                    << "), 이동대상(" << switchPosition.x << ", " << switchPosition.y << ", "
+                                    << switchPosition.z << ")" << endl;
+                            }
                         }
                         else if (tileType == "endtile") {
                             tile = new EndTile(pos);
@@ -703,7 +755,10 @@ public:
                 readingMoveCommands = true;
                 continue;
             }
-
+            if (line.find("\"switchPosition\":") != string::npos) {
+				readingSwitchPosition = true;
+				continue;
+            }
             // 이동 명령어 파싱 중
             if (readingMoveCommands) {
                 if (line.find("]") != string::npos) {
@@ -731,6 +786,31 @@ public:
                     std::cout << "이동 명령어 로드: (" << cmdX << ", " << cmdY << ", " << cmdZ << ")" << std::endl;
                 }
                 continue;
+            }
+			// 스위치 위치 파싱 중
+            if (readingSwitchPosition) {
+                if (line.find("{") != string::npos) {
+                    float cmdX = 0, cmdY = 0, cmdZ = 0;
+
+                    size_t posX = line.find("\"x\":");
+                    if (posX != string::npos) {
+                        cmdX = stof(line.substr(posX + 4));
+                    }
+
+                    size_t posY = line.find("\"y\":");
+                    if (posY != string::npos) {
+                        cmdY = stof(line.substr(posY + 4));
+                    }
+
+                    size_t posZ = line.find("\"z\":");
+                    if (posZ != string::npos) {
+                        cmdZ = stof(line.substr(posZ + 4));
+                    }
+                    switchPosition = glm::vec3(cmdX, cmdY, cmdZ);
+                }
+                readingSwitchPosition = false;
+                continue;
+
             }
 
             // 타일 정보 파싱
@@ -806,7 +886,7 @@ public:
         for (TileBase* t : tiles) {
             if (t->position == pos) {
                 t->OnCubeEnter();
-                
+                return;
             }
         }
     }
@@ -823,6 +903,7 @@ public:
         for (TileBase* t : tiles) {
             if (t->position == pos) {
                 t->OnCubeExit();
+                return;
             }
         }
     }

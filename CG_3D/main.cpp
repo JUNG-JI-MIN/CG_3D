@@ -33,9 +33,18 @@ void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
+
+
     // 플레이어 업데이트 먼저
     player.Update(dt);
     
+    if (tileManager.switching) {
+		player.position = tileManager.current_switch_tile->switch_position;
+        tileManager.switching = false;
+        light.light[1].position = player.position;
+        light.player_position_update();
+    }
+
     // 타일 매니저 업데이트 (한 번만 호출)
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
@@ -105,15 +114,20 @@ void onKey(unsigned char key, int x, int y) {
         player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
         break;
 	case '\r': 
-        if (tileManager.making_move_tile) tileManager.making_move_tile = false;
+        if (tileManager.making_move_tile) {
+            tileManager.making_move_tile = false;
+			tileManager.selected_tile = nullptr;
+        }
         else tileManager.tile_make(); // 타일 만들기
-
         break; // 엔터키
     case 'r':
 		tileManager.delete_tile(); // 타일 지우기
         break;
     case 'p':
 		tileManager.move_tile_add_command(); // 타일 이동 명령 추가
+        break;
+    case 'o':
+		tileManager.setting_switch_position(); // 스위치 타일 설정
         break;
 	case ' ':
 		tileManager.make_tile.position.y += 2.0f; // 높이 조절
