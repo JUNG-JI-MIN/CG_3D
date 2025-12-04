@@ -40,12 +40,51 @@ public:
     }
 };
 
-// 스프링 땅 타일
-class SpringTile : public TileBase {
+
+class GoToOneTile : public TileBase {
 public:
-    SpringTile(glm::vec3 pos)
+    GoToOneTile(glm::vec3 pos)
         : TileBase(pos) {
-        type = "springtile";
+        type = "GoToOneTile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
+};
+
+
+class GoToTwoTile : public TileBase {
+public:
+    GoToTwoTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "GoToTwoTile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
+};
+
+class QuitTile : public TileBase {
+public:
+    QuitTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "QuitTile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
@@ -235,8 +274,8 @@ public:
             color_type = 1;
             break;
 		case GLUT_KEY_F2: 
-            type = "springtile";  
-			texture = &spring_cube_texture;
+            type = "GoToOneTile";  
+			texture = &One_cube_texture;
             color_type = 0;
             break;
 		case GLUT_KEY_F3: 
@@ -252,6 +291,16 @@ public:
 		case '1':
             type = "endtile";
             texture = &BackGround_cube_texture;
+            color_type = 0;
+            break;
+        case '2':
+            type = "GoToTwoTile";
+            texture = &Two_cube_texture;
+            color_type = 0;
+            break;
+        case '3':
+            type = "QuitTile";
+            texture = &quit_texture;
             color_type = 0;
             break;
         }
@@ -314,9 +363,19 @@ public:
 			tile->color_type = 1;
             tiles.push_back(tile);
         }
-        else if (make_tile.type == "springtile") {
-            SpringTile* tile = new SpringTile(pos);
-            tile->InitializeRendering(&public_cube, &spring_cube_texture);
+        else if (make_tile.type == "GoToOneTile") {
+            GoToOneTile* tile = new GoToOneTile(pos);
+            tile->InitializeRendering(&public_cube, &One_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "GoToTwoTile") {
+            GoToTwoTile* tile = new GoToTwoTile(pos);
+            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "QuitTile") {
+            QuitTile* tile = new QuitTile(pos);
+            tile->InitializeRendering(&public_cube, &quit_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "switchtile") {
@@ -571,9 +630,19 @@ public:
                             tile->InitializeRendering(&public_cube, &ground_cube_texture);
 							tile->color_type = 1;
                         }
-                        else if (tileType == "springtile") {
-                            tile = new SpringTile(pos);
-                            tile->InitializeRendering(&public_cube, &spring_cube_texture);
+                        else if (tileType == "GoToOneTile") {
+                            tile = new GoToOneTile(pos);
+                            tile->InitializeRendering(&public_cube, &One_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "GoToTwoTile") {
+                            tile = new GoToTwoTile(pos);
+                            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "QuitTile") {
+                            tile = new QuitTile(pos);
+                            tile->InitializeRendering(&public_cube, &quit_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "switchtile") {

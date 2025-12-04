@@ -435,7 +435,9 @@ Texture player_cube_texture; // 플레이어 1
 Texture player2_cube_texture;
 Texture player3_cube_texture;
 Texture ground_cube_texture; // 땅
-Texture spring_cube_texture; // 스프링
+Texture One_cube_texture;
+Texture Two_cube_texture;
+Texture quit_texture;
 Texture moving_cube_texture; // 무빙
 Texture rotate_cube_texture; // 회전
 Texture switch_cube_texture; // 스위치
