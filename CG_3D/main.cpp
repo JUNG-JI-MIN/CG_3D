@@ -35,6 +35,7 @@ void TimerFunction(int value) {
 
     // 플레이어 업데이트
     player.Update(dt);
+    fireworkmanager.update(dt);
     // 카메라 업데이트
     trace_player();
 
@@ -241,6 +242,8 @@ GLvoid drawScene() {
 
 	tileManager.DrawAll(camera);
 
+    fireworkmanager.Draw(camera);
+
     
     glViewport(width * 4/5, height- width * 1 / 5, width * 1 / 5, width * 1 / 5);
     
@@ -296,6 +299,31 @@ void make_fragmentShaders()
         return;
     }
 }
+void make_geometryShaders()
+{
+    geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+
+    // geometry.glsl 읽기
+    std::ifstream shaderFile("geometry.glsl");
+    std::stringstream shaderStream;
+    shaderStream << shaderFile.rdbuf();
+    std::string shaderSource = shaderStream.str();
+    const char* shaderCode = shaderSource.c_str();
+
+    glShaderSource(geometryShader, 1, &shaderCode, NULL);
+    glCompileShader(geometryShader);
+
+    // 오류 체크
+    GLint success;
+    GLchar infoLog[512];
+    glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
+
+    if (!success) {
+        glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
+        std::cerr << "ERROR: Geometry Shader Compile Failed\n" << infoLog << std::endl;
+    }
+}
+
 GLuint make_shaderProgram()
 {
     GLint result;
@@ -304,9 +332,13 @@ GLuint make_shaderProgram()
     shaderID = glCreateProgram(); //--- 세이더 프로그램 만들기
     glAttachShader(shaderID, vertexShader); //--- 세이더 프로그램에 버텍스 세이더 붙이기
     glAttachShader(shaderID, fragmentShader); //--- 세이더 프로그램에 프래그먼트 세이더 붙이기
+    glAttachShader(shaderID, geometryShader); //--- 세이더 프로그램에 기하 쉐이더 붙이기
     glLinkProgram(shaderID); //--- 세이더 프로그램 링크하기
+    
     glDeleteShader(vertexShader); //--- 세이더 객체를 세이더 프로그램에 링크했음으로, 세이더 객체 자체는 삭제 가능
     glDeleteShader(fragmentShader);
+    glDeleteShader(geometryShader);
+
     glGetProgramiv(shaderID, GL_LINK_STATUS, &result); // ---세이더가 잘 연결되었는지 체크하기
     if (!result) {
         glGetProgramInfoLog(shaderID, 512, NULL, errorLog);

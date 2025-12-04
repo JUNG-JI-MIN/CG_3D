@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "gameobject.h"
+#include "firework.h"
 
 // 전방 선언
 class PlayerCube;
@@ -164,6 +165,7 @@ public:
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
+        fireworkmanager.createFirework(position);
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
