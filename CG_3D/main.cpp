@@ -183,13 +183,14 @@ void RoadTexture() {
     player2_cube_texture.Load("resource/player/player1.png");
     player3_cube_texture.Load("resource/player/player2.png");
     ground_cube_texture.Load("resource/tile/silver.png");
-    One_cube_texture.Load("resource/tile/slime.png");
-	Two_cube_texture.Load("resource/tile/slime.png");
+    One_cube_texture.Load("resource/tile/stage_tile.png");
+	Two_cube_texture.Load("resource/tile/stage_tile.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
-	quit_texture.Load("resource/tile/slime.png");
+	quit_texture.Load("resource/tile/stage_tile.png");
 
+    stage_cube.Init();
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
@@ -201,8 +202,8 @@ void RoadTexture() {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 1600; 
-    height = 1200;
+    width = 1200; 
+    height = 900;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);

@@ -1,4 +1,6 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS //--- 프로그램 맨 앞에 선언할 것
+#include <cmath>
 #include "gameobject.h"
 #include "tilemanager.h"
 
@@ -27,6 +29,8 @@ public:
 	inline void Rolling_in_the_deep(glm::vec3 direction)
 	{
 		if (Rolling || Falling) return;
+		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
+
 		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
 
 		dir = direction;
