@@ -271,36 +271,43 @@ public:
         case GLUT_KEY_F1: 
             type = "groundtile";  
 			texture = &ground_cube_texture;
+            model = &public_cube;
             color_type = 1;
             break;
 		case GLUT_KEY_F2: 
             type = "GoToOneTile";  
 			texture = &One_cube_texture;
+            model = &public_cube;
             color_type = 0;
             break;
 		case GLUT_KEY_F3: 
             type = "switchtile"; 
 			texture = &switch_cube_texture;
+            model = &public_cube;
             color_type = 0;
             break;
 		case GLUT_KEY_F4: 
             type = "movetile";    
 			texture = &moving_cube_texture;
+            model = &public_cube;
             color_type = 0;
             break;
 		case '1':
             type = "endtile";
             texture = &BackGround_cube_texture;
+            model = &stage_cube;
             color_type = 0;
             break;
         case '2':
             type = "GoToTwoTile";
             texture = &Two_cube_texture;
+            model = &stage_cube;
             color_type = 0;
             break;
         case '3':
             type = "QuitTile";
             texture = &quit_texture;
+            model = &stage_cube;
             color_type = 0;
             break;
         }
@@ -365,12 +372,12 @@ public:
         }
         else if (make_tile.type == "GoToOneTile") {
             GoToOneTile* tile = new GoToOneTile(pos);
-            tile->InitializeRendering(&public_cube, &One_cube_texture);
+            tile->InitializeRendering(&stage_cube, &One_cube_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "GoToTwoTile") {
             GoToTwoTile* tile = new GoToTwoTile(pos);
-            tile->InitializeRendering(&public_cube, &Two_cube_texture);
+            tile->InitializeRendering(&stage_cube, &Two_cube_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "QuitTile") {
