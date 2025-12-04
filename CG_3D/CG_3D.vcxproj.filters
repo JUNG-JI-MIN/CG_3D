@@ -29,12 +29,18 @@
     <ClInclude Include="player.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="firework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vertex.glsl">
       <Filter>소스 파일</Filter>
     </None>
     <None Include="fragment.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="geometry.glsl">
       <Filter>소스 파일</Filter>
     </None>
   </ItemGroup>

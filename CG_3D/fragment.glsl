@@ -33,7 +33,7 @@ void main()
 
     for (int i = 0; i < 2; i++){
         // 1. Ambient
-        float ambientStrength = 0.2;
+        float ambientStrength = 1;
         vec3 ambient = ambientStrength * light[i].color;
 
         // 2. Diffuse (Ȯ�걤)

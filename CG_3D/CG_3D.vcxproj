@@ -129,12 +129,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="firework.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="tilemanager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />
+    <None Include="geometry.glsl" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

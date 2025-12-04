@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "gameobject.h"
+#include "firework.h"
 
 // 전방 선언
 class PlayerCube;
@@ -12,11 +13,11 @@ public:
     }
     string type;
     // 플레이어 큐브가 타일에 들어갔을 때 호출되는 함수
-    virtual void OnCubeEnter(PlayerCube* cube) {}
+    virtual void OnCubeEnter() {}
     // 플레이어 큐브가 타일위에 머무를 때 호출되는 함수    
-    virtual void OnCubeStay(PlayerCube* cube) {}
+    virtual void OnCubeStay() {}
     // 플레이어 큐브가 타일에서 나갔을 때 호출되는 함수
-    virtual void OnCubeExit(PlayerCube* cube) {}
+    virtual void OnCubeExit() {}
 };
 
 // 기본 땅 타일
@@ -26,11 +27,14 @@ public:
 		: TileBase(pos) {
 		type = "groundtile";
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
     }
@@ -43,11 +47,14 @@ public:
         : TileBase(pos) {
         type = "springtile";
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
     }
@@ -60,11 +67,14 @@ public:
         : TileBase(pos) {
         type = "switchtile";
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
     }
@@ -81,12 +91,14 @@ public:
         : TileBase(pos) {
         type = "movetile";
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
-        //player.position = position;
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void add_movement(glm::vec3 moving) {
 		moveCommend.push_back(moving);
@@ -113,11 +125,14 @@ public:
         : TileBase(pos) {
         type = "rotatetile";
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
     }
@@ -130,14 +145,36 @@ public:
 		type = "background";
         addRotation(0, 45, 0);
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
 	}
+};
+class EndTile : public TileBase {
+public:
+    EndTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "endtile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+        fireworkmanager.createFirework(position);
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
 };
 
 class MakeTile : public TileBase {
@@ -146,11 +183,11 @@ public:
         : TileBase(glm::vec3(0.0f, 6.0f, 0.0f)) {
         color_type = 1;
     }
-    void OnCubeEnter(PlayerCube* cube) override {
+    void OnCubeEnter() override {
     }
-    void OnCubeStay(PlayerCube* cube) override {
+    void OnCubeStay() override {
     }
-    void OnCubeExit(PlayerCube* cube) override {
+    void OnCubeExit() override {
     }
     void switching_make_tile(int key) {
         switch (key)
@@ -175,8 +212,12 @@ public:
 			texture = &moving_cube_texture;
             color_type = 0;
             break;
+		case '1':
+            type = "endtile";
+            texture = &BackGround_cube_texture;
+            color_type = 0;
+            break;
         }
-        cout << "현재 선택된 타일: " << type << endl;
     }
 };
 
@@ -186,8 +227,8 @@ public:
     vector<TileBase*> tiles;
 	MakeTile make_tile;
     glm::vec3 playerPos = glm::vec3{ 0,0,0 };
-    int gridWidth = 20;
-    int gridHeight = 20;
+    int gridWidth = 10;
+    int gridHeight = 10;
     float tileSize = 2.0f; // 타일 하나의 크기
 	bool editing_mode = true;
     bool making_move_tile = false;
@@ -224,6 +265,11 @@ public:
             tile->InitializeRendering(&public_cube, &moving_cube_texture);
             tiles.push_back(tile);
 		}
+        else if (make_tile.type == "endtile") {
+            EndTile* tile = new EndTile(pos);
+            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
+            tiles.push_back(tile);
+        }
         else {
             RotateTile* tile = new RotateTile(pos);
             tile->InitializeRendering(&public_cube, &rotate_cube_texture);
@@ -471,6 +517,11 @@ public:
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);
                             tile->color_type = 0;
                         }
+                        else if (tileType == "endtile") {
+                            tile = new EndTile(pos);
+                            tile->InitializeRendering(&public_cube, &BackGround_cube_texture);
+                            tile->color_type = 0;
+                        }
                         else if (tileType == "movetile") {
                             MoveTile* moveTile = new MoveTile(pos);
                             moveTile->InitializeRendering(&public_cube, &moving_cube_texture);
@@ -580,6 +631,7 @@ public:
             tile->Update(dt);
 		}
     }
+    // 일반 화면 출력하는 거
     void DrawAll(Camera& cam) {
         for (auto* tile : tiles) {
             GLuint u;
@@ -597,7 +649,35 @@ public:
 		make_tile.result_matrix(cam);
 		make_tile.Draw();
     }
+    // 미니맵에 쓰는 함수
+    void DrawAll_O(Camera& cam) {
+        for (auto* tile : tiles) {
+            tile->result_O_matrix(cam);
+            tile->Draw();
+        }
+    }
 
+    void CubeEnter(glm::vec3 pos) {
+        for (TileBase* t : tiles) {
+            if (t->position == pos) {
+                t->OnCubeEnter();
+            }
+        }
+    }
+    void CubeStay(glm::vec3 pos) {
+        for (TileBase* t : tiles) {
+            if (t->position == pos) {
+                t->OnCubeStay();
+            }
+        }
+    }
+    void CubeExit(glm::vec3 pos) {
+        for (TileBase* t : tiles) {
+            if (t->position == pos) {
+                t->OnCubeExit();
+            }
+        }
+    }
     void Clear() {
         for (auto* tile : tiles) {
             delete tile;

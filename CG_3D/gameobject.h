@@ -51,6 +51,8 @@ bool light_off = false;
 //--- 아래 5개 함수는 사용자 정의 함수 임
 void make_vertexShaders();
 void make_fragmentShaders();
+void make_geometryShaders();
+
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
@@ -59,6 +61,7 @@ GLuint width, height;
 GLuint shaderProgramID; //--- 세이더 프로그램 이름
 GLuint vertexShader; //--- 버텍스 세이더 객체
 GLuint fragmentShader; //--- 프래그먼트 세이더 객체
+GLuint geometryShader;
 // 정점에 대한 정의들 위치 색상 법선 텍스쳐좌표
 struct Vertex {
     glm::vec3 position;
@@ -274,6 +277,7 @@ public:
     }
 };
 
+
 // 조명 클래스
 typedef struct LIGHT {
     glm::vec3 position;
@@ -319,9 +323,12 @@ public:
 
 //Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
 Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera mini_camera({ 0.0f,50.0f,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,-1.0f });
 LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
 LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
 Light light(bang_light,point_light);
+
+
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
 public:
@@ -527,6 +534,26 @@ public:
         glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
 
         
+        u = glGetUniformLocation(shaderProgramID, "n");
+        glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    }
+    void result_O_matrix(Camera& camera) {
+        glm::mat4 modelMatrix;
+		glm::mat4 uProj = camera.Orthographic_matrix_update();
+        glm::mat4 uModel = getModelMatrix();
+        glm::mat4 uView = camera.View_matrix_update();
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(uModel)));
+
+        GLuint u = glGetUniformLocation(shaderProgramID, "m");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uModel));
+
+        u = glGetUniformLocation(shaderProgramID, "v");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uView));
+
+        u = glGetUniformLocation(shaderProgramID, "p");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
+
+
         u = glGetUniformLocation(shaderProgramID, "n");
         glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
     }

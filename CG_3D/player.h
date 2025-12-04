@@ -55,6 +55,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 올라갈 때: 목표 타일의 모서리를 기준으로 회전
 			float targetTileBottom = targetGroundHeight - 1.0f;
@@ -90,6 +91,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 같은 높이: 큐브 하단 기준으로 회전
 			float cubeBottomY = position.y - 1.0f;
@@ -119,6 +121,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			tileManager.CubeExit({position.x,position.y-2,position.z});
 
 			// 이동은 수평으로 진행
 			float cubeBottomY = position.y - 1.0f;
@@ -149,7 +152,7 @@ public:
 			CheckAndStartFalling();
 			return;
 		}
-
+		
 		// 진행도 업데이트
 		rollProgress += dt * roll_speed;
 
@@ -189,7 +192,7 @@ public:
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
 				CheckAndStartFalling();
 			}
-
+			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -208,11 +211,6 @@ public:
 		light.light[1].position = position;
 		light.player_position_update();
 	}
-
-	// 충돌 처리 로직
-    void OnCollision(GameObject* other) {
-
-    }
 
 private:
 	inline int CheckTileAtDirection(glm::vec3 direction, float& outTargetHeight)
@@ -240,7 +238,9 @@ private:
 			float currentLevelHeight = FindGroundHeight(checkPos);
 
 			if (currentLevelHeight > -99.0f && currentLevelHeight > belowHeight + 0.1f) {
+				checkPos.y += 2.0f;
 				for (const auto& t : tileManager.tiles) {
+					if (t->position == checkPos) return -1; // 앞 타일 위에 타일이 있음 - 이동 불가
 					if (t->position == player_y) return -1; // 위에 타일이 있음 - 이동 불가
 				}
 				// 3단계: 위에 타일이 있는지 확인
@@ -440,6 +440,7 @@ private:
 			rollProgress = 1.0f;
 			Falling = false;
 			position = fallTargetPos;
+			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
 			
 			// 낙하 완료 후에도 추가 낙하가 필요한지 체크
 			CheckAndStartFalling();
@@ -451,6 +452,11 @@ private:
 			position.x = fallTargetPos.x;
 			position.z = fallTargetPos.z;
 		}
+	}
+
+	// 충돌 처리 로직
+	void OnCollision(GameObject* other) {
+
 	}
 };
 PlayerCube player({ 0.0f, 2.0f, 0.0f });
