@@ -144,7 +144,7 @@ void onSpecialKey(int key, int x, int y) {
             tileManager.make_tile.position.x += 2.0f;
 			break;
 		case GLUT_KEY_F5:
-			tileManager.SaveToJSON("json/stage.json");
+			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
@@ -157,6 +157,12 @@ void onSpecialKey(int key, int x, int y) {
 			break;
         case GLUT_KEY_F8:
             tileManager.LoadFromJSON("json/stage2.json");
+            player.position = tileManager.playerPos;
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
+        case GLUT_KEY_F9:
+            tileManager.LoadFromJSON("json/Mainmenu.json");
             player.position = tileManager.playerPos;
             light.light[1].position = player.position;
             light.player_position_update();
@@ -176,12 +182,13 @@ void RoadTexture() {
     player_cube_texture.Load("resource/player_of_space.png");
     player2_cube_texture.Load("resource/player/player1.png");
     player3_cube_texture.Load("resource/player/player2.png");
-
     ground_cube_texture.Load("resource/tile/silver.png");
-    spring_cube_texture.Load("resource/tile/slime.png");
+    One_cube_texture.Load("resource/tile/slime.png");
+	Two_cube_texture.Load("resource/tile/slime.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
+	quit_texture.Load("resource/tile/slime.png");
 
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
@@ -194,8 +201,8 @@ void RoadTexture() {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 800; 
-    height = 600;
+    width = 1600; 
+    height = 1200;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
