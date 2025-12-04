@@ -1,0 +1,38 @@
+스텝 1. 입력을 받은 벡터값을 기준 {player.position.x + 벡터값.x,player.position.y - 2,player.position.z + 벡터값.z}에 타일이 있는지 체크
+
+스텝 2-1. 있다면 그 타일의 바로 위에 타일이 있는 지 체크 
+스텝 2-1-1. 없다면 이동 후 return
+스텝 2-1-2. 있다면 player.position.y + 2에 타일이 있는지 확인 
+스텝 2-1-2-1 있다면 return 없다면 올라가기 (지금 코드 보면 반원을 그리며 이동하는데 그걸 90도 더 하면 됨)
+
+스텝 2-2. 없다면 player.position.y > 목표 위치의 x와 z가 같은 타일의 y  > -10인 타일이 있는 지 확인 
+스텝 2-2-1 있다면 떨어지는 함수 호출 (이미 있음) 
+스텝 2-2-2 없다면 return
+
+
+
+
+
+
+
+
+if 입력을 받은 벡터값을 기준 {player.position.x + 벡터값.x,player.position.y - 2,player.position.z + 벡터값.z}에 타일이 있는가?{
+
+		if {player.position.x + 벡터값.x, player.position.y, player.position.z + 벡터값.z}에 타일이 있는가? {			
+			if {player.position.x + 벡터값.x, player.position.y + 2, player.position.z + 벡터값.z}에 타일이 있는가? return
+			else 올라가기 // 이미 함수가 있는걸로 아는디?
+		}
+		else {
+			이동하기
+		}
+}
+else {
+	MIN = -10; // -10에는 타일이 없음
+	for (모든 타일 돌리기){
+		if (모든 타일을 돌며 tile.position.x == player.position.x + 벡터값.x이랑 tile.position.z == player.position.z + 벡터값.z을 가지는 타일인가?){
+			if (tile.position.y < player.position.y and tile.position.y > MIN) MIN = tile.position.y
+		}
+	}
+	if MIN == -10 return;
+	else MIN까지 낙하 
+}

@@ -1,20 +1,27 @@
 /*
+Camera
+└── 원근 투영, 직각 투영, 경사 투영
+Light
+└── LIGHT구조체를 통해 방향광과 점광원 두개 생성
+Model 필요한 모델은 한번만 선언
+└── VAO, VBO, EBO, 바인딩
+Texture 필요한 텍스쳐는 한번만 선언
+└── 텍스쳐 ID, 바인딩
 GameObject
-├── TileBase
+│└── Draw, Update
+│
+├── Model* 선언된 모델중 원하는 거 선택
+├── Texture* 선언된 텍스쳐 중 원하는 거 선택
+│
+├── TileBase <- vector<TileBase> tiles 로 타일 관리 
+│     ├── 시작점
 │     ├── GroundTile
-│     ├── SpringTile
 │     ├── MovingPlatformTile
-│     ├── RotatingTile
-│     └── SwitchTile
+│     ├── RotatingTile // 카메라 회전 
+│     ├── SwitchTile // 포탈 
+│     └── 도착점 
 │
-├── PlayerCube
-│
-├── Item(시점 전환 등) 이건 추가해도 되고 안 해도 되는 부분
-│     ├── CameraSwitchItem 
-│     ├── SpeedUpItem
-│     └── KeyItem 
-│
-└── CheckPoint / GoalFlag
+└── PlayerCube
 
 이런 구조로 설계하긴 했어 Object는 기본적인 렌더링을 하고 있고, GameObject는 게임 로직을 포함하는 객체임, 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 */
@@ -40,9 +47,12 @@ GameObject
 #include <gl/glm/gtx/rotate_vector.hpp>
 #include <stb_image.h>
 using namespace std;
+bool light_off = false;
 //--- 아래 5개 함수는 사용자 정의 함수 임
 void make_vertexShaders();
 void make_fragmentShaders();
+void make_geometryShaders();
+
 GLuint make_shaderProgram();
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
@@ -51,7 +61,9 @@ GLuint width, height;
 GLuint shaderProgramID; //--- 세이더 프로그램 이름
 GLuint vertexShader; //--- 버텍스 세이더 객체
 GLuint fragmentShader; //--- 프래그먼트 세이더 객체
+GLuint geometryShader;
 // 정점에 대한 정의들 위치 색상 법선 텍스쳐좌표
+
 struct Vertex {
     glm::vec3 position;
     glm::vec4 color;
@@ -115,15 +127,57 @@ vector<unsigned int> create_cube_index() {
         12, 15, 14,
         12, 14, 13,
         // 위면
-        19, 18, 15,
-        19, 15, 16,
+        16, 19, 18,
+        16, 18, 17,
         // 아래면
         20, 23, 22,
         20, 22, 21
     };
     return cube_indices;
 }
+vector<Vertex> cube_2x1_Image(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 1,1,1,1 })
+{
+    vector<Vertex> v = {
 
+        // ===== 왼쪽 텍스처(0~0.5) : 앞면 =====
+        { {-x,-y, z}, color, {0,0, 1}, {0.0f, 0.0f} },
+        { { x,-y, z}, color, {0,0, 1}, {0.5f, 0.0f} },
+        { { x, y, z}, color, {0,0, 1}, {0.5f, 1.0f} },
+        { {-x, y, z}, color, {0,0, 1}, {0.0f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 뒷면 =====
+        { {-x,-y,-z}, color, {0,0,-1}, {0.0f, 0.0f} },
+        { { x,-y,-z}, color, {0,0,-1}, {0.5f, 0.0f} },
+        { { x, y,-z}, color, {0,0,-1}, {0.5f, 1.0f} },
+        { {-x, y,-z}, color, {0,0,-1}, {0.0f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 왼쪽면 =====
+        { {-x,-y,-z}, color, {-1,0,0}, {0.5f, 0.0f} },
+        { {-x,-y, z}, color, {-1,0,0}, {0.0f, 0.0f} },
+        { {-x, y, z}, color, {-1,0,0}, {0.0f, 1.0f} },
+        { {-x, y,-z}, color, {-1,0,0}, {0.5f, 1.0f} },
+
+        // ===== 왼쪽 텍스처(0~0.5) : 오른쪽면 =====
+        { { x,-y,-z}, color, {1,0,0}, {0.0f, 0.0f} },
+        { { x,-y, z}, color, {1,0,0}, {0.5f, 0.0f} },
+        { { x, y, z}, color, {1,0,0}, {0.5f, 1.0f} },
+        { { x, y,-z}, color, {1,0,0}, {0.0f, 1.0f} },
+
+        // ===== 오른쪽 텍스처(0.5~1.0) : 윗면 =====
+        { {-x, y,-z}, color, {0,1,0}, {0.5f, 0.0f} },
+        { { x, y,-z}, color, {0,1,0}, {1.0f, 0.0f} },
+        { { x, y, z}, color, {0,1,0}, {1.0f, 1.0f} },
+        { {-x, y, z}, color, {0,1,0}, {0.5f, 1.0f} },
+
+        // ===== 오른쪽 텍스처(0.5~1.0) : 아랫면 =====
+        { {-x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {0.5f, 0.0f} },
+        { {-x, -y,  z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f} },
+        { { x, -y,  z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f} },
+        { { x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {0.5f, 1.0f} }
+    };
+
+    return v;
+}
 vector<Vertex> create_circle(float r = 1.0f) {
     vector<Vertex> circle_vertices;
     float angle = 0.0f, d_angle = 3.0f;
@@ -224,8 +278,10 @@ public:
     float fovy = 45.0f; // 시양각
     float aspect; // 종횡비 아직 w와 h가 없기 때문에 계산 불가
     float n = 0.1f; // near
-    float f = 150.0f; // far
+    float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
+    float between_player_or_camera = 30.0f;
+
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
 
@@ -264,30 +320,57 @@ public:
     }
 };
 
+
 // 조명 클래스
+typedef struct LIGHT {
+    glm::vec3 position;
+    glm::vec3 dir;
+    glm::vec3 color;
+    int type;
+}LIGHT;
 class Light {
 public:
-    glm::vec3 position;
-    glm::vec3 light_color;
-    glm::vec3 viewpos;
-    Light(glm::vec3 pos, glm::vec3 lc)
-        : position(pos), light_color(lc) {
-    }
+    LIGHT light[2];
+    Light(LIGHT bang, LIGHT point) {
+        light[0] = bang;
+        light[1] = point;
+    };
     void Init() {
-        aplly_position();
-        apply_color();
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
+        u = glGetUniformLocation(shaderProgramID, "light[0].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[0].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].color));
+        u = glGetUniformLocation(shaderProgramID, "light[0].type");
+        glUniform1i(u, light[0].type);
+
+        u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
+        u = glGetUniformLocation(shaderProgramID, "light[1].dir");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].dir));
+        u = glGetUniformLocation(shaderProgramID, "light[1].color");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].color));
+        u = glGetUniformLocation(shaderProgramID, "light[1].type");
+        glUniform1i(u, light[1].type);
     }
-    void apply_color() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightColor");
-        glUniform3fv(u, 1, glm::value_ptr(light_color));
+    void player_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[1].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[1].position));
     }
-    void aplly_position() {
-        GLuint u = glGetUniformLocation(shaderProgramID, "lightPos");
-        glUniform3fv(u, 1, glm::value_ptr(position));
+    void back_position_update() {
+        GLuint u = glGetUniformLocation(shaderProgramID, "light[0].position");
+        glUniform3fv(u, 1, glm::value_ptr(light[0].position));
     }
 };
-Light light({ 0.0f,5.0f,5.0f }, { 1.0f,1.0f,1.0f });
-Camera camera({ 15.0f,15.0f,15.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+
+//Camera camera({ -70.0f,70.0f,-70.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera camera({ 30.0f,30.0f,30.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
+Camera mini_camera({ 0.0f,50.0f,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,-1.0f });
+LIGHT bang_light{ { 0,0,0 }, { 0,-1,0 }, {0.3f,0.3f,0.3f}, 0 };
+LIGHT point_light{ { 0,3,0 }, { 1,1,1 }, {0.5f,0.5f,5}, 1 };
+Light light(bang_light,point_light);
+
 
 // 추상 클래스 - 기본적으로 렌더링만 당담하는 클래스임 아무 게임 로직도 없잉 렌더링 하는 것만 담당
 class Model { 
@@ -390,8 +473,20 @@ public:
         glBindTexture(GL_TEXTURE_2D, id);
     }
 };
+Model stage_cube(cube_2x1_Image(),create_cube_index());
 Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 생성
-Texture public_cube_texture; // 전역 변수로 큐브 텍스처 생성
+Texture player_cube_texture; // 플레이어 1
+Texture player2_cube_texture;
+Texture player3_cube_texture;
+Texture ground_cube_texture; // 땅
+Texture spring_cube_texture; // 스프링
+Texture moving_cube_texture; // 무빙
+Texture rotate_cube_texture; // 회전
+Texture switch_cube_texture; // 스위치
+
+Model harf_cube(create_cube(1,0.5f,1), create_cube_index());
+Model BackGround_cube(create_cube(70,70,70), create_cube_index()); // 전역 변수로 큐브 모델 생성
+Texture BackGround_cube_texture; // 전역 변수로 큐브 텍스처 생성
 
 // 게임 오브젝트는 게임 로직을 포함하는 객체임 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 class GameObject{ // 게임 오브젝트는 게임 로직을 포함하는 객체임 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
@@ -400,6 +495,7 @@ public:
 	glm::vec3 velocity = glm::vec3(0.0f); // 속도
 	glm::vec3 multy = glm::vec3(1.0f, 1.0f, 1.0f); // 크기 
 	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // 회전 (쿼터니언)
+	int color_type; // 텍스쳐를 사용할지 일반 색을 사용할지는 이걸로 구분
 	Model* model = nullptr; // 모델 포인터
 	Texture* texture = nullptr; // 텍스처 포인터
 
@@ -438,9 +534,18 @@ public:
         // 텍스처가 있다면 바인딩
         if (texture) {
             texture->Bind();
-            // 텍스처 유니폼 위치 설정 (셰이더의 sampler2D 이름: "textureSampler" 가정)
-            GLuint uTex = glGetUniformLocation(shaderProgramID, "textureSampler");
-            glUniform1i(uTex, 0); // GL_TEXTURE0 유닛을 사용하도록 설정
+            if (color_type == 0) {
+                // 텍스처 유니폼 위치 설정 (셰이더의 sampler2D 이름: "textureSampler" 가정)
+                GLuint uTex = glGetUniformLocation(shaderProgramID, "textureSampler");
+                glUniform1i(uTex, 0); // GL_TEXTURE0 유닛을 사용하도록 설정
+                GLuint u = glGetUniformLocation(shaderProgramID, "whatColor");
+                glUniform1i(u, color_type);
+
+            }
+            else {
+                GLuint u = glGetUniformLocation(shaderProgramID, "whatColor");
+				glUniform1i(u, color_type);
+            }
         }
         // 모델 렌더링
         model->Draw();
@@ -476,10 +581,28 @@ public:
         u = glGetUniformLocation(shaderProgramID, "n");
         glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
     }
+    void result_O_matrix(Camera& camera) {
+        glm::mat4 modelMatrix;
+		glm::mat4 uProj = camera.Orthographic_matrix_update();
+        glm::mat4 uModel = getModelMatrix();
+        glm::mat4 uView = camera.View_matrix_update();
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(uModel)));
+
+        GLuint u = glGetUniformLocation(shaderProgramID, "m");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uModel));
+
+        u = glGetUniformLocation(shaderProgramID, "v");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uView));
+
+        u = glGetUniformLocation(shaderProgramID, "p");
+        glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
+
+
+        u = glGetUniformLocation(shaderProgramID, "n");
+        glUniformMatrix3fv(u, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+    }
 
 };
-
-
 
 // 얘네는 그냥 갈라파고스 느낌이라 생각해 굳이 필요한가 싶긴한데 일단 넣어놨어 나중에 원 필요하면 넣을 수 있음
 class Line {
@@ -491,13 +614,8 @@ public:
     glm::vec3 xyz = { 0.0f,0.0f ,0.0f };
     glm::vec3 multy = { 1.0f, 1.0f, 1.0f };
     glm::vec3 plus_xyz = { 0.0f,0.0f ,0.0f };
-    int dur;
-    float real_gong_angle = 0.0f;
-    Line(vector<Vertex> ver, float angle = 0.0f, int durgkf = 0) {
+    Line(vector<Vertex> ver) {
         vertices = ver;
-        rotate_angle = angle;
-        if (durgkf == 1) xyz = { 1.5f,0.0f ,0.0f };
-        dur = durgkf;
     }
     void set_XYZ(float dx, float dy, float dz)
     {
@@ -518,12 +636,8 @@ public:
     {
         float r = glm::radians(rotate_angle);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, plus_xyz);
-        if (dur == 1) {
-            model = glm::rotate(model, glm::radians(rotate_angle), { 0.0f,0.0f, 1.0f });
-        }
         model = glm::translate(model, xyz);
-        if (dur == 0) model = glm::rotate(model, r, { 0.0f,0.0f, 1.0f });
+        model = glm::rotate(model, r, { 0.0f,0.0f, 1.0f });
         model = glm::scale(model, multy);
         return model;
     }
@@ -547,13 +661,24 @@ public:
     }
     void Update() {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW);
     }
     void Draw()
     {
+        glLineWidth(5.0f);
         glBindVertexArray(vao);
         glDrawArrays(GL_LINES, 0, vertices.size());
-        glDrawArrays(GL_LINES, 1, vertices.size());
+        glLineWidth(1.0f);
+    }
+    void DDraw()
+    {   
+        if (vertices.size() < 2) return;
+
+        if (vao == 0) return;
+        glLineWidth(5.0f);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+        glLineWidth(1.0f);
     }
     void Delete()
     {
@@ -562,14 +687,38 @@ public:
     }
 
 };
+
 void result_line_matrix(Camera& camera, Line& line) {
-    glm::mat4 modelMatrix;
-    glm::mat4 uProj;
+    glm::mat4 uProj = camera.Projection_matrix_update();
     glm::mat4 uModel = line.getModelMatrix();
     glm::mat4 uView = camera.View_matrix_update();
-    uProj = camera.Projection_matrix_update();
-    modelMatrix = uProj * uView * uModel;
 
-    GLuint modelLoc = glGetUniformLocation(shaderProgramID, "u");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    GLuint u = glGetUniformLocation(shaderProgramID, "m");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uModel));
+
+    u = glGetUniformLocation(shaderProgramID, "v");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uView));
+
+    u = glGetUniformLocation(shaderProgramID, "p");
+    glUniformMatrix4fv(u, 1, GL_FALSE, glm::value_ptr(uProj));
+
+    u = glGetUniformLocation(shaderProgramID, "whatColor");
+    glUniform1i(u, 1);
 }
+vector<Vertex> line_list = {
+     // Y는 레드
+        { glm::vec3(0, 10, 0), glm::vec4(1, 0, 0, 1) },
+        { glm::vec3(0,-10, 0), glm::vec4(1, 0, 0, 1) },
+    
+     // X는 그린
+        { glm::vec3(10, 0, 0), glm::vec4(0, 1, 0, 1) },
+        { glm::vec3(-10, 0, 0), glm::vec4(0, 1, 0, 1) },
+    
+     //Z는 블루
+        { glm::vec3(0, 0, 10), glm::vec4(0, 0, 1, 1) },
+        { glm::vec3(0, 0,-10), glm::vec4(0, 0, 1, 1) }
+    
+};
+vector<Vertex> blank = {};
+Line line(line_list);
+Line move_cube_line(blank);
