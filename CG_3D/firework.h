@@ -138,7 +138,7 @@ public:
         for (const auto& firework : fireworks) {
             if (!firework.exploded) {
                 positions.push_back(firework.rocket.pos);
-                colors.push_back(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                colors.push_back(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
             }
             else {
                 for (const auto& spark : firework.sparks) {
@@ -147,7 +147,7 @@ public:
                     if (firework.effectType == ParticleEffectType::EXPLOSION) {
                         // 기존: 노랑 → 주황 → 빨강
                         float life_ratio = spark.life;
-                        colors.push_back(glm::vec4(1.0f, life_ratio * 0.5f, 0.0f, life_ratio));
+                        colors.push_back(glm::vec4(1.0f, 1.0f, 1.0f, life_ratio));
                     }
                     else {
                         // 새로운: 다양한 색상 (무지개)

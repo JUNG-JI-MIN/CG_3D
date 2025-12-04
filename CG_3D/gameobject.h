@@ -70,7 +70,7 @@ struct Vertex {
     glm::vec2 texcoord;
 };
 // 도형 생성 함수들 (버텍스와 인덱스 생성) 큐브, 원(이건 Line 클래스로 생성해야함 밑에 있으니 참고), 구
-vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }) {
+vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 0.5f, 0.5f, 0.5f, 1.0f }) {
     vector<Vertex> cube_vertices = {
         // 앞면 | Normal: +Z | TexCoords: { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
         { {-x, -y,  z}, color, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f} }, // 0 (bottom-left)
