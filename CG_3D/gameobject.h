@@ -7,6 +7,8 @@ Model 필요한 모델은 한번만 선언
 └── VAO, VBO, EBO, 바인딩
 Texture 필요한 텍스쳐는 한번만 선언
 └── 텍스쳐 ID, 바인딩
+FireWork
+└── 폭죽 터트리는 로직을 갖고 있는 객체 firemanager를 만들어 한번에 관리
 GameObject
 │└── Draw, Update
 │
@@ -14,14 +16,14 @@ GameObject
 ├── Texture* 선언된 텍스쳐 중 원하는 거 선택
 │
 ├── TileBase <- vector<TileBase> tiles 로 타일 관리 
-│     ├── 시작점
-│     ├── GroundTile
-│     ├── MovingPlatformTile
+│     ├── 시작점 필요 없음
+│     ├── GroundTile 완성
+│     ├── MovingPlatformTile 아직 미흡함
 │     ├── RotatingTile // 카메라 회전 
-│     ├── SwitchTile // 포탈 
-│     └── 도착점 
+│     ├── SwitchTile // 포탈 완성
+│     └── 도착점 완성
 │
-└── PlayerCube
+└── PlayerCube 완성
 
 이런 구조로 설계하긴 했어 Object는 기본적인 렌더링을 하고 있고, GameObject는 게임 로직을 포함하는 객체임, 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 */
