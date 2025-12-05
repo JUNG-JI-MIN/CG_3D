@@ -188,9 +188,6 @@ public:
 				// 같은 높이거나 아주 작은 높이 차이면 즉시 위치 스냅
 				if (groundHeight > -99.0f) {
 					finalPos.y = groundHeight + 1.0f; // 타일 위 표면 + 큐브 반지름
-				} else {
-					// 타일이 없으면 현재 높이 유지 (맵 밖 방지)
-					finalPos.y = rollStartPos.y;
 				}
 				position = finalPos;
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)

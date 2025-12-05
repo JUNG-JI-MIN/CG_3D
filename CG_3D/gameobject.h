@@ -18,10 +18,10 @@ GameObject
 ├── TileBase <- vector<TileBase> tiles 로 타일 관리 
 │     ├── 시작점 필요 없음
 │     ├── GroundTile 완성
-│     ├── MovingPlatformTile 아직 미흡함
-│     ├── RotatingTile // 카메라 회전 
+│     ├── MovingPlatformTile 완성
+│     ├── RotatingTile // 카메라 회전  
 │     ├── SwitchTile // 포탈 완성
-│     └── 도착점 완성
+│     └── 도착점 완성 // 완성 폭죽 이벤트
 │
 └── PlayerCube 완성
 
