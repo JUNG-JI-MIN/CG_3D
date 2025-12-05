@@ -202,15 +202,14 @@ public:
 // 회전하는 땅 타일
 class RotateTile : public TileBase {
 public:
-    bool switched_map = false;
     RotateTile(glm::vec3 pos)
         : TileBase(pos) {
         type = "rotatetile";
     }
     void OnCubeEnter() override {
         cout << "Enter the " << type << endl;
-        if (switched_map == true) return;
-        switched_map = true;
+        if (camera.rotating) return;
+		camera.rotating = true;
     }
     void OnCubeStay() override {
         cout << "Stay in " << type << endl;
@@ -219,7 +218,6 @@ public:
         cout << "Exit from " << type << endl;
     }
     void Update(float dt) override {
-        if (!switched_map) return;
     }
 };
 
@@ -319,6 +317,12 @@ public:
             model = &stage_cube;
             color_type = 0;
             break;
+        case '4':
+            type = "rotatetile";
+            texture = &rotate_cube_texture;
+            model = &public_cube;
+            color_type = 0;
+			break;
         }
     }
 };
@@ -335,7 +339,6 @@ public:
 	bool editing_mode = true;
     bool making_move_tile = false;
 	bool setting_switch_tile = false;
-	bool switching = false;
 	TileBase* selected_tile = nullptr;
 	SwitchTile* current_switch_tile = nullptr;
 

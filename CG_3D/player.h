@@ -474,7 +474,7 @@ private:
 				}
 				else if (t->type == "switchtile") {
 					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
-					tileManager.switching = true;
+					position = tileManager.current_switch_tile->switch_position;
 					cout << "스위치 타일 접촉 감지" << endl;
 				}
 			}

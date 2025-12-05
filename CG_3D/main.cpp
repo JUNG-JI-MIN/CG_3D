@@ -35,19 +35,31 @@ void trace_player() {
     }
 }
 void TimerFunction(int value) {
+
+
+    if (camera.rotating) {
+        camera.camera_angle += camera.camera_rotate_angle;
+        if (camera.camera_angle >= 225.0f || camera.camera_angle <= 45) {
+            camera.rotating = false;
+            camera.between_player_or_camera *= -1;
+			camera.camera_rotate_angle *= -1;
+        }
+        camera.position.x = player.position.x + camera.camera_r * cos(glm::radians(camera.camera_angle));
+        camera.position.z = player.position.z + camera.camera_r * sin(glm::radians(camera.camera_angle));
+		cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << endl;
+        
+        glutPostRedisplay();  // 화면 다시 그리기
+        glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
+        return;
+    }
+
+
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
-    
 
     // 플레이어 업데이트 먼저
     player.Update(dt);
-    
-    if (tileManager.switching) {
-		player.position = tileManager.current_switch_tile->switch_position;
-        tileManager.switching = false;
-        
-    }
 
     // 타일 매니저 업데이트 (한 번만 호출)
     if (!tileManager.editing_mode) {
@@ -102,27 +114,44 @@ void onKey(unsigned char key, int x, int y) {
         cout << light_off << endl;
         break;
     }
-    case 'l':
-        camera.between_player_or_camera *= -1.0f;
-        break;
     case 'q':
         exit(1);
         break;
     case 'a':
     case 'A':
-        player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        }
 		break;
 	case 'd':
 	case 'D':
-        player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        }
 		break;
 	case 'w':
     case 'W':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
+        }
 		break;
 	case 's':
     case 'S':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        }
         break;
 	case '\r': 
         if (tileManager.making_move_tile) {
@@ -149,6 +178,7 @@ void onKey(unsigned char key, int x, int y) {
     case 'm':
 		tileManager.editing_mode = !tileManager.editing_mode;
     }
+    
 }
 
 void onSpecialKey(int key, int x, int y) {
@@ -157,16 +187,28 @@ void onSpecialKey(int key, int x, int y) {
     switch (key)
     {
         case GLUT_KEY_UP:
-			tileManager.make_tile.position.z -= 2.0f;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.z -= 2.0f;
+            }
+            else tileManager.make_tile.position.z += 2.0f;
 			break;
 		case GLUT_KEY_DOWN:
-            tileManager.make_tile.position.z += 2.0f;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.z += 2.0f;
+            }
+			else tileManager.make_tile.position.z -= 2.0f;
 			break;
 		case GLUT_KEY_LEFT:
-            tileManager.make_tile.position.x -= 2.0f;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.x -= 2.0f;
+            }
+			else tileManager.make_tile.position.x += 2.0f;
             break;
 		case GLUT_KEY_RIGHT:
-            tileManager.make_tile.position.x += 2.0f;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.x += 2.0f;
+            }
+			else tileManager.make_tile.position.x -= 2.0f;
 			break;
 		case GLUT_KEY_F5:
 			tileManager.SaveToJSON("json/Mainmenu.json");

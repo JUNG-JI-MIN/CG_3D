@@ -16,12 +16,11 @@ GameObject
 ├── Texture* 선언된 텍스쳐 중 원하는 거 선택
 │
 ├── TileBase <- vector<TileBase> tiles 로 타일 관리 
-│     ├── 시작점 필요 없음
 │     ├── GroundTile 완성
 │     ├── MovingPlatformTile 완성
-│     ├── RotatingTile // 카메라 회전  
+│     ├── RotatingTile // 카메라 회전 완성
 │     ├── SwitchTile // 포탈 완성
-│     └── 도착점 완성 // 완성 폭죽 이벤트
+│     └── 도착점 완성 // 폭죽 이벤트 완성
 │
 └── PlayerCube 완성
 
@@ -282,6 +281,10 @@ public:
     float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
     float between_player_or_camera = 30.0f;
+    float camera_r =sqrt(2 * between_player_or_camera * between_player_or_camera);
+    float camera_rotate_angle = 5.0f;
+    float camera_angle = 45.0f;
+	bool rotating = false;
 
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
