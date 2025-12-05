@@ -15,7 +15,8 @@ public:
     bool Rolling = false; // 구르는 중인지 아닌지 여부 애니메이션에서 사용
     bool Falling = false; // 떨어지는 중인지 여부
     float rollProgress = 0.0f; // 구르는 애니메이션 진행도 (0.0 ~ 1.0)
-    float roll_speed = 4.0f; // 구르는 속도 (초당 진행도)
+	float EndrollProgress = 1.0f;
+	float roll_speed = 4.0f; // 구르는 속도 (초당 진행도)
     float fall_speed = 5.0f; // 낙하 속도 (초당 진행도)
 	glm::vec3 rollDirection = glm::vec3(0.0f);
 	glm::vec3 rollStartPos; // 굴림 시작 위치
@@ -57,9 +58,10 @@ public:
 			// 구르기 시작
 			Rolling = true;
 			rollProgress = 0.0f;
-			rollDirection = direction;
+			rollDirection = { direction.x, direction.y + 1, direction.z };
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 2.0f;
 			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 올라갈 때: 목표 타일의 모서리를 기준으로 회전
@@ -67,20 +69,16 @@ public:
 
 			if (abs(direction.x) > 0.5f) {
 				rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
-				rollPivot = glm::vec3(
-					position.x + direction.x * 1.0f,
-					targetTileBottom,
-					position.z
-				);
+				
 			}
 			else {
 				rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
-				rollPivot = glm::vec3(
-					position.x,
-					targetTileBottom,
-					position.z + direction.z * 1.0f
-				);
+				
 			}
+			rollPivot = glm::vec3(
+				position.x + direction.x,
+				position.y + direction.y + 1.0f,
+				position.z + direction.z );
 		}
 		else if (tileState == 1) {
 			// 같은 높이 이동
@@ -96,6 +94,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 1.0f;
 			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 같은 높이: 큐브 하단 기준으로 회전
@@ -126,6 +125,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 1.0f;
 			tileManager.CubeExit({position.x,position.y-2,position.z});
 
 			// 이동은 수평으로 진행
@@ -161,9 +161,8 @@ public:
 		// 진행도 업데이트
 		rollProgress += dt * roll_speed;
 
-		if (rollProgress >= 1.0f) {
+		if (rollProgress >= EndrollProgress) {
 			// 구르기 완료
-			rollProgress = 1.0f;
 			Rolling = false;
 
 			// 최종 위치 (수평 좌표)
@@ -189,9 +188,6 @@ public:
 				// 같은 높이거나 아주 작은 높이 차이면 즉시 위치 스냅
 				if (groundHeight > -99.0f) {
 					finalPos.y = groundHeight + 1.0f; // 타일 위 표면 + 큐브 반지름
-				} else {
-					// 타일이 없으면 현재 높이 유지 (맵 밖 방지)
-					finalPos.y = rollStartPos.y;
 				}
 				position = finalPos;
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
@@ -213,8 +209,6 @@ public:
 			glm::quat deltaRotation = glm::angleAxis(angle, glm::normalize(rollAxis));
 			rotation = glm::normalize(deltaRotation * rollStartRotation);
 		}
-		light.light[1].position = position;
-		light.player_position_update();
 	}
 
 private:
@@ -477,6 +471,11 @@ private:
 					position = tileManager.playerPos;
 					light.light[1].position = position;
 					light.player_position_update();
+				}
+				else if (t->type == "switchtile") {
+					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
+					position = tileManager.current_switch_tile->switch_position;
+					cout << "스위치 타일 접촉 감지" << endl;
 				}
 			}
 		}
