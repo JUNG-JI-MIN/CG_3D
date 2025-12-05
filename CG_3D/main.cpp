@@ -28,12 +28,17 @@ void trace_player() {
 	mini_camera.target = player.position;
 	mini_camera.position.x = player.position.x;
     mini_camera.position.z = player.position.z;
+
+    if (player.position != light.light[1].position) {
+        light.light[1].position = player.position;
+        light.player_position_update();
+    }
 }
 void TimerFunction(int value) {
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
-
+    
 
     // 플레이어 업데이트 먼저
     player.Update(dt);
@@ -41,8 +46,7 @@ void TimerFunction(int value) {
     if (tileManager.switching) {
 		player.position = tileManager.current_switch_tile->switch_position;
         tileManager.switching = false;
-        light.light[1].position = player.position;
-        light.player_position_update();
+        
     }
 
     // 타일 매니저 업데이트 (한 번만 호출)
@@ -61,11 +65,17 @@ void TimerFunction(int value) {
                     player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
                     
                     // MoveTile의 이동량도 적용
-                    if (glm::length(moveTile->movementDelta) > 0.0001f) {
-                        player.position += moveTile->movementDelta;
-                    }
+                    //if (glm::length(moveTile->movementDelta) > 0.0001f) {
+                    //    player.position += moveTile->movementDelta;
+                    //}
                 }
             }
+            currentTile = tileManager.GetsurroundMoveTile(player.position);
+            if (currentTile != nullptr) {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
+                player.position = moveTile->position + moveTile->dir * 2;
+            }
+
         }
     }
     
@@ -73,6 +83,7 @@ void TimerFunction(int value) {
     
     // 카메라 업데이트
     trace_player();
+
     
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정

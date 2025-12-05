@@ -131,6 +131,7 @@ public:
 	bool moving = true; // 현재 움직이고 있는지 여부
     glm::vec3 previousPosition; // 이전 프레임의 위치
     glm::vec3 movementDelta; // 이번 프레임의 이동량
+    glm::vec3 dir;
     float waitTime = 1.0f; // 각 목표 지점에서 대기할 시간 (초)
     float currentWaitTime = 0.0f; // 현재 대기한 시간
     bool isWaiting = false; // 현재 대기 중인지 여부
@@ -171,11 +172,12 @@ public:
                 isWaiting = false;
                 currentWaitTime = 0.0f;
                 currentMoveIndex = (currentMoveIndex + 1) % moveCommend.size();
+                dir = glm::normalize(moveCommend[currentMoveIndex] - position);
             }
             return;
         }
 
-        // 이동 중
+        // 이동 중     
 		glm::vec3 targetPos = moveCommend[currentMoveIndex];
         glm::vec3 direction = targetPos - position;
         float distanceToTarget = glm::length(direction);
@@ -363,7 +365,17 @@ public:
         }
         return nullptr;
     }
-
+    TileBase* GetsurroundMoveTile(glm::vec3 playerPos) {
+        for (auto& tile : tiles) {
+            if (tile->type != "movetile") continue;
+            MoveTile* moveTile = dynamic_cast<MoveTile*>(tile);
+            if (glm::distance(playerPos, moveTile->position + moveTile->dir * 2) <= 1.0f) {
+                return tile;
+                cout << "qds" << endl;
+            }
+        }
+        return nullptr;
+    }
 	// 타일 만드는 함수
     void tile_make() {
         for (auto* tile : tiles) {
