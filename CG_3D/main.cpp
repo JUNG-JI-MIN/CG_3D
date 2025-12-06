@@ -67,6 +67,8 @@ void TimerFunction(int value) {
         
         // 플레이어가 움직이지 않을 때만 MoveTile과 함께 이동
         if (!player.Rolling && !player.Falling) {
+            bool playerMovedByTile = false;
+            
             TileBase* currentTile = tileManager.GetTileUnderPlayer(player.position);
             if (currentTile && currentTile->type == "movetile") {
                 MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
@@ -75,6 +77,7 @@ void TimerFunction(int value) {
                     player.position.x = moveTile->position.x;
                     player.position.z = moveTile->position.z;
                     player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
+                    playerMovedByTile = true;
                     
                     // MoveTile의 이동량도 적용
                     //if (glm::length(moveTile->movementDelta) > 0.0001f) {
@@ -85,9 +88,14 @@ void TimerFunction(int value) {
             currentTile = tileManager.GetsurroundMoveTile(player.position);
             if (currentTile != nullptr) {
                 MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
-                player.position = moveTile->position + moveTile->dir * 2;
+                player.position = moveTile->position + moveTile->dir * 2.0f;
+                playerMovedByTile = true;
             }
 
+            // MoveTile에 의해 위치가 변경되었다면 낙하 체크
+            if (playerMovedByTile) {
+                player.CheckFalling();
+            }
         }
     }
     
@@ -219,6 +227,7 @@ void onSpecialKey(int key, int x, int y) {
         case GLUT_KEY_F6:
             tileManager.LoadFromJSON("json/stage.json");
             player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
 			break;
@@ -228,12 +237,14 @@ void onSpecialKey(int key, int x, int y) {
         case GLUT_KEY_F8:
             tileManager.LoadFromJSON("json/stage2.json");
             player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
             break;
         case GLUT_KEY_F9:
             tileManager.LoadFromJSON("json/Mainmenu.json");
             player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
             break;
@@ -298,6 +309,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     //tileManager.GenerateBackground();
 
 	tileManager.LoadFromJSON("json/Mainmenu.json");
+    player.SetStageStartPosition(tileManager.playerPos);
 
     light.Init();
 
