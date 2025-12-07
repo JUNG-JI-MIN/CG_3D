@@ -716,6 +716,11 @@ public:
                             tile->InitializeRendering(&stage_cube, &quit_texture);
                             tile->color_type = 0;
                         }
+                        else if (tileType == "rotatetile") {
+                            tile = new RotateTile(pos);
+                            tile->InitializeRendering(&public_cube, &rotate_cube_texture);
+                            tile->color_type = 0;
+                        }
                         else if (tileType == "switchtile") {
                             tile = new SwitchTile(pos);
                             tile->InitializeRendering(&public_cube, &switch_cube_texture);

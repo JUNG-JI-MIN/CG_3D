@@ -1,5 +1,5 @@
 {
-  "playerPos": [-8, 2, -6],
+  "playerPos": [-6, 2, -4],
   "gridWidth": 10,
   "gridHeight": 10,
   "tileSize": 2,
@@ -642,7 +642,7 @@
       "type": "groundtile"
     },
     {
-      "x": -2,
+      "x": 10,
       "y": 2,
       "z": 12,
       "type": "movetile",
@@ -813,7 +813,7 @@
     {
       "x": 32,
       "y": 2,
-      "z": 36,
+      "z": 33,
       "type": "movetile",
       "moveCommands": [
         { "x": 32, "y": 2, "z": 36 },
@@ -824,7 +824,7 @@
     {
       "x": 36,
       "y": 2,
-      "z": 20,
+      "z": 22,
       "type": "movetile",
       "moveCommands": [
         { "x": 36, "y": 2, "z": 20 },
@@ -835,7 +835,7 @@
     {
       "x": 40,
       "y": 2,
-      "z": 36,
+      "z": 33,
       "type": "movetile",
       "moveCommands": [
         { "x": 40, "y": 2, "z": 36 },
@@ -846,7 +846,7 @@
     {
       "x": 44,
       "y": 2,
-      "z": 20,
+      "z": 22,
       "type": "movetile",
       "moveCommands": [
         { "x": 44, "y": 2, "z": 20 },
@@ -857,7 +857,7 @@
     {
       "x": 48,
       "y": 2,
-      "z": 36,
+      "z": 33,
       "type": "movetile",
       "moveCommands": [
         { "x": 48, "y": 2, "z": 36 },
@@ -944,31 +944,7 @@
       "type": "groundtile"
     },
     {
-      "x": 8,
-      "y": 0,
-      "z": 42,
-      "type": "groundtile"
-    },
-    {
-      "x": 10,
-      "y": 0,
-      "z": 40,
-      "type": "groundtile"
-    },
-    {
       "x": 12,
-      "y": 0,
-      "z": 40,
-      "type": "groundtile"
-    },
-    {
-      "x": 8,
-      "y": 0,
-      "z": 38,
-      "type": "groundtile"
-    },
-    {
-      "x": 6,
       "y": 0,
       "z": 40,
       "type": "groundtile"
@@ -1079,30 +1055,6 @@
       "x": 26,
       "y": 0,
       "z": -4,
-      "type": "groundtile"
-    },
-    {
-      "x": 30,
-      "y": 0,
-      "z": -2,
-      "type": "groundtile"
-    },
-    {
-      "x": 30,
-      "y": 0,
-      "z": 2,
-      "type": "groundtile"
-    },
-    {
-      "x": 28,
-      "y": 0,
-      "z": 0,
-      "type": "groundtile"
-    },
-    {
-      "x": 32,
-      "y": 0,
-      "z": 0,
       "type": "groundtile"
     },
     {
@@ -1341,6 +1293,67 @@
       "y": -4,
       "z": 44,
       "type": "groundtile"
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "z": 28,
+      "type": "movetile",
+      "moveCommands": [
+        { "x": 14, "y": 2, "z": 28 },
+        { "x": 22, "y": 2, "z": 28 },
+        { "x": 22, "y": 2, "z": 12 },
+        { "x": 14, "y": 2, "z": 12 }
+      ],
+      "speed": 0.5
+    },
+    {
+      "x": 28,
+      "y": 0,
+      "z": 0,
+      "type": "rotatetile"
+    },
+    {
+      "x": 30,
+      "y": 0,
+      "z": -2,
+      "type": "rotatetile"
+    },
+    {
+      "x": 32,
+      "y": 0,
+      "z": 0,
+      "type": "rotatetile"
+    },
+    {
+      "x": 30,
+      "y": 0,
+      "z": 2,
+      "type": "rotatetile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 38,
+      "type": "rotatetile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 40,
+      "type": "rotatetile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 42,
+      "type": "rotatetile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 40,
+      "type": "rotatetile"
     }
   ]
 }
