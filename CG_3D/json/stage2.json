@@ -813,7 +813,7 @@
     {
       "x": 32,
       "y": 2,
-      "z": 33,
+      "z": 34,
       "type": "movetile",
       "moveCommands": [
         { "x": 32, "y": 2, "z": 36 },
@@ -835,7 +835,7 @@
     {
       "x": 40,
       "y": 2,
-      "z": 33,
+      "z": 34,
       "type": "movetile",
       "moveCommands": [
         { "x": 40, "y": 2, "z": 36 },
@@ -857,7 +857,7 @@
     {
       "x": 48,
       "y": 2,
-      "z": 33,
+      "z": 34,
       "type": "movetile",
       "moveCommands": [
         { "x": 48, "y": 2, "z": 36 },

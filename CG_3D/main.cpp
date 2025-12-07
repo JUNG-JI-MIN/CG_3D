@@ -221,16 +221,14 @@ void onSpecialKey(int key, int x, int y) {
 		case GLUT_KEY_F5:
 			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
-        case GLUT_KEY_F10:
-            tileManager.SaveToJSON("json/stage.json");
-            break;
         case GLUT_KEY_F6:
-            tileManager.LoadFromJSON("json/stage.json");
+            tileManager.LoadFromJSON("json/Mainmenu.json");
             player.position = tileManager.playerPos;
             player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
 			break;
+
         case GLUT_KEY_F7:
             tileManager.SaveToJSON("json/stage2.json");
 			break;
@@ -241,8 +239,12 @@ void onSpecialKey(int key, int x, int y) {
             light.light[1].position = player.position;
             light.player_position_update();
             break;
+
         case GLUT_KEY_F9:
-            tileManager.LoadFromJSON("json/Mainmenu.json");
+            tileManager.SaveToJSON("json/stage.json");
+            break;
+        case GLUT_KEY_F10:
+            tileManager.LoadFromJSON("json/stage.json");
             player.position = tileManager.playerPos;
             player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
