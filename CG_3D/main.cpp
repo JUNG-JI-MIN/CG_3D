@@ -250,6 +250,18 @@ void onSpecialKey(int key, int x, int y) {
             light.light[1].position = player.position;
             light.player_position_update();
             break;
+
+		case GLUT_KEY_F11:
+            tileManager.SaveToJSON("json/stage3.json");
+            break;
+
+		case GLUT_KEY_F12:
+            tileManager.LoadFromJSON("json/stage3.json");
+            player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
     }
 }
 
@@ -310,7 +322,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     //tileManager.GenerateGrid();
     //tileManager.GenerateBackground();
 
-	tileManager.LoadFromJSON("json/Mainmenu.json");
+    tileManager.GenerateGrid();
     player.SetStageStartPosition(tileManager.playerPos);
 
     light.Init();
