@@ -1,6 +1,7 @@
 //이민제 커밋확인용
 #include "player.h"
 #include "tilemanager.h"
+bool player_aleady_move = false;
 
 // 기존 filetobuf, TimerFunction 등은 그대로 사용
 char* filetobuf(const char* file)
@@ -78,23 +79,26 @@ void TimerFunction(int value) {
                     player.position.z = moveTile->position.z;
                     player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
                     playerMovedByTile = true;
-                    
-                    // MoveTile의 이동량도 적용
-                    //if (glm::length(moveTile->movementDelta) > 0.0001f) {
-                    //    player.position += moveTile->movementDelta;
-                    //}
                 }
             }
             currentTile = tileManager.GetsurroundMoveTile(player.position);
             if (currentTile != nullptr) {
                 MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
-                player.position = moveTile->position + moveTile->dir * 2.0f;
-                playerMovedByTile = true;
+                if (!moveTile->isWaiting) {
+                    player.position = moveTile->position + moveTile->dir * 2.0f;
+                    playerMovedByTile = true;
+                    player_aleady_move = true;
+                }
             }
 
             // MoveTile에 의해 위치가 변경되었다면 낙하 체크
             if (playerMovedByTile) {
                 player.CheckFalling();
+                if (player_aleady_move) {
+                    player_aleady_move = false;
+                    player.CubeEnter({ player.position.x,player.position.y - 2,player.position.z });
+                    tileManager.CubeEnter({ player.position.x,player.position.y - 2,player.position.z });
+                }
             }
         }
     }
