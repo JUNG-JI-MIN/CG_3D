@@ -1,5 +1,5 @@
 {
-  "playerPos": [0, 6, 0],
+  "playerPos": [-2, 2, -2],
   "gridWidth": 10,
   "gridHeight": 10,
   "tileSize": 2,
@@ -603,6 +603,104 @@
       "y": 0,
       "z": 8,
       "type": "groundtile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 10,
+      "type": "groundtile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": -12,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -10,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -8,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -6,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -2,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 0,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 2,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 4,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 6,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 8,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "z": 8,
+      "type": "movetile",
+      "moveCommands": [
+        { "x": 10, "y": 2, "z": 8 },
+        { "x": 10, "y": 2, "z": -10 }
+      ],
+      "speed": 0.4
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 10,
+      "type": "rotatetile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": -12,
+      "type": "switchtile",
+      "switchPosition": [
+        { "x": 0, "y": 2, "z": -4 }
+      ]
     }
   ]
 }
