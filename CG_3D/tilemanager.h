@@ -336,7 +336,7 @@ public:
     int gridWidth = 10;
     int gridHeight = 10;
     float tileSize = 2.0f; // 타일 하나의 크기
-	bool editing_mode = true;
+	bool editing_mode = false;
     bool making_move_tile = false;
 	bool setting_switch_tile = false;
 	TileBase* selected_tile = nullptr;
@@ -890,6 +890,7 @@ public:
             //u = glGetUniformLocation(shaderProgramID, "turn_off");
             //glUniform1i(u, 0);
         }
+        if (game_start) return;
 		make_tile.result_matrix(cam);
 		make_tile.Draw();
     }

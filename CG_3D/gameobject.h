@@ -268,6 +268,7 @@ float random(float min = 0.0f, float max = 1.0f) {
     if (result == 0) result = 0.001;
     return result;
 }
+bool game_start = true;
 
 // 카메라 클래스 안에 투명 및 뷰 매트릭스 업데이트 함수 포함
 class Camera {

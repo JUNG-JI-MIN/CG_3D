@@ -115,11 +115,7 @@ void onKey(unsigned char key, int x, int y) {
     switch (key)
     {
     case 'e': {
-        // 조명 활성화 여부를 셰이더에 전달
-        light_off = !light_off;
-        GLuint lightEnabledLoc = glGetUniformLocation(shaderProgramID, "turn_off");
-        glUniform1i(lightEnabledLoc, light_off ? 0 : 1);
-        cout << light_off << endl;
+		game_start = !game_start;
         break;
     }
     case 'q':
@@ -162,6 +158,7 @@ void onKey(unsigned char key, int x, int y) {
         }
         break;
 	case '\r': 
+        if (game_start) return;
         if (tileManager.making_move_tile) {
             tileManager.making_move_tile = false;
 			tileManager.selected_tile = nullptr;
@@ -169,21 +166,27 @@ void onKey(unsigned char key, int x, int y) {
         else tileManager.tile_make(); // 타일 만들기
         break; // 엔터키
     case 'r':
+        if (game_start) return;
 		tileManager.delete_tile(); // 타일 지우기
         break;
     case 'p':
+        if (game_start) return;
 		tileManager.move_tile_add_command(); // 타일 이동 명령 추가
         break;
     case 'o':
+        if (game_start) return;
 		tileManager.setting_switch_position(); // 스위치 타일 설정
         break;
 	case ' ':
+        if (game_start) return;
 		tileManager.make_tile.position.y += 2.0f; // 높이 조절
         break; // 스페이스바
 	case 'c': 
+        if (game_start) return;
 		tileManager.make_tile.position.y -= 2.0f; // 높이 조절
         break; // 'c' 키
     case 'm':
+        if (game_start) return;
 		tileManager.editing_mode = !tileManager.editing_mode;
     }
     
@@ -195,24 +198,28 @@ void onSpecialKey(int key, int x, int y) {
     switch (key)
     {
         case GLUT_KEY_UP:
+            if (game_start) return;
             if (camera.between_player_or_camera > 0) {
                 tileManager.make_tile.position.z -= 2.0f;
             }
             else tileManager.make_tile.position.z += 2.0f;
 			break;
 		case GLUT_KEY_DOWN:
+            if (game_start) return;
             if (camera.between_player_or_camera > 0) {
                 tileManager.make_tile.position.z += 2.0f;
             }
 			else tileManager.make_tile.position.z -= 2.0f;
 			break;
 		case GLUT_KEY_LEFT:
+            if (game_start) return;
             if (camera.between_player_or_camera > 0) {
                 tileManager.make_tile.position.x -= 2.0f;
             }
 			else tileManager.make_tile.position.x += 2.0f;
             break;
 		case GLUT_KEY_RIGHT:
+            if (game_start) return;
             if (camera.between_player_or_camera > 0) {
                 tileManager.make_tile.position.x += 2.0f;
             }
@@ -322,7 +329,7 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
     //tileManager.GenerateGrid();
     //tileManager.GenerateBackground();
 
-    tileManager.GenerateGrid();
+    tileManager.LoadFromJSON("json/Mainmenu.json");
     player.SetStageStartPosition(tileManager.playerPos);
 
     light.Init();
@@ -357,16 +364,17 @@ GLvoid drawScene() {
     player.result_matrix(camera);
     player.Draw();
 
-	result_line_matrix(camera,line);
-	line.Draw();
+    if (!game_start) {
+        result_line_matrix(camera, line);
+        line.Draw();
 
-    // making_move_tile일 때만 그리기
-    if (tileManager.making_move_tile && move_cube_line.vertices.size() >= 2) {
-        move_cube_line.Update();
-        result_line_matrix(camera, move_cube_line);
-        move_cube_line.DDraw();
+        // making_move_tile일 때만 그리기
+        if (tileManager.making_move_tile && move_cube_line.vertices.size() >= 2) {
+            move_cube_line.Update();
+            result_line_matrix(camera, move_cube_line);
+            move_cube_line.DDraw();
+        }
     }
-
 	tileManager.DrawAll(camera);
 
     fireworkmanager.Draw(camera);
