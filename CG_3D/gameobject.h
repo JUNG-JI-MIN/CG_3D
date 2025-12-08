@@ -7,6 +7,8 @@ Model 필요한 모델은 한번만 선언
 └── VAO, VBO, EBO, 바인딩
 Texture 필요한 텍스쳐는 한번만 선언
 └── 텍스쳐 ID, 바인딩
+FireWork
+└── 폭죽 터트리는 로직을 갖고 있는 객체 firemanager를 만들어 한번에 관리
 GameObject
 │└── Draw, Update
 │
@@ -14,14 +16,13 @@ GameObject
 ├── Texture* 선언된 텍스쳐 중 원하는 거 선택
 │
 ├── TileBase <- vector<TileBase> tiles 로 타일 관리 
-│     ├── 시작점
-│     ├── GroundTile
-│     ├── MovingPlatformTile
-│     ├── RotatingTile // 카메라 회전 
-│     ├── SwitchTile // 포탈 
-│     └── 도착점 
+│     ├── GroundTile 완성
+│     ├── MovingPlatformTile 완성
+│     ├── RotatingTile // 카메라 회전 완성
+│     ├── SwitchTile // 포탈 완성
+│     └── 도착점 완성 // 폭죽 이벤트 완성
 │
-└── PlayerCube
+└── PlayerCube 완성
 
 이런 구조로 설계하긴 했어 Object는 기본적인 렌더링을 하고 있고, GameObject는 게임 로직을 포함하는 객체임, 여기서 다른 자식들로 파생되면서 게임 로직이 추가될 수 있음
 */
@@ -63,7 +64,6 @@ GLuint vertexShader; //--- 버텍스 세이더 객체
 GLuint fragmentShader; //--- 프래그먼트 세이더 객체
 GLuint geometryShader;
 // 정점에 대한 정의들 위치 색상 법선 텍스쳐좌표
-
 struct Vertex {
     glm::vec3 position;
     glm::vec4 color;
@@ -71,7 +71,7 @@ struct Vertex {
     glm::vec2 texcoord;
 };
 // 도형 생성 함수들 (버텍스와 인덱스 생성) 큐브, 원(이건 Line 클래스로 생성해야함 밑에 있으니 참고), 구
-vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }) {
+vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 0.5f, 0.5f, 0.5f, 1.0f }) {
     vector<Vertex> cube_vertices = {
         // 앞면 | Normal: +Z | TexCoords: { {0, 0}, {1, 0}, {1, 1}, {0, 1} }
         { {-x, -y,  z}, color, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f} }, // 0 (bottom-left)
@@ -110,30 +110,6 @@ vector<Vertex> create_cube(float x = 1, float y = 1, float z = 1, glm::vec4 colo
         { { x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f} }  // 23
     };
     return cube_vertices;
-}
-vector<unsigned int> create_cube_index() {
-    vector<unsigned int> cube_indices = {
-        // 앞면
-        0, 1, 2,
-        0, 2, 3,
-        // 뒷면
-        4, 7, 6,
-        4, 6, 5,
-
-        // 왼쪽면
-        8, 9, 10,
-        8, 10, 11,
-        // 오른쪽면
-        12, 15, 14,
-        12, 14, 13,
-        // 위면
-        16, 19, 18,
-        16, 18, 17,
-        // 아래면
-        20, 23, 22,
-        20, 22, 21
-    };
-    return cube_indices;
 }
 vector<Vertex> cube_2x1_Image(float x = 1, float y = 1, float z = 1, glm::vec4 color = { 1,1,1,1 })
 {
@@ -175,9 +151,33 @@ vector<Vertex> cube_2x1_Image(float x = 1, float y = 1, float z = 1, glm::vec4 c
         { { x, -y,  z}, color, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f} },
         { { x, -y, -z}, color, {0.0f, -1.0f, 0.0f}, {0.5f, 1.0f} }
     };
-
     return v;
 }
+vector<unsigned int> create_cube_index() {
+    vector<unsigned int> cube_indices = {
+        // 앞면
+        0, 1, 2,
+        0, 2, 3,
+        // 뒷면
+        4, 7, 6,
+        4, 6, 5,
+
+        // 왼쪽면
+        8, 9, 10,
+        8, 10, 11,
+        // 오른쪽면
+        12, 15, 14,
+        12, 14, 13,
+        // 위면
+        16, 19, 18,
+        16, 18, 17,
+        // 아래면
+        20, 23, 22,
+        20, 22, 21
+    };
+    return cube_indices;
+}
+
 vector<Vertex> create_circle(float r = 1.0f) {
     vector<Vertex> circle_vertices;
     float angle = 0.0f, d_angle = 3.0f;
@@ -268,6 +268,7 @@ float random(float min = 0.0f, float max = 1.0f) {
     if (result == 0) result = 0.001;
     return result;
 }
+bool game_start = true;
 
 // 카메라 클래스 안에 투명 및 뷰 매트릭스 업데이트 함수 포함
 class Camera {
@@ -281,6 +282,10 @@ public:
     float f = 300.0f; // far
     float orthoScale = 10.0f; // 직각 투영 범위
     float between_player_or_camera = 30.0f;
+    float camera_r =sqrt(2 * between_player_or_camera * between_player_or_camera);
+    float camera_rotate_angle = 5.0f;
+    float camera_angle = 45.0f;
+	bool rotating = false;
 
     Camera(glm::vec3 pos, glm::vec3 tar, glm::vec3 u)
         : position(pos), target(tar), up(u) {
@@ -473,13 +478,16 @@ public:
         glBindTexture(GL_TEXTURE_2D, id);
     }
 };
-Model stage_cube(cube_2x1_Image(),create_cube_index());
+Model stage_cube(cube_2x1_Image(), create_cube_index());
 Model public_cube(create_cube(), create_cube_index()); // 전역 변수로 큐브 모델 생성
 Texture player_cube_texture; // 플레이어 1
 Texture player2_cube_texture;
 Texture player3_cube_texture;
 Texture ground_cube_texture; // 땅
-Texture spring_cube_texture; // 스프링
+Texture One_cube_texture;
+Texture Two_cube_texture;
+Texture Three_cube_texture;
+Texture quit_texture;
 Texture moving_cube_texture; // 무빙
 Texture rotate_cube_texture; // 회전
 Texture switch_cube_texture; // 스위치

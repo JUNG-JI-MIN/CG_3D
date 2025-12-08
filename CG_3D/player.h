@@ -8,15 +8,16 @@
 class PlayerCube : public GameObject {
 public:
     PlayerCube(glm::vec3 pos)
-        : GameObject(pos) {
+        : GameObject(pos), stageStartPos(pos) {
     }
 
-    glm::vec3 dir = { 0.0f,0.0f,1.0f }; // 이동 방향 or 바라보는 방향이라고도 할 수 있음 키보드 조작을 통해 dir이 변경됨
+    glm::vec3 dir = { 0.0f,0.0f,1.0f }; // 이동 방향 or 바라보는 방향이라고 할 수 있음 키보드 조작을 통해 dir이 변경됨
     bool Rolling = false; // 구르는 중인지 아닌지 여부 애니메이션에서 사용
     bool Falling = false; // 떨어지는 중인지 여부
     float rollProgress = 0.0f; // 구르는 애니메이션 진행도 (0.0 ~ 1.0)
-    float roll_speed = 4.0f; // 구르는 속도 (초당 진행도)
-    float fall_speed = 5.0f; // 낙하 속도 (초당 진행도)
+	float EndrollProgress = 1.0f;
+	float roll_speed = 4.0f; // 구르는 속도 (초당 진행도)
+    float fall_speed = 2.5f; // 낙하 속도 (초당 진행도) - 값을 줄이면 더 느리게 떨어짐
 	glm::vec3 rollDirection = glm::vec3(0.0f);
 	glm::vec3 rollStartPos; // 굴림 시작 위치
 	glm::vec3 fallStartPos; // 낙하 시작 위치
@@ -24,11 +25,13 @@ public:
 	glm::quat rollStartRotation; // 굴림 시작 회전 (쿼터니언)
 	glm::vec3 rollAxis; // 회전축
 	glm::vec3 rollPivot; // 회전 중심점
+	glm::vec3 stageStartPos; // 스테이지 시작 위치 (리셋용)
 
 	// 플레이어 큐브가 바라보는 방향으로 구르는 함수
 	inline void Rolling_in_the_deep(glm::vec3 direction)
 	{
 		if (Rolling || Falling) return;
+		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
 
 		if (fmod(position.x, 2) != 0 || fmod(position.z, 2) != 0) return;
 
@@ -56,9 +59,10 @@ public:
 			// 구르기 시작
 			Rolling = true;
 			rollProgress = 0.0f;
-			rollDirection = direction;
+			rollDirection = { direction.x, direction.y + 1, direction.z };
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 2.0f;
 			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 올라갈 때: 목표 타일의 모서리를 기준으로 회전
@@ -66,20 +70,16 @@ public:
 
 			if (abs(direction.x) > 0.5f) {
 				rollAxis = glm::vec3(0.0f, 0.0f, -direction.x);
-				rollPivot = glm::vec3(
-					position.x + direction.x * 1.0f,
-					targetTileBottom,
-					position.z
-				);
+				
 			}
 			else {
 				rollAxis = glm::vec3(direction.z, 0.0f, 0.0f);
-				rollPivot = glm::vec3(
-					position.x,
-					targetTileBottom,
-					position.z + direction.z * 1.0f
-				);
+				
 			}
+			rollPivot = glm::vec3(
+				position.x + direction.x,
+				position.y + direction.y + 1.0f,
+				position.z + direction.z );
 		}
 		else if (tileState == 1) {
 			// 같은 높이 이동
@@ -95,6 +95,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 1.0f;
 			tileManager.CubeExit({ position.x,position.y - 2,position.z });
 
 			// 같은 높이: 큐브 하단 기준으로 회전
@@ -110,13 +111,7 @@ public:
 			}
 		}
 		else {
-			// tileState == 0: 앞에 타일 없음 → 낙하할 타일 찾기
-			float fallTargetHeight = FindFallTargetHeight(direction);
-
-			if (fallTargetHeight < -99.0f) {
-				// 낙하할 타일도 없음 - 이동 불가
-				return;
-			}
+			
 
 			// 낙하 시작
 			glm::vec3 nextPos = position + direction * 2.0f;
@@ -125,6 +120,7 @@ public:
 			rollDirection = direction;
 			rollStartPos = position;
 			rollStartRotation = rotation;
+			EndrollProgress = 1.0f;
 			tileManager.CubeExit({position.x,position.y-2,position.z});
 
 			// 이동은 수평으로 진행
@@ -160,9 +156,8 @@ public:
 		// 진행도 업데이트
 		rollProgress += dt * roll_speed;
 
-		if (rollProgress >= 1.0f) {
+		if (rollProgress >= EndrollProgress) {
 			// 구르기 완료
-			rollProgress = 1.0f;
 			Rolling = false;
 
 			// 최종 위치 (수평 좌표)
@@ -188,15 +183,12 @@ public:
 				// 같은 높이거나 아주 작은 높이 차이면 즉시 위치 스냅
 				if (groundHeight > -99.0f) {
 					finalPos.y = groundHeight + 1.0f; // 타일 위 표면 + 큐브 반지름
-				} else {
-					// 타일이 없으면 현재 높이 유지 (맵 밖 방지)
-					finalPos.y = rollStartPos.y;
 				}
 				position = finalPos;
 				// 구르기 완료 후 낙하 체크 (얕은 틈도 처리)
 				CheckAndStartFalling();
 			}
-			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
+			CubeEnter({ position.x,position.y - 2,position.z });
 		}
 		else {
 			// 보간된 위치 계산 (원호 운동)
@@ -212,8 +204,66 @@ public:
 			glm::quat deltaRotation = glm::angleAxis(angle, glm::normalize(rollAxis));
 			rotation = glm::normalize(deltaRotation * rollStartRotation);
 		}
-		light.light[1].position = position;
-		light.player_position_update();
+	}
+
+	// 스테이지 시작 위치 설정
+	void SetStageStartPosition(glm::vec3 pos) {
+        stageStartPos = pos;
+    }
+
+    // 스테이지 초기 위치로 리셋
+    void ResetToStageStart() {
+        position = stageStartPos;
+        Rolling = false;
+        Falling = false;
+        rollProgress = 0.0f;
+        rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        velocity = glm::vec3(0.0f);
+        cout << "플레이어가 스테이지 시작 위치로 리셋됨: (" 
+             << stageStartPos.x << ", " << stageStartPos.y << ", " << stageStartPos.z << ")" << endl;
+    }
+
+	// 외부에서 낙하 체크를 강제로 호출할 수 있도록 public 함수 추가
+	void CheckFalling() {
+		if (!Rolling && !Falling) {
+			CheckAndStartFalling();
+		}
+	}
+	void CubeEnter(glm::vec3 pos) {
+		for (TileBase* t : tileManager.tiles) {
+			if (t->position == pos) {
+				t->OnCubeEnter();
+				if (t->type == "QuitTile") {
+					exit(0);
+				}
+				else if (t->type == "GoToOneTile") {
+					tileManager.LoadFromJSON("json/stage.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "GoToTwoTile") {
+					tileManager.LoadFromJSON("json/stage2.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "GoToThreeTile") {
+					tileManager.LoadFromJSON("json/stage3.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "switchtile") {
+					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
+					position = tileManager.current_switch_tile->switch_position;
+					cout << "스위치 타일 순간 이동" << endl;
+				}
+			}
+		}
 	}
 
 private:
@@ -419,8 +469,16 @@ private:
 
 		float currentGround = FindGroundHeight(position);
 		
-		// 타일이 없으면 낙하하지 않음 (맵 밖으로 나가는 것 방지)
-		if (currentGround < -99.0f) return;
+		// 타일이 없으면 즉시 낙하 시작 (맵 밖으로 떨어짐)
+		if (currentGround < -99.0f) {
+			Falling = true;
+			rollProgress = 0.0f;
+			fallStartPos = position;
+			fallTargetPos = position;
+			fallTargetPos.y = -30.0f; // 매우 깊이 떨어지도록 설정
+			cout << "타일 없음! 낙하 시작!" << endl;
+			return;
+		}
 		
 		float expectedY = currentGround + 1.0f; // 타일 위에 있어야 할 Y 위치
 
@@ -444,19 +502,34 @@ private:
 			rollProgress = 1.0f;
 			Falling = false;
 			position = fallTargetPos;
-			tileManager.CubeEnter({ position.x,position.y - 2,position.z });
+
+            // 낙하 후 땅 타일이 있는지 확인
+            float groundHeight = FindGroundHeight(position);
+            
+            // 땅 타일이 없으면 (낙하 깊이가 너무 깊으면) 스테이지 초기 위치로 리셋
+            if (groundHeight < -99.0f || position.y < -50.0f) {
+                cout << "플레이어가 맵 밖으로 떨어짐!" << endl;
+                ResetToStageStart();
+                light.light[1].position = position;
+                light.player_position_update();
+                return;
+            }
+
+			CubeEnter({ position.x,position.y - 2,position.z });
 			
-			// 낙하 완료 후에도 추가 낙하가 필요한지 체크
+			// 낙하 완료 후에도 추가적으로 필요하면 체크
 			CheckAndStartFalling();
 		}
 		else {
-			// 부드러운 낙하 (ease-in 가속)
+			// 부드럽게 낙하 (ease-in 효과)
 			
 			position.y = glm::mix(fallStartPos.y, fallTargetPos.y, rollProgress);
 			position.x = fallTargetPos.x;
 			position.z = fallTargetPos.z;
 		}
 	}
+
+	
 
 	// 충돌 처리 로직
 	void OnCollision(GameObject* other) {

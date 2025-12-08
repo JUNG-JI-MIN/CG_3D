@@ -1,6 +1,7 @@
 //이민제 커밋확인용
 #include "player.h"
 #include "tilemanager.h"
+bool player_aleady_move = false;
 
 // 기존 filetobuf, TimerFunction 등은 그대로 사용
 char* filetobuf(const char* file)
@@ -28,20 +29,47 @@ void trace_player() {
 	mini_camera.target = player.position;
 	mini_camera.position.x = player.position.x;
     mini_camera.position.z = player.position.z;
+
+    if (player.position != light.light[1].position) {
+        light.light[1].position = player.position;
+        light.player_position_update();
+    }
 }
 void TimerFunction(int value) {
+
+
+    if (camera.rotating) {
+        camera.camera_angle += camera.camera_rotate_angle;
+        if (camera.camera_angle >= 225.0f || camera.camera_angle <= 45) {
+            camera.rotating = false;
+            camera.between_player_or_camera *= -1;
+			camera.camera_rotate_angle *= -1;
+        }
+        camera.position.x = player.position.x + camera.camera_r * cos(glm::radians(camera.camera_angle));
+        camera.position.z = player.position.z + camera.camera_r * sin(glm::radians(camera.camera_angle));
+		cout << camera.position.x << " " << camera.position.y << " " << camera.position.z << endl;
+        
+        glutPostRedisplay();  // 화면 다시 그리기
+        glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
+        return;
+    }
+
+
     line.xyz = tileManager.make_tile.position;
     float dt = 1.5f / 60.0f; // 60 FPS 기준 deltaTime
 
+
     // 플레이어 업데이트 먼저
     player.Update(dt);
-    
+
     // 타일 매니저 업데이트 (한 번만 호출)
     if (!tileManager.editing_mode) {
         tileManager.UpdateALl(dt);
         
         // 플레이어가 움직이지 않을 때만 MoveTile과 함께 이동
         if (!player.Rolling && !player.Falling) {
+            bool playerMovedByTile = false;
+            
             TileBase* currentTile = tileManager.GetTileUnderPlayer(player.position);
             if (currentTile && currentTile->type == "movetile") {
                 MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
@@ -50,11 +78,26 @@ void TimerFunction(int value) {
                     player.position.x = moveTile->position.x;
                     player.position.z = moveTile->position.z;
                     player.position.y = moveTile->position.y + 2.0f; // 타일 표면(+1.0f) + 플레이어 반경(+1.0f)
-                    
-                    // MoveTile의 이동량도 적용
-                    if (glm::length(moveTile->movementDelta) > 0.0001f) {
-                        player.position += moveTile->movementDelta;
-                    }
+                    playerMovedByTile = true;
+                }
+            }
+            currentTile = tileManager.GetsurroundMoveTile(player.position);
+            if (currentTile != nullptr) {
+                MoveTile* moveTile = dynamic_cast<MoveTile*>(currentTile);
+                if (!moveTile->isWaiting) {
+                    player.position = moveTile->position + moveTile->dir * 2.0f;
+                    playerMovedByTile = true;
+                    player_aleady_move = true;
+                }
+            }
+
+            // MoveTile에 의해 위치가 변경되었다면 낙하 체크
+            if (playerMovedByTile) {
+                player.CheckFalling();
+                if (player_aleady_move) {
+                    player_aleady_move = false;
+                    player.CubeEnter({ player.position.x,player.position.y - 2,player.position.z });
+                    tileManager.CubeEnter({ player.position.x,player.position.y - 2,player.position.z });
                 }
             }
         }
@@ -64,6 +107,7 @@ void TimerFunction(int value) {
     
     // 카메라 업데이트
     trace_player();
+
     
     glutPostRedisplay();  // 화면 다시 그리기
     glutTimerFunc(16, TimerFunction, 1);  // 다음 타이머 설정
@@ -75,55 +119,93 @@ void onKey(unsigned char key, int x, int y) {
     switch (key)
     {
     case 'e': {
-        // 조명 활성화 여부를 셰이더에 전달
-        light_off = !light_off;
-        GLuint lightEnabledLoc = glGetUniformLocation(shaderProgramID, "turn_off");
-        glUniform1i(lightEnabledLoc, light_off ? 0 : 1);
-        cout << light_off << endl;
+		game_start = !game_start;
         break;
     }
-    case 'l':
-        camera.between_player_or_camera *= -1.0f;
-        break;
     case 'q':
         exit(1);
         break;
     case 'a':
     case 'A':
-        player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        }
 		break;
 	case 'd':
 	case 'D':
-        player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(1.0f, 0.0f, 0.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(-1.0f, 0.0f, 0.0f));
+        }
 		break;
 	case 'w':
     case 'W':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
+        }
 		break;
 	case 's':
     case 'S':
-        player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f,  1.0f));
+        if (camera.between_player_or_camera > 0) {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, 1.0f));
+        }
+        else {
+            player.Rolling_in_the_deep(glm::vec3(0.0f, 0.0f, -1.0f));
+        }
         break;
 	case '\r': 
-        if (tileManager.making_move_tile) tileManager.making_move_tile = false;
+        if (game_start) return;
+        if (tileManager.making_move_tile) {
+            tileManager.making_move_tile = false;
+			tileManager.selected_tile = nullptr;
+        }
         else tileManager.tile_make(); // 타일 만들기
-
         break; // 엔터키
     case 'r':
+        if (game_start) return;
 		tileManager.delete_tile(); // 타일 지우기
         break;
     case 'p':
+        if (game_start) return;
 		tileManager.move_tile_add_command(); // 타일 이동 명령 추가
         break;
+    case 'o':
+        if (game_start) return;
+		tileManager.setting_switch_position(); // 스위치 타일 설정
+        break;
 	case ' ':
+        if (game_start) return;
 		tileManager.make_tile.position.y += 2.0f; // 높이 조절
         break; // 스페이스바
 	case 'c': 
+        if (game_start) return;
 		tileManager.make_tile.position.y -= 2.0f; // 높이 조절
         break; // 'c' 키
     case 'm':
+        if (game_start) return;
 		tileManager.editing_mode = !tileManager.editing_mode;
+        break;
+    case '9':
+        tileManager.SaveToJSON("json/stage3.json");
+        break;
+
+    case '0':
+        tileManager.LoadFromJSON("json/stage3.json");
+        player.position = tileManager.playerPos;
+        player.SetStageStartPosition(tileManager.playerPos);
+        light.light[1].position = player.position;
+        light.player_position_update();
+        break;
     }
+    
 }
 
 void onSpecialKey(int key, int x, int y) {
@@ -132,35 +214,67 @@ void onSpecialKey(int key, int x, int y) {
     switch (key)
     {
         case GLUT_KEY_UP:
-			tileManager.make_tile.position.z -= 2.0f;
+            if (game_start) return;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.z -= 2.0f;
+            }
+            else tileManager.make_tile.position.z += 2.0f;
 			break;
 		case GLUT_KEY_DOWN:
-            tileManager.make_tile.position.z += 2.0f;
+            if (game_start) return;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.z += 2.0f;
+            }
+			else tileManager.make_tile.position.z -= 2.0f;
 			break;
 		case GLUT_KEY_LEFT:
-            tileManager.make_tile.position.x -= 2.0f;
+            if (game_start) return;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.x -= 2.0f;
+            }
+			else tileManager.make_tile.position.x += 2.0f;
             break;
 		case GLUT_KEY_RIGHT:
-            tileManager.make_tile.position.x += 2.0f;
+            if (game_start) return;
+            if (camera.between_player_or_camera > 0) {
+                tileManager.make_tile.position.x += 2.0f;
+            }
+			else tileManager.make_tile.position.x -= 2.0f;
 			break;
 		case GLUT_KEY_F5:
-			tileManager.SaveToJSON("json/stage.json");
+			tileManager.SaveToJSON("json/Mainmenu.json");
             break;
         case GLUT_KEY_F6:
-            tileManager.LoadFromJSON("json/stage.json");
+            tileManager.LoadFromJSON("json/Mainmenu.json");
             player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
 			break;
+
         case GLUT_KEY_F7:
             tileManager.SaveToJSON("json/stage2.json");
 			break;
         case GLUT_KEY_F8:
             tileManager.LoadFromJSON("json/stage2.json");
             player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
             break;
+
+        case GLUT_KEY_F9:
+            tileManager.SaveToJSON("json/stage.json");
+            break;
+        case GLUT_KEY_F10:
+            tileManager.LoadFromJSON("json/stage.json");
+            player.position = tileManager.playerPos;
+            player.SetStageStartPosition(tileManager.playerPos);
+            light.light[1].position = player.position;
+            light.player_position_update();
+            break;
+
+		
     }
 }
 
@@ -176,14 +290,17 @@ void RoadTexture() {
     player_cube_texture.Load("resource/player_of_space.png");
     player2_cube_texture.Load("resource/player/player1.png");
     player3_cube_texture.Load("resource/player/player2.png");
-
     ground_cube_texture.Load("resource/tile/silver.png");
-    spring_cube_texture.Load("resource/tile/stage_tile.png");
+    One_cube_texture.Load("resource/tile/stage_tile.png");
+	Two_cube_texture.Load("resource/tile/stage_tile.png");
+    Three_cube_texture.Load("resource/tile/stage_tile.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
+	quit_texture.Load("resource/tile/stage_tile.png");
 
-	stage_cube.Init();
+
+    stage_cube.Init();
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화
 	harf_cube.Init();
 	BackGround_cube_texture.Load("resource/space.png");
@@ -195,8 +312,8 @@ void RoadTexture() {
 void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 {
     srand(time(NULL));
-    width = 800; 
-    height = 600;
+    width = 1200; 
+    height = 900;
     //--- 윈도우 생성하기
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -214,11 +331,14 @@ void main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	RoadTexture(); // 텍스쳐 로드 함수
 	line.Init();
     move_cube_line.Init();
-    player.InitializeRendering(&stage_cube, &spring_cube_texture);
+    player.InitializeRendering(&public_cube, &player_cube_texture);
 
 	// 타일 매니저 초기화
-    tileManager.GenerateGrid();
-    tileManager.GenerateBackground();
+    //tileManager.GenerateGrid();
+    //tileManager.GenerateBackground();
+
+    tileManager.LoadFromJSON("json/Mainmenu.json");
+    player.SetStageStartPosition(tileManager.playerPos);
 
     light.Init();
 
@@ -252,22 +372,22 @@ GLvoid drawScene() {
     player.result_matrix(camera);
     player.Draw();
 
-	result_line_matrix(camera,line);
-	line.Draw();
+    if (!game_start) {
+        result_line_matrix(camera, line);
+        line.Draw();
 
-    // making_move_tile일 때만 그리기
-    if (tileManager.making_move_tile && move_cube_line.vertices.size() >= 2) {
-        move_cube_line.Update();
-        result_line_matrix(camera, move_cube_line);
-        move_cube_line.DDraw();
+        // making_move_tile일 때만 그리기
+        if (tileManager.making_move_tile && move_cube_line.vertices.size() >= 2) {
+            move_cube_line.Update();
+            result_line_matrix(camera, move_cube_line);
+            move_cube_line.DDraw();
+        }
     }
-
 	tileManager.DrawAll(camera);
 
     fireworkmanager.Draw(camera);
 
-    
-    glViewport(width * 4/5, height- width * 1 / 5, width * 1 / 5, width * 1 / 5);
+    glViewport(width * 4/5, height- width * 1 / 5,width * 1 / 5, width * 1 / 5);
     
     player.result_O_matrix(mini_camera);
     player.Draw();
