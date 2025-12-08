@@ -192,6 +192,18 @@ void onKey(unsigned char key, int x, int y) {
     case 'm':
         if (game_start) return;
 		tileManager.editing_mode = !tileManager.editing_mode;
+        break;
+    case '9':
+        tileManager.SaveToJSON("json/stage3.json");
+        break;
+
+    case '0':
+        tileManager.LoadFromJSON("json/stage3.json");
+        player.position = tileManager.playerPos;
+        player.SetStageStartPosition(tileManager.playerPos);
+        light.light[1].position = player.position;
+        light.player_position_update();
+        break;
     }
     
 }
@@ -262,17 +274,7 @@ void onSpecialKey(int key, int x, int y) {
             light.player_position_update();
             break;
 
-		case GLUT_KEY_F11:
-            tileManager.SaveToJSON("json/stage3.json");
-            break;
-
-		case GLUT_KEY_F12:
-            tileManager.LoadFromJSON("json/stage3.json");
-            player.position = tileManager.playerPos;
-            player.SetStageStartPosition(tileManager.playerPos);
-            light.light[1].position = player.position;
-            light.player_position_update();
-            break;
+		
     }
 }
 
@@ -291,10 +293,12 @@ void RoadTexture() {
     ground_cube_texture.Load("resource/tile/silver.png");
     One_cube_texture.Load("resource/tile/stage_tile.png");
 	Two_cube_texture.Load("resource/tile/stage_tile.png");
+    Three_cube_texture.Load("resource/tile/stage_tile.png");
     moving_cube_texture.Load("resource/tile/scaffolding.png");
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
 	quit_texture.Load("resource/tile/stage_tile.png");
+
 
     stage_cube.Init();
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화

@@ -486,6 +486,7 @@ Texture player3_cube_texture;
 Texture ground_cube_texture; // ¶¥
 Texture One_cube_texture;
 Texture Two_cube_texture;
+Texture Three_cube_texture;
 Texture quit_texture;
 Texture moving_cube_texture; // ¹«ºù
 Texture rotate_cube_texture; // È¸Àü

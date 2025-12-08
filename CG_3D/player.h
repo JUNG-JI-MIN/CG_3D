@@ -250,6 +250,13 @@ public:
 					light.light[1].position = position;
 					light.player_position_update();
 				}
+				else if (t->type == "GoToThreeTile") {
+					tileManager.LoadFromJSON("json/stage3.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
 				else if (t->type == "switchtile") {
 					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
 					position = tileManager.current_switch_tile->switch_position;
