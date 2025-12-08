@@ -1253,12 +1253,6 @@
       ]
     },
     {
-      "x": 44,
-      "y": 0,
-      "z": 50,
-      "type": "endtile"
-    },
-    {
       "x": 34,
       "y": -4,
       "z": 62,
@@ -1352,6 +1346,63 @@
         { "x": 16, "y": 2, "z": 28 }
       ],
       "speed": 0.4
+<<<<<<< Updated upstream
+=======
+    },
+    {
+      "x": 28,
+      "y": 0,
+      "z": 0,
+      "type": "rotatetile"
+    },
+    {
+      "x": 30,
+      "y": 0,
+      "z": -2,
+      "type": "rotatetile"
+    },
+    {
+      "x": 32,
+      "y": 0,
+      "z": 0,
+      "type": "rotatetile"
+    },
+    {
+      "x": 30,
+      "y": 0,
+      "z": 2,
+      "type": "rotatetile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 38,
+      "type": "rotatetile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 40,
+      "type": "rotatetile"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "z": 42,
+      "type": "rotatetile"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "z": 40,
+      "type": "rotatetile"
+    },
+    {
+      "x": 44,
+      "y": 0,
+      "z": 50,
+      "type": "GoToThreeTile"
+>>>>>>> Stashed changes
     }
   ]
 }

@@ -229,6 +229,45 @@ public:
 			CheckAndStartFalling();
 		}
 	}
+<<<<<<< Updated upstream
+=======
+	void CubeEnter(glm::vec3 pos) {
+		for (TileBase* t : tileManager.tiles) {
+			if (t->position == pos) {
+				t->OnCubeEnter();
+				if (t->type == "QuitTile") {
+					exit(0);
+				}
+				else if (t->type == "GoToOneTile") {
+					tileManager.LoadFromJSON("json/stage.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "GoToTwoTile") {
+					tileManager.LoadFromJSON("json/stage2.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "GoToThreeTile") {
+					tileManager.LoadFromJSON("json/stage3.json");
+					position = tileManager.playerPos;
+					SetStageStartPosition(tileManager.playerPos);
+					light.light[1].position = position;
+					light.player_position_update();
+				}
+				else if (t->type == "switchtile") {
+					tileManager.current_switch_tile = dynamic_cast<SwitchTile*>(t);
+					position = tileManager.current_switch_tile->switch_position;
+					cout << "스위치 타일 순간 이동" << endl;
+				}
+			}
+		}
+	}
+>>>>>>> Stashed changes
 
 private:
 	inline int CheckTileAtDirection(glm::vec3 direction, float& outTargetHeight)

@@ -78,6 +78,25 @@ public:
     }
 };
 
+class GoToThreeTile : public TileBase {
+public:
+    GoToThreeTile(glm::vec3 pos)
+        : TileBase(pos) {
+        type = "GoToThreeTile";
+    }
+    void OnCubeEnter() override {
+        cout << "Enter the " << type << endl;
+    }
+    void OnCubeStay() override {
+        cout << "Stay in " << type << endl;
+    }
+    void OnCubeExit() override {
+        cout << "Exit from " << type << endl;
+    }
+    void Update(float dt) override {
+    }
+};
+
 class QuitTile : public TileBase {
 public:
     QuitTile(glm::vec3 pos)
@@ -323,6 +342,12 @@ public:
             model = &public_cube;
             color_type = 0;
 			break;
+        case '5':
+            type = "GoToThreeTile";
+            texture = &Three_cube_texture;
+            model = &public_cube;
+            color_type = 0;
+            break;
         }
     }
 };
@@ -403,6 +428,11 @@ public:
         else if (make_tile.type == "GoToTwoTile") {
             GoToTwoTile* tile = new GoToTwoTile(pos);
             tile->InitializeRendering(&stage_cube, &Two_cube_texture);
+            tiles.push_back(tile);
+        }
+        else if (make_tile.type == "GoToThreeTile") {
+            GoToThreeTile* tile = new GoToThreeTile(pos);
+            tile->InitializeRendering(&stage_cube, &Three_cube_texture);
             tiles.push_back(tile);
         }
         else if (make_tile.type == "QuitTile") {
@@ -709,6 +739,11 @@ public:
                         else if (tileType == "GoToTwoTile") {
                             tile = new GoToTwoTile(pos);
                             tile->InitializeRendering(&stage_cube, &Two_cube_texture);
+                            tile->color_type = 0;
+                        }
+                        else if (tileType == "GoToThreeTile") {
+                            tile = new GoToThreeTile(pos);
+                            tile->InitializeRendering(&stage_cube, &Three_cube_texture);
                             tile->color_type = 0;
                         }
                         else if (tileType == "QuitTile") {

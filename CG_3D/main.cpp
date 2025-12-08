@@ -185,6 +185,19 @@ void onKey(unsigned char key, int x, int y) {
         break; // 'c' 키
     case 'm':
 		tileManager.editing_mode = !tileManager.editing_mode;
+        break;
+
+    case '9':
+        tileManager.SaveToJSON("json/stage3.json");
+        break;
+
+    case '0':
+        tileManager.LoadFromJSON("json/stage3.json");
+        player.position = tileManager.playerPos;
+        player.SetStageStartPosition(tileManager.playerPos);
+        light.light[1].position = player.position;
+        light.player_position_update();
+        break;
     }
     
 }
@@ -242,12 +255,24 @@ void onSpecialKey(int key, int x, int y) {
             light.player_position_update();
             break;
         case GLUT_KEY_F9:
+<<<<<<< Updated upstream
             tileManager.LoadFromJSON("json/Mainmenu.json");
+=======
+            tileManager.SaveToJSON("json/stage.json");
+            break;
+        case GLUT_KEY_F10:
+            tileManager.LoadFromJSON("json/stage.json");
+>>>>>>> Stashed changes
             player.position = tileManager.playerPos;
             player.SetStageStartPosition(tileManager.playerPos);
             light.light[1].position = player.position;
             light.player_position_update();
             break;
+<<<<<<< Updated upstream
+=======
+
+		
+>>>>>>> Stashed changes
     }
 }
 
@@ -270,6 +295,7 @@ void RoadTexture() {
     rotate_cube_texture.Load("resource/tile/silver.png");
     switch_cube_texture.Load("resource/tile/silver.png");
 	quit_texture.Load("resource/tile/stage_tile.png");
+	Three_cube_texture.Load("resource/tile/stage_tile.png");
 
     stage_cube.Init();
     public_cube.Init(); // 전역 변수로 선언된 큐브 모델 초기화

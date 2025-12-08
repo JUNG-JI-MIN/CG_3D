@@ -1,5 +1,5 @@
 {
-  "playerPos": [-2, 2, -2],
+  "playerPos": [-8, 2, -8],
   "gridWidth": 10,
   "gridHeight": 10,
   "tileSize": 2,
@@ -794,18 +794,6 @@
       "x": -8,
       "y": 0,
       "z": -12,
-      "type": "groundtile"
-    },
-    {
-      "x": -10,
-      "y": 0,
-      "z": -12,
-      "type": "groundtile"
-    },
-    {
-      "x": -12,
-      "y": 0,
-      "z": -10,
       "type": "groundtile"
     },
     {
@@ -1627,12 +1615,6 @@
     {
       "x": 14,
       "y": 0,
-      "z": 4,
-      "type": "groundtile"
-    },
-    {
-      "x": 14,
-      "y": 0,
       "z": 2,
       "type": "groundtile"
     },
@@ -1669,24 +1651,6 @@
     {
       "x": 18,
       "y": 0,
-      "z": 4,
-      "type": "groundtile"
-    },
-    {
-      "x": 16,
-      "y": 0,
-      "z": 4,
-      "type": "groundtile"
-    },
-    {
-      "x": 20,
-      "y": 0,
-      "z": 4,
-      "type": "groundtile"
-    },
-    {
-      "x": 18,
-      "y": 0,
       "z": -2,
       "type": "groundtile"
     },
@@ -1700,18 +1664,6 @@
       "x": 18,
       "y": 0,
       "z": 2,
-      "type": "groundtile"
-    },
-    {
-      "x": 20,
-      "y": 0,
-      "z": -2,
-      "type": "groundtile"
-    },
-    {
-      "x": 22,
-      "y": 0,
-      "z": -2,
       "type": "groundtile"
     },
     {
@@ -1730,18 +1682,6 @@
       "x": 24,
       "y": 0,
       "z": 2,
-      "type": "groundtile"
-    },
-    {
-      "x": 22,
-      "y": 0,
-      "z": 4,
-      "type": "groundtile"
-    },
-    {
-      "x": 24,
-      "y": 0,
-      "z": 4,
       "type": "groundtile"
     },
     {
@@ -1899,24 +1839,6 @@
       "y": 0,
       "z": 22,
       "type": "GoToOneTile"
-    },
-    {
-      "x": 20,
-      "y": 0,
-      "z": 20,
-      "type": "QuitTile"
-    },
-    {
-      "x": 22,
-      "y": 0,
-      "z": 2,
-      "type": "GoToTwoTile"
-    },
-    {
-      "x": 20,
-      "y": 0,
-      "z": 2,
-      "type": "GoToTwoTile"
     },
     {
       "x": 20,
@@ -1979,70 +1901,226 @@
       "type": "groundtile"
     },
     {
-      "x": 24,
+      "x": 20,
       "y": 0,
-      "z": -6,
+      "z": 20,
+      "type": "GoToThreeTile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 20,
       "type": "groundtile"
     },
     {
-      "x": 22,
+      "x": 10,
       "y": 0,
-      "z": -6,
+      "z": 22,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 24,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": -2,
+      "z": 18,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "z": 18,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "z": 18,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "z": 20,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "z": 22,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "z": 24,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": -6,
+      "z": 24,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": -6,
+      "z": 22,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": -6,
+      "z": 20,
+      "type": "groundtile"
+    },
+    {
+      "x": 10,
+      "y": -4,
+      "z": 18,
+      "type": "groundtile"
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "z": -4,
       "type": "groundtile"
     },
     {
       "x": 20,
       "y": 0,
-      "z": -6,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 24,
+      "y": 0,
+      "z": -4,
+      "type": "groundtile"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "z": 2,
+      "type": "groundtile"
+    },
+    {
+      "x": 20,
+      "y": 0,
+      "z": 2,
+      "type": "groundtile"
+    },
+    {
+      "x": 20,
+      "y": 0,
+      "z": -2,
+      "type": "GoToTwoTile"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "z": -2,
+      "type": "GoToTwoTile"
+    },
+    {
+      "x": 20,
+      "y": 0,
+      "z": -8,
+      "type": "groundtile"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "z": -8,
+      "type": "groundtile"
+    },
+    {
+      "x": 24,
+      "y": 0,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 20,
       "y": 2,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 20,
       "y": 4,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 22,
       "y": 4,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 24,
       "y": 4,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 24,
       "y": 6,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 24,
       "y": 8,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 22,
       "y": 8,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
     },
     {
       "x": 20,
       "y": 8,
-      "z": -6,
+      "z": -8,
       "type": "groundtile"
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "z": -12,
+      "type": "QuitTile"
+    },
+    {
+      "x": -12,
+      "y": 0,
+      "z": -10,
+      "type": "QuitTile"
     }
   ]
 }
